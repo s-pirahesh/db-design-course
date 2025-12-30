@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="جامعیت پایگاه داده - قیود خاص">
+    <meta name="keywords" content="پایگاه داده, Database Design, قیود خاص">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>قیود خاص | جامعیت پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">جامعیت پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">قیود خاص</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">قیود خاص</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۵: جامعیت پایگاه داده - ادامه</h1>
+
+<h2>بخش ۵.۳: قیود خاص و مکانیزم‌های اعمال</h2>
+
+<h3>قیود جامعیتی خاص (Specific Constraints)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+قیود جامعیتی خاص (UC یا UR) وابسته به داده‌ها هستند و در هر محیط محدودیت‌های خاص آن محیط وجود دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[قیود خاص<br/>User Constraints<br/>UC/UR]
+    
+    B[AC<br/>Attribute Constraints<br/>صفتی]
+    C[DC<br/>Domain Constraints<br/>دامنه‌ای]
+    D[RC<br/>Relation Constraints<br/>رابطه‌ای]
+    E[DBC<br/>Database Constraints<br/>پایگاهی]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    
+    B1[نوع صفت<br/>دامنه<br/>مقادیر]
+    C1[CHECK<br/>محدوده مقادیر]
+    D1[محدودیت<br/>درون رابطه]
+    E1[محدودیت<br/>بین چند رابطه]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    E --> E1
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#e74c3c,color:#fff
+</pre></div>
+
+<hr>
+<h3>1. قیود جامعیتی صفتی (AC)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+از محدودیت دامنه‌ای صفت ناشی می‌شوند.
+</p>
+
+<p>
+<strong>شامل:</strong>
+</p>
+<ul>
+<li>نوع صفت (Data Type)</li>
+<li>دامنه مقادیر (Domain)</li>
+<li>محدودیت مقادیر صفت</li>
+</ul>
+
+<hr>
+<h4>مثال 1: نوع داده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT,  -- AC: فقط عدد صحیح
+    Name NVARCHAR(50),  -- AC: رشته، حداکثر 50 کاراکتر
+    BirthDate DATE,  -- AC: فقط تاریخ
+    GPA DECIMAL(4,2),  -- AC: عدد اعشاری، 4 رقم کل، 2 رقم اعشار
+    IsActive BIT  -- AC: فقط 0 یا 1
+);</code></pre></div>
+
+<p>
+<strong>نقض AC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">INSERT INTO Student VALUES ('ABC', 'علی', ...);  -- ❌ StudentID باید INT باشه
+INSERT INTO Student VALUES (100, 'علی'*100, ...);  -- ❌ Name بیش از 50 کاراکتر
+INSERT INTO Student VALUES (100, 'علی', '2025-13-40', ...);  -- ❌ تاریخ نامعتبر
+INSERT INTO Student VALUES (100, 'علی', ..., 100.123, ...);  -- ❌ GPA بیش از 2 رقم اعشار</code></pre></div>
+
+<hr>
+<h4>مثال 2: محدوده مقادیر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Age INT CHECK (Age &gt;= 18 AND Age &lt;= 65),  -- AC: سن بین 18 تا 65
+    Salary DECIMAL(10,2) CHECK (Salary &gt; 0),  -- AC: حقوق مثبت
+    Gender CHAR(1) CHECK (Gender IN ('M', 'F'))  -- AC: فقط M یا F
+);</code></pre></div>
+
+<hr>
+<h3>2. قیود جامعیتی دامنه‌ای (DC)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+مشخص کننده نوع یا مجموعه مقادیر هستند.
+</p>
+
+<p>
+<strong>در SQL استاندارد به سیستم داده می‌شوند:</strong>
+</p>
+<ul>
+<li>SQL-Server: CHECK</li>
+<li>Assertion</li>
+<li>Trigger</li>
+</ul>
+
+<hr>
+<h4>مثال 1: محدوده ساده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE S (
+    S# INT CHECK (S# &gt; 1 AND S# &lt; 100),  -- DC: کد فروشنده بین 1 تا 100
+    SName NVARCHAR(50),
+    City NVARCHAR(30),
+    Status INT
+);</code></pre></div>
+
+<p>
+<strong>تست:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">INSERT INTO S VALUES (0, 'Smith', 'Tehran', 100);  -- ❌ S# کمتر از 1
+INSERT INTO S VALUES (50, 'Jones', 'Shiraz', 200);  -- ✅
+INSERT INTO S VALUES (150, 'Blake', 'Isfahan', 150);  -- ❌ S# بیشتر از 100</code></pre></div>
+
+<hr>
+<h4>مثال 2: محدوده پیچیده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Product (
+    ProductID INT PRIMARY KEY,
+    ProductName NVARCHAR(100),
+    Price DECIMAL(10,2) CHECK (Price &gt;= 1000 AND Price &lt;= 10000000),  -- DC
+    DiscountPercent DECIMAL(5,2) CHECK (DiscountPercent &gt;= 0 AND DiscountPercent &lt;= 100),  -- DC
+    StockQuantity INT CHECK (StockQuantity &gt;= 0)  -- DC
+);</code></pre></div>
+
+<hr>
+<h4>مثال 3: Domain با CONSTRAINT</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Email VARCHAR(100),
+    CONSTRAINT chk_email CHECK (Email LIKE '%@%.%')  -- DC: فرمت ایمیل
+);</code></pre></div>
+
+<hr>
+<h3>3. قیود جامعیتی رابطه‌ای (RC)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+محدودیتی است که فقط ناظر یک رابطه است.  
+گاهی به آن محدودیت درون رابطه‌ای نیز می‌گویند.
+</p>
+
+<hr>
+<h4>مثال 1: محدودیت بین دو صفت</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- S(S#, SName, City, Account)
+-- مشتریانی که شهرشان C2 است، Account شان نمی‌تواند بیشتر از 1000 باشد.
+
+CREATE TABLE S (
+    S# INT PRIMARY KEY,
+    SName NVARCHAR(50),
+    City NVARCHAR(30),
+    Account DECIMAL(10,2),
+    CONSTRAINT chk_city_account 
+        CHECK (NOT (City = 'C2' AND Account &gt; 1000))  -- RC
+);</code></pre></div>
+
+<p>
+<strong>تست:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">INSERT INTO S VALUES (10, 'Smith', 'C1', 2000);  -- ✅ شهر C1 → محدودیت نداره
+INSERT INTO S VALUES (20, 'Jones', 'C2', 500);  -- ✅ شهر C2، Account &lt; 1000
+INSERT INTO S VALUES (30, 'Blake', 'C2', 1500);  -- ❌ شهر C2، Account &gt; 1000</code></pre></div>
+
+<hr>
+<h4>مثال 2: محدودیت تاریخی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Project (
+    ProjectID INT PRIMARY KEY,
+    ProjectName NVARCHAR(100),
+    StartDate DATE,
+    EndDate DATE,
+    CONSTRAINT chk_dates CHECK (EndDate &gt; StartDate)  -- RC
+);</code></pre></div>
+
+<p>
+<strong>تست:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">INSERT INTO Project VALUES (1, 'پروژه A', '2024-01-01', '2024-12-31');  -- ✅
+INSERT INTO Project VALUES (2, 'پروژه B', '2024-06-01', '2024-03-01');  -- ❌ EndDate &lt; StartDate</code></pre></div>
+
+<hr>
+<h4>مثال 3: محدودیت پیچیده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Loan (
+    LoanID INT PRIMARY KEY,
+    Amount DECIMAL(15,2),
+    InterestRate DECIMAL(5,2),
+    Duration INT,  -- به ماه
+    CONSTRAINT chk_loan 
+        CHECK (
+            (Amount &lt; 100000000 AND Duration &lt;= 60) OR
+            (Amount &gt;= 100000000 AND InterestRate &gt;= 5)
+        )  -- RC: اگر وام کمتر از 100 میلیون، مدت حداکثر 60 ماه
+           --     اگر بیشتر از 100 میلیون، نرخ حداقل 5%
+);</code></pre></div>
+
+<hr>
+<h3>4. قیود جامعیتی پایگاهی (DBC)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+محدودیت‌هایی هستند که بین چندین رابطه وجود دارند.
+</p>
+
+<p>
+<strong>⚠️ نکته:</strong>  
+محدودیت‌های عام را نمی‌توان با Trigger به طور همزمان 2 محدودیت اعمال نمود،  
+ولی با Assertion می‌توانیم.
+</p>
+
+<hr>
+<h4>مثال 1: تعداد ثبت‌نام</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- محدودیت: هر دانشجو حداکثر 5 درس می‌تونه بگیره
+
+-- با Trigger:
+CREATE TRIGGER trg_max_enrollment
+BEFORE INSERT ON Enrollment
+FOR EACH ROW
+BEGIN
+    DECLARE course_count INT;
+    SELECT COUNT(*) INTO course_count
+    FROM Enrollment
+    WHERE StudentID = NEW.StudentID;
+    
+    IF course_count &gt;= 5 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'حداکثر 5 درس مجاز است';
+    END IF;
+END;</code></pre></div>
+
+<hr>
+<h4>مثال 2: موجودی حساب</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- محدودیت: مجموع موجودی حساب‌های یک مشتری نباید منفی باشه
+
+-- با Assertion (SQL استاندارد):
+CREATE ASSERTION total_balance_positive
+CHECK (
+    NOT EXISTS (
+        SELECT C.CustomerID
+        FROM Customer C
+        WHERE (
+            SELECT SUM(Balance)
+            FROM Account
+            WHERE CustomerID = C.CustomerID
+        ) &lt; 0
+    )
+);</code></pre></div>
+
+<hr>
+<h4>مثال 3: ظرفیت کلاس</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- محدودیت: تعداد ثبت‌نام در یک کلاس نباید بیشتر از ظرفیت باشه
+
+CREATE TRIGGER trg_class_capacity
+BEFORE INSERT ON Enrollment
+FOR EACH ROW
+BEGIN
+    DECLARE current_count INT;
+    DECLARE max_capacity INT;
+    
+    SELECT COUNT(*) INTO current_count
+    FROM Enrollment
+    WHERE CourseID = NEW.CourseID AND Semester = NEW.Semester;
+    
+    SELECT Capacity INTO max_capacity
+    FROM Course
+    WHERE CourseID = NEW.CourseID;
+    
+    IF current_count &gt;= max_capacity THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'ظرفیت کلاس پر است';
+    END IF;
+END;</code></pre></div>
+
+<hr>
+<h2>مکانیزم‌های اعمال قیود</h2>
+
+<h3>1. Trigger (ماشه)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+Trigger یک قطعه برنامه است که در DBMS ذخیره شده است و می‌تواند فراخوانی و اجرا شود.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Trigger]
+    
+    B[BEFORE]
+    C[AFTER]
+    D[INSTEAD OF]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    E[INSERT]
+    F[UPDATE]
+    G[DELETE]
+    
+    B --> E
+    B --> F
+    B --> G
+    
+    C --> E
+    C --> F
+    C --> G
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<hr>
+<h4>ساختار Trigger</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TRIGGER trigger_name
+{BEFORE | AFTER | INSTEAD OF} {INSERT | UPDATE | DELETE}
+ON table_name
+FOR EACH ROW
+BEGIN
+    -- Custom Logic
+END;</code></pre></div>
+
+<hr>
+<h4>مثال 1: Audit Log</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- Log کردن تغییرات حقوق
+CREATE TABLE SalaryLog (
+    LogID INT PRIMARY KEY AUTO_INCREMENT,
+    EmpID INT,
+    OldSalary DECIMAL(10,2),
+    NewSalary DECIMAL(10,2),
+    ChangeDate DATETIME,
+    ChangedBy VARCHAR(50)
+);
+
+CREATE TRIGGER trg_salary_change
+AFTER UPDATE ON Employee
+FOR EACH ROW
+BEGIN
+    IF OLD.Salary &lt;&gt; NEW.Salary THEN
+        INSERT INTO SalaryLog 
+        VALUES (NULL, NEW.EmpID, OLD.Salary, NEW.Salary, NOW(), USER());
+    END IF;
+END;</code></pre></div>
+
+<hr>
+<h4>مثال 2: Validation پیچیده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- اعتبارسنجی قبل از درج
+CREATE TRIGGER trg_validate_student
+BEFORE INSERT ON Student
+FOR EACH ROW
+BEGIN
+    -- بررسی سن
+    IF YEAR(CURDATE()) - YEAR(NEW.BirthDate) &lt; 15 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'سن دانشجو باید حداقل 15 سال باشد';
+    END IF;
+    
+    -- بررسی کد ملی (10 رقمی)
+    IF LENGTH(NEW.NationalID) &lt;&gt; 10 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'کد ملی باید 10 رقمی باشد';
+    END IF;
+END;</code></pre></div>
+
+<hr>
+<h4>مثال 3: Cascade دستی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- Cascade دستی برای Delete
+CREATE TRIGGER trg_delete_student
+BEFORE DELETE ON Student
+FOR EACH ROW
+BEGIN
+    -- حذف ثبت‌نام‌ها
+    DELETE FROM Enrollment WHERE StudentID = OLD.StudentID;
+    
+    -- حذف نمرات
+    DELETE FROM Grades WHERE StudentID = OLD.StudentID;
+    
+    -- Log
+    INSERT INTO DeleteLog VALUES (OLD.StudentID, NOW());
+END;</code></pre></div>
+
+<hr>
+<h3>2. Assertion (اظهاریه)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+می‌توانیم روی DBMS قواعد جامعیتی را با آن کنترل نماییم.
+</p>
+
+<p>
+<strong>ساختار:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE ASSERTION assertion_name
+CHECK (
+    NOT EXISTS (query)
+);</code></pre></div>
+
+<hr>
+<h4>مثال 1: محدودیت تعداد</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- هر استاد حداکثر 3 درس تدریس کنه
+CREATE ASSERTION max_courses_per_instructor
+CHECK (
+    NOT EXISTS (
+        SELECT InstructorID
+        FROM Teaching
+        GROUP BY InstructorID
+        HAVING COUNT(*) &gt; 3
+    )
+);</code></pre></div>
+
+<hr>
+<h4>مثال 2: محدودیت مجموع</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- مجموع حقوق یک اداره نباید بیشتر از بودجه‌اش باشه
+CREATE ASSERTION department_budget
+CHECK (
+    NOT EXISTS (
+        SELECT D.DeptID
+        FROM Department D
+        WHERE (
+            SELECT SUM(Salary)
+            FROM Employee E
+            WHERE E.DeptID = D.DeptID
+        ) &gt; D.Budget
+    )
+);</code></pre></div>
+
+<hr>
+<h4>مثال 3: محدودیت منطقی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- هر دانشجو باید حداقل 12 واحد بگیره
+CREATE ASSERTION min_units
+CHECK (
+    NOT EXISTS (
+        SELECT StudentID
+        FROM Enrollment
+        GROUP BY StudentID, Semester
+        HAVING SUM(Credits) &lt; 12
+    )
+);</code></pre></div>
+
+<hr>
+<h3>مقایسه Trigger و Assertion</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>Trigger</th><th>Assertion</th></tr></thead>
+<tbody>
+<tr><td><strong>زمان اجرا</strong></td><td>قبل/بعد عملیات</td><td>همیشه (هر تراکنش)</td></tr>
+<tr><td><strong>پیچیدگی</strong></td><td>Logic پیچیده</td><td>Query ساده</td></tr>
+<tr><td><strong>چند جدول</strong></td><td>محدود</td><td>راحت ✅</td></tr>
+<tr><td><strong>Performance</strong></td><td>بهتر</td><td>کندتر</td></tr>
+<tr><td><strong>پشتیبانی DBMS</strong></td><td>همه</td><td>کم (SQL Server ندارد)</td></tr>
+<tr><td><strong>کاربرد</strong></td><td>Validation پیچیده</td><td>محدودیت ساده بین جداول</td></tr>
+</tbody></table></div><hr>
+
+<h2>خلاصه قیود جامعیتی</h2>
+
+<div class="table-container"><table>
+<thead><tr><th>نوع قید</th><th>نماد</th><th>محدوده</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>Entity Integrity</strong></td><td>C1</td><td>PK</td><td>PK NOT NULL</td></tr>
+<tr><td><strong>Referential Integrity</strong></td><td>C2</td><td>FK</td><td>FK → PK موجود</td></tr>
+<tr><td><strong>Attribute Constraint</strong></td><td>AC</td><td>یک صفت</td><td>Age INT</td></tr>
+<tr><td><strong>Domain Constraint</strong></td><td>DC</td><td>دامنه</td><td>CHECK (Age >= 18)</td></tr>
+<tr><td><strong>Relation Constraint</strong></td><td>RC</td><td>یک جدول</td><td>CHECK (EndDate > StartDate)</td></tr>
+<tr><td><strong>Database Constraint</strong></td><td>DBC</td><td>چند جدول</td><td>SUM(Salary) <= Budget</td></tr>
+</tbody></table></div><hr>
+
+<h2>✍️ تمرینات بخش ۵.۳</h2>
+
+<h3>تمرین 1 (تشریحی): بانک</h3>
+
+<p>
+طراحی سیستم بانکی با قیود زیر:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>موجودیت‌ها:
+- Customer (CustomerID, Name, Phone, Address)
+- Account (AccountID, CustomerID, Balance, AccountType)
+- Transaction (TxnID, AccountID, Amount, TxnDate, TxnType)
+
+قیود جامعیتی:
+1. Balance نباید منفی باشه (DC)
+2. AccountType فقط 'Savings' یا 'Current' (DC)
+3. مجموع موجودی حساب‌های یک مشتری حداقل 500,000 (DBC)
+4. تعداد تراکنش‌های روزانه هر حساب حداکثر 10 (RC)
+5. Amount تراکنش بین 10,000 تا 50,000,000 (DC)</code></pre></div>
+
+<p>
+<strong>انجام دهید:</strong>
+</p>
+<ul>
+<li>الف) SQL کامل با همه قیود</li>
+<li>ب) 3 Trigger برای قیود پیچیده</li>
+<li>ج) Test Case‌های نقض و رعایت</li>
+<li>د) Assertion برای قید DBC</li>
+</ul>
+
+<hr>
+<h3>تمرین 2 (تستی):</h3>
+
+<p>
+کدام گزینه <strong>درست</strong> است؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) محدودیت‌های عام را می‌توان با Trigger به طور همزمان 2 محدودیت اعمال نمود.
+ب) اگر کلید اصلی جزو کلید خارجی باشد، NULLIFY نمودن صحیح است.
+ج) CASCADE باعث می‌شود عملیات روی والد، روی فرزند هم اعمال شود.
+د) RC محدودیتی است که بین چندین رابطه وجود دارد.</code></pre></div>
+
+<hr>
+<h3>تمرین 3 (تحلیلی): فروشگاه</h3>
+
+<p>
+جداول زیر را بررسی کنید:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Product (
+    ProductID INT PRIMARY KEY,
+    ProductName NVARCHAR(100),
+    Price DECIMAL(10,2),
+    StockQuantity INT
+);
+
+CREATE TABLE OrderItem (
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    PRIMARY KEY (OrderID, ProductID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);</code></pre></div>
+
+<p>
+<strong>سؤالات:</strong>
+</p>
+<ul>
+<li>الف) چه قیودی اضافه کنیم؟ (حداقل 5 قید)</li>
+<li>ب) Trigger برای کاهش StockQuantity بعد از فروش</li>
+<li>ج) چک کردن موجودی کافی قبل از فروش</li>
+<li>د) Assertion برای مجموع فروش روزانه</li>
+</ul>
+
+<hr>
+<h3>تمرین 4 (طراحی): دانشگاه</h3>
+
+<p>
+سیستم ثبت‌نام با قیود پیچیده:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قیود:
+1. هر دانشجو حداقل 12 و حداکثر 20 واحد
+2. پیش‌نیازها رعایت بشه
+3. ظرفیت کلاس رعایت بشه
+4. تداخل زمانی نباشه
+5. معدل حداقل 12 برای ادامه تحصیل
+6. حذف و اضافه تا 2 هفته اول</code></pre></div>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>الف) جداول با قیود</li>
+<li>ب) 5 Trigger</li>
+<li>ج) 3 Assertion</li>
+<li>د) Test Scenario کامل</li>
+</ul>
+
+<hr>
+<h3>تمرین 5 (مفهومی):</h3>
+
+<p>
+<strong>سؤال 1:</strong> چرا DBMS‌ها کند هستند؟ 3 دلیل با مثال.
+</p>
+
+<p>
+<strong>سؤال 2:</strong> تفاوت CASCADE و RESTRICT را با سناریو کامل توضیح دهید.
+</p>
+
+<p>
+<strong>سؤال 3:</strong> چه موقع از Trigger استفاده کنیم و چه موقع از Assertion؟
+</p>
+
+<hr>
+<h3>تمرین 6 (پیشرفته): سیستم پیچیده</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سیستم مدیریت پروژه:
+- Employee (چند مهارت، چند پروژه)
+- Project (بودجه، مدت زمان، اعضا)
+- Assignment (تخصیص کارمند به پروژه)
+- Skill (مهارت‌های لازم برای پروژه)
+
+قیود پیچیده:
+1. مجموع حقوق اعضای پروژه &lt;= بودجه
+2. هر کارمند حداکثر 3 پروژه همزمان
+3. مهارت‌های کارمند با نیاز پروژه مطابقت داشته باشه
+4. تاریخ‌های پروژه‌ها تداخل نداشته باشن
+5. حداقل یک Project Manager در هر پروژه</code></pre></div>
+
+<p>
+<strong>پیاده‌سازی:</strong>
+</p>
+<ul>
+<li>الف) طراحی کامل</li>
+<li>ب) همه قیود (AC, DC, RC, DBC)</li>
+<li>ج) 10 Trigger</li>
+<li>د) 5 Assertion</li>
+</ul>
+
+<hr>
+<h2>📌 نکات کلیدی فصل 5</h2>
+
+<p>
+✅ <strong>جامعیت:</strong>
+</p>
+<ul>
+<li>صحت + دقت + سازگاری</li>
+<li>در تمام عمر پایگاه داده</li>
+<li>مسئول: DBMS</li>
+</ul>
+
+<p>
+✅ <strong>قیود عام:</strong>
+</p>
+<ul>
+<li>C1: Entity Integrity (PK NOT NULL)</li>
+<li>C2: Referential Integrity (FK → PK)</li>
+</ul>
+
+<p>
+✅ <strong>قیود خاص:</strong>
+</p>
+<ul>
+<li>AC: صفتی (نوع، دامنه)</li>
+<li>DC: دامنه‌ای (CHECK)</li>
+<li>RC: رابطه‌ای (یک جدول)</li>
+<li>DBC: پایگاهی (چند جدول)</li>
+</ul>
+
+<p>
+✅ <strong>مکانیزم‌ها:</strong>
+</p>
+<ul>
+<li>Trigger: قطعه برنامه ذخیره شده</li>
+<li>Assertion: Query چک‌کننده</li>
+</ul>
+
+<p>
+✅ <strong>ON DELETE/UPDATE:</strong>
+</p>
+<ul>
+<li>CASCADE: آبشاری</li>
+<li>RESTRICT: منع</li>
+<li>NO ACTION: Trigger</li>
+<li>NULLIFY: NULL کن</li>
+<li>SET DEFAULT: مقدار پیش‌فرض</li>
+</ul>
+
+<p>
+✅ <strong>تفاوت Integrity و Security:</strong>
+</p>
+<ul>
+<li>Integrity: صحت داده</li>
+<li>Security: محافظت از داده</li>
+</ul>
+
+
+<hr>
+<p>
+<strong>پایان فصل ۵ - جامعیت پایگاه داده</strong>
+</p>
+
+<p>
+<em>این فایل بخشی از درس‌نامه جامع طراحی پایگاه داده است.</em>  
+<em>فصل بعدی: ۶ - زبان‌های کار با داده (Data Manipulation)</em>
+</p>
+
+                </div>
+
+                <div class="page-navigation"><a href="5-1-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">مفاهیم جامعیت عام</span></a><a href="../chapter-6/6-1-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">جبر رابطه‌ای - عملگرهای پایه</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

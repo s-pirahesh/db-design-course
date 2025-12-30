@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - محدودیت‌های تخصیص">
+    <meta name="keywords" content="پایگاه داده, Database Design, محدودیت‌های تخصیص">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>محدودیت‌های تخصیص | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">محدودیت‌های تخصیص</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">محدودیت‌های تخصیص</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۳.۲: محدودیت‌های تخصیص (Specialization Constraints)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، در بخش قبل با <strong>Is-A</strong> و <strong>وراثت</strong> آشنا شدیم. حالا سوالات مهم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند:
+→ مذکر یا مونث
+
+سوال 1: آیا کارمند می‌تونه هم مذکر و هم مونث باشه؟ ❌ (غیرممکن!)
+سوال 2: آیا باید حتماً یکی از این دو باشه؟ ✅ (بله!)
+
+---
+
+کارمند:
+→ برنامه‌نویس یا مدیر
+
+سوال 3: آیا می‌تونه هم برنامه‌نویس و هم مدیر باشه؟ ✅ (ممکنه!)
+سوال 4: آیا باید حتماً یکی از اینا باشه؟ ❌ (نه! ممکنه نگهبان باشه)
+
+این سوالات = محدودیت‌های تخصیص! ✨</code></pre></div>
+
+<hr>
+<h3>📖 انواع محدودیت‌های تخصیص</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[محدودیت‌های تخصیص] --> B[محدودیت همپوشانی<br/>Overlap Constraint]
+    A --> C[محدودیت کامل بودن<br/>Completeness Constraint]
+    
+    B --> B1[مجزا<br/>Disjoint<br/>d]
+    B --> B2[همپوشا<br/>Overlapping<br/>o]
+    
+    C --> C1[کامل<br/>Complete<br/>double line]
+    C --> C2[ناقص<br/>Partial<br/>single line]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نکته مهم :</strong>  
+"این دو نوع دسته‌بندی <strong>هیچ صنفیتی با هم ندارند</strong>" (یعنی مستقل هستن!)
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>می‌تونیم داشته باشیم:
+- Disjoint + Complete ✅
+- Disjoint + Partial ✅
+- Overlapping + Complete ✅
+- Overlapping + Partial ✅
+
+→ 4 ترکیب ممکن! ✅</code></pre></div>
+
+<hr>
+<h3>1️⃣ محدودیت همپوشانی (Overlap Constraint)</h3>
+
+<h4>الف) مجزا (Disjoint)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>مجزا:</strong> یک نمونه از E <strong>یا</strong> بتواند در F <strong>یا</strong> در G باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    
+    B{d<br/>Gender<br/>مجزا}
+    
+    A --> B
+    
+    C[Male<br/>مذکر]
+    D[Female<br/>مونث]
+    
+    B --> C
+    B --> D
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> حرف <strong>"d"</strong> (Disjoint)
+</p>
+
+<p>
+<strong>معنا:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند علی:
+→ یا مذکر است ✅
+→ یا مونث است ✅
+→ نمی‌تونه هر دو باشه! ❌
+
+→ مجزا (Disjoint) ✅</code></pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>صحیح ✅:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Gender</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>Male</td></tr>
+<tr><td>110</td><td>مریم</td><td>Female</td></tr>
+</tbody></table></div><strong>غلط ❌:</strong>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Gender</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>Male, Female</td></tr>
+</tbody></table></div> ← غیرممکن!
+
+
+<h4>ب) همپوشا (Overlapping)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>همپوشا:</strong> یک نمونه از E <strong>هم</strong> بتواند در F و<strong>هم</strong> در G باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    
+    B{o<br/>Role<br/>همپوشا}
+    
+    A --> B
+    
+    C[Programmer<br/>برنامه‌نویس]
+    D[Manager<br/>مدیر]
+    
+    B --> C
+    B --> D
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#16a085,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> حرف <strong>"o"</strong> (Overlapping)
+</p>
+
+<p>
+<strong>معنا:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند علی:
+→ برنامه‌نویس است ✅
+→ مدیر هم هست ✅ (Tech Lead!)
+→ می‌تونه هر دو باشه! ✅
+
+→ همپوشا (Overlapping) ✅</code></pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>صحیح ✅:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Roles</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>Programmer</td></tr>
+<tr><td>110</td><td>رضا</td><td>Manager</td></tr>
+<tr><td>120</td><td>مریم</td><td>Programmer, Manager</td></tr>
+</tbody></table></div> ← مجاز!
+
+<p>
+<strong>همه حالات مجاز:</strong>
+</p>
+<ul>
+<li>فقط Programmer ✅</li>
+<li>فقط Manager ✅</li>
+<li>هر دو ✅</li>
+</ul>
+
+
+<hr>
+<h3>2️⃣ محدودیت کامل بودن (Completeness Constraint)</h3>
+
+<h4>الف) کامل (Complete / Total)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+اگر بتوانیم <strong>تمامی زیرنوع‌های</strong> یک زیرنوع را بر اساس ضابطه مشخص استخراج نماییم در این صورت <strong>تخصیص کامل</strong> است.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    
+    B{d<br/>Gender}
+    
+    A ===|Complete<br/>کامل| B
+    
+    C[Male<br/>مذکر]
+    D[Female<br/>مونث]
+    
+    B --> C
+    B --> D
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> <strong>خط دولایه</strong> (double line) بین SuperType و Is-A
+</p>
+
+<p>
+<strong>معنا:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>هر کارمند:
+→ حتماً یا مذکر است
+→ یا مونث است
+→ نمی‌تونه هیچ‌کدام نباشه! ❌
+
+→ کامل (Complete) ✅</code></pre></div>
+
+<p>
+<strong>فرمول :</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Cardinality(E) = Cardinality(F) + Cardinality(G)
+
+تعداد کل کارمندها = تعداد مذکر + تعداد مونث
+100 = 60 + 40 ✅</code></pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>صحیح ✅:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Gender</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>Male</td></tr>
+<tr><td>110</td><td>مریم</td><td>Female</td></tr>
+<tr><td>120</td><td>رضا</td><td>Male</td></tr>
+</tbody></table></div>همه کارمندها Gender دارن! ✅
+
+<p>
+<strong>غلط ❌:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Gender</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>Male</td></tr>
+<tr><td>110</td><td>مریم</td><td>NULL</td></tr>
+</tbody></table></div> ← غلط! باید Gender داشته باشه!
+
+
+<h4>ب) ناقص (Partial)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+در غیر این صورت <strong>تخصیص ناقص</strong> است یعنی <strong>نتوانیم استخراج کنیم</strong>.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    
+    B{o<br/>Role}
+    
+    A ---|Partial<br/>ناقص| B
+    
+    C[Programmer<br/>برنامه‌نویس]
+    D[Manager<br/>مدیر]
+    
+    B --> C
+    B --> D
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#16a085,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> <strong>خط تک‌لایه</strong> (single line) بین SuperType و Is-A
+</p>
+
+<p>
+<strong>معنا:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>هر کارمند:
+→ ممکنه برنامه‌نویس باشه ✅
+→ ممکنه مدیر باشه ✅
+→ ممکنه هیچ‌کدام نباشه! ✅ (نگهبان، منشی، ...)
+
+→ ناقص (Partial) ✅</code></pre></div>
+
+<p>
+<strong>فرمول :</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Cardinality(E) &gt; Cardinality(F) + Cardinality(G)
+
+تعداد کل کارمندها &gt; تعداد برنامه‌نویس + تعداد مدیر
+100 &gt; 30 + 20
+100 &gt; 50 ✅
+
+50 نفر دیگه چی هستن؟
+→ نگهبان، منشی، راننده، ...</code></pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>صحیح ✅:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>Programmer</td></tr>
+<tr><td>110</td><td>رضا</td><td>Manager</td></tr>
+<tr><td>120</td><td>مریم</td><td>NULL</td></tr>
+</tbody></table></div> ← مجاز! (نگهبان)
+<p>
+| 130 | سارا | NULL | ← مجاز! (منشی)
+</p>
+
+<p>
+بعضی کارمندها Role ندارن! ✅
+</p>
+
+
+<hr>
+<h3>🎨 ترکیبات ممکن (4 حالت)</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>همپوشانی</th><th>کامل بودن</th><th>نماد</th><th>مثال</th><th>توضیح</th></tr></thead>
+<tbody>
+<tr><td><strong>Disjoint</strong></td><td><strong>Complete</strong></td><td>d, ==</td><td>Gender (Male/Female)</td><td>یا/یا + حتماً یکی</td></tr>
+<tr><td><strong>Disjoint</strong></td><td><strong>Partial</strong></td><td>d, —</td><td>EmploymentType</td><td>یا/یا + شاید هیچ‌کدام</td></tr>
+<tr><td><strong>Overlapping</strong></td><td><strong>Complete</strong></td><td>o, ==</td><td>Account (Owner)</td><td>هم/هم + حتماً یکی</td></tr>
+<tr><td><strong>Overlapping</strong></td><td><strong>Partial</strong></td><td>o, —</td><td>Role (Prog/Mgr)</td><td>هم/هم + شاید هیچ‌کدام</td></tr>
+</tbody></table></div>#### مثال 1: Disjoint + Complete
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student<br/>دانشجو]
+    
+    B{d<br/>Level<br/>مجزا}
+    
+    A ===|Complete| B
+    
+    C[Undergraduate<br/>کارشناسی]
+    D[Graduate<br/>کارشناسی ارشد]
+    E[PhD<br/>دکتری]
+    
+    B --> C
+    B --> D
+    B --> E
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li><strong>Disjoint:</strong> دانشجو نمی‌تونه هم کارشناسی و هم ارشد باشه ❌</li>
+<li><strong>Complete:</strong> هر دانشجو حتماً یکی از اینا رو هست ✅</li>
+</ul>
+
+<h4>مثال 2: Overlapping + Partial</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Person<br/>شخص]
+    
+    B{o<br/>Role<br/>همپوشا}
+    
+    A ---|Partial| B
+    
+    C[Author<br/>نویسنده]
+    D[Reviewer<br/>داور]
+    
+    B --> C
+    B --> D
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li><strong>Overlapping:</strong> شخص می‌تونه هم نویسنده و هم داور باشه ✅</li>
+<li><strong>Partial:</strong> شخص ممکنه هیچ‌کدام نباشه (خواننده عادی) ✅</li>
+</ul>
+
+<hr>
+<h3>📊 تعداد شاخه‌های تخصیص</h3>
+
+<p>
+<strong>:</strong>  
+اگر <strong>n</strong> تعداد شاخه‌های تخصیص باشد: <strong>1 < N</strong> است.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>یعنی:
+- حداقل 2 شاخه باید داشته باشیم ✅
+- نمی‌تونه فقط 1 شاخه داشته باشه ❌
+
+چرا؟
+→ اگر فقط 1 شاخه باشه، تخصیص معنا نداره!
+→ SuperType و SubType یکی می‌شن!</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>تعداد SubTypes</th><th>معتبر؟</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>❌</td><td>Employee → Manager (فقط یکی؟!)</td></tr>
+<tr><td><strong>2</strong></td><td>✅</td><td>Employee → Male, Female</td></tr>
+<tr><td><strong>3</strong></td><td>✅</td><td>Employee → Prog, Mgr, Designer</td></tr>
+<tr><td><strong>N</strong></td><td>✅</td><td>هر تعداد > 1</td></tr>
+</tbody></table></div><hr>
+
+<h3>🎯 Cardinality در تخصیص</h3>
+
+<p>
+<strong>:</strong>  
+به تعداد اعضای یک مجموعه <strong>Cardinality</strong> یک مجموعه گویند.
+</p>
+
+<h4>تخصیص کامل (Complete)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Cardinality(E) = Cardinality(F) + Cardinality(G)</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<p>
+Employee: 100 نفر
+</p>
+<ul>
+<li>Male: 60 نفر</li>
+<li>Female: 40 نفر</li>
+</ul>
+
+<p>
+→ 100 = 60 + 40 ✅ کامل است!
+</p>
+
+
+<h4>تخصیص ناقص (Partial)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Cardinality(E) &gt; Cardinality(F) + Cardinality(G)</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<p>
+Employee: 100 نفر
+</p>
+<ul>
+<li>Programmer: 30 نفر</li>
+<li>Manager: 20 نفر</li>
+</ul>
+
+<p>
+→ 100 > 30 + 20
+→ 100 > 50 ✅ ناقص است!
+</p>
+
+<p>
+50 نفر باقی‌مانده چی هستن؟
+→ نگهبان، منشی، راننده، ...
+</p>
+
+
+<hr>
+<h3>🔍 تشخیص محدودیت‌ها</h3>
+
+<h4>چگونه محدودیت‌ها رو تشخیص بدیم؟</h4>
+
+<p>
+<strong>سوالات کلیدی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای همپوشانی:
+"آیا یک نمونه می‌تونه هم E و هم F باشه؟"
+→ بله: Overlapping ✅
+→ خیر: Disjoint ✅
+
+برای کامل بودن:
+"آیا هر نمونه SuperType حتماً باید در یکی از SubTypes باشه؟"
+→ بله: Complete ✅
+→ خیر: Partial ✅</code></pre></div>
+
+<p>
+<strong>مثال: Vehicle (وسیله نقلیه)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Vehicle → Truck, Car, Motorcycle
+
+سوال 1: "آیا می‌تونه هم Truck و هم Car باشه؟"
+پاسخ: خیر! یک وسیله نقلیه فقط یکی از اینا رو است ❌
+→ Disjoint ✅
+
+سوال 2: "آیا هر Vehicle حتماً یکی از اینا رو است؟"
+پاسخ: بله! هر وسیله حتماً یکی از این نوع‌هاست ✅
+→ Complete ✅
+
+نتیجه: Disjoint + Complete ✅</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۲.۳.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+برای هر یک از موارد زیر محدودیت‌ها (Disjoint/Overlapping + Complete/Partial) را مشخص کنید:
+</p>
+
+<p>
+الف) Person → Student, Employee  
+ب) Account → Checking, Savings  
+ج) Book → Paperback, Hardcover, EBook  
+د) Vehicle → New, Used
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) تخصیص می‌تواند هم Disjoint و هم Complete باشد  
+ب) اگر n تعداد شاخه‌های تخصیص باشد، n > 1  
+ج) Overlapping یعنی یک نمونه نمی‌تواند در دو SubType باشد  
+د) Complete یعنی هر نمونه SuperType حتماً در یکی از SubTypes است
+</p>
+
+<h4>تمرین 3 (محاسبه):</h4>
+<p>
+شرکتی 200 کارمند دارد:
+</p>
+<ul>
+<li>Programmer: 80 نفر</li>
+<li>Manager: 30 نفر</li>
+<li>هم Programmer و هم Manager: 10 نفر</li>
+</ul>
+
+<p>
+<strong>محاسبه کنید:</strong>
+</p>
+<ul>
+<li>تخصیص Disjoint است یا Overlapping؟</li>
+<li>تخصیص Complete است یا Partial؟</li>
+<li>تعداد کارمندانی که هیچ‌کدام نیستند؟</li>
+</ul>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+دانشگاه:
+</p>
+<ul>
+<li>Person (عام)</li>
+<li>Student: می‌تونه هم Undergraduate و هم Graduate باشه؟ (دو رشته!)</li>
+<li>آیا هر Person حتماً Student است؟ (نه، ممکنه کارمند باشه)</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER کامل با محدودیت‌ها</li>
+<li>فرمول Cardinality</li>
+<li>مثال داده</li>
+</ul>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+کتابخانه:
+</p>
+<ul>
+<li>Publication (نشریه)</li>
+<li>Book (کتاب)</li>
+<li>Journal (مجله)</li>
+<li>Magazine (هفته‌نامه)</li>
+<li>هیچ نشریه‌ای نمی‌تونه هم Book و هم Journal باشه</li>
+<li>هر نشریه حتماً یکی از این سه نوع است</li>
+</ul>
+
+<p>
+<strong>تحلیل کنید:</strong>
+</p>
+<ul>
+<li>محدودیت‌ها (Disjoint/Overlapping + Complete/Partial)</li>
+<li>نمودار ER با نمادگذاری صحیح</li>
+<li>چرا این محدودیت‌ها منطقی هستند؟</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+آیا می‌توان تخصیصی داشت که:
+</p>
+<ul>
+<li>Overlapping + Complete</li>
+<li>و Cardinality(E) = Cardinality(F) + Cardinality(G)</li>
+</ul>
+
+<p>
+چطور؟ مثال بزنید و توضیح دهید.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((محدودیت های<br/>تخصیص))
+    همپوشانی
+      Disjoint d یا یا
+      Overlapping o هم هم
+    کامل بودن
+      Complete double line حتماً
+      Partial single line شاید
+    ترکیبات
+      4 حالت ممکن
+      مستقل از هم
+    Cardinality
+      Complete sum equals
+      Partial sum less than
+    تشخیص
+      آیا هم و هم
+      آیا حتماً یکی
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>Disjoint (d):</strong> یا این <strong>یا</strong> اون (خیار exclusiv)</li>
+<li>✅ <strong>Overlapping (o):</strong> <strong>هم</strong> این <strong>هم</strong> اون</li>
+<li>✅ <strong>Complete (==):</strong> <strong>حتماً</strong> یکی باید باشه</li>
+<li>✅ <strong>Partial (—):</strong> <strong>شاید</strong> هیچ‌کدام نباشه</li>
+<li>✅ <strong>مستقل:</strong> همپوشانی و کامل بودن به هم ربطی ندارن</li>
+<li>✅ <strong>4 ترکیب:</strong> d+Complete, d+Partial, o+Complete, o+Partial</li>
+<li>✅ <strong>حداقل 2 شاخه:</strong> n > 1</li>
+</ul>
+
+<hr>
+<p>
+ ✅✅
+</p>
+
+<p>
+<strong>بخش‌های تکمیل شده:</strong>
+</p>
+<ul>
+<li>✅ بخش ۲.۳.۱: وراثت (Is-A)</li>
+<li>✅ بخش ۲.۳.۲: محدودیت‌های تخصیص</li>
+</ul>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="2-3-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">وراثت Is-A</span></a><a href="2-4-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">U-Type (دسته‌بندی یونیون)</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

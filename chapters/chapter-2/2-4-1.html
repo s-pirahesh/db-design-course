@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - U-Type (دسته‌بندی یونیون)">
+    <meta name="keywords" content="پایگاه داده, Database Design, U-Type (دسته‌بندی یونیون)">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>U-Type (دسته‌بندی یونیون) | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">U-Type (دسته‌بندی یونیون)</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">U-Type (دسته‌بندی یونیون)</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۴.۱: U-Type (Category / Union Type)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا یک مفهوم پیچیده‌تر رو یاد می‌گیریم! 🧠
+</p>
+
+<p>
+فرض کن سیستم ثبت مالکیت خودرو رو طراحی می‌کنی:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال: مالک خودرو چه کسایی می‌تونن باشن؟
+
+جواب:
+- شخص حقیقی (آقا/خانم عادی) → شناسه: کدملی
+- شخص حقوقی (شرکت) → شناسه: شناسه ملی شرکت
+- موسسه دولتی (وزارتخانه) → شناسه: کد دولتی
+
+نکته مهم: شناسه‌ها با هم سنخیت ندارند! 🔑
+- کدملی: 10 رقم
+- شناسه ملی شرکت: 11 رقم
+- کد دولتی: فرمت متفاوت
+
+این رو چطور مدل کنیم؟ 🤔</code></pre></div>
+
+<p>
+<strong>راه حل: U-Type (Category)!</strong> ✨
+</p>
+
+<p>
+<strong>تفاوت با Is-A:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Is-A (وراثت):
+- همه SubTypes شناسه یکسان دارند ← از SuperType ارث می‌برند
+- مثال: Employee → Male/Female (همه EmpID دارند)
+
+U-Type (اجتماع):
+- هر موجودیت شناسه متفاوت داره ← سنخیت ندارند!
+- مثال: Owner → Person/Company/Government (شناسه‌های مختلف)</code></pre></div>
+
+<hr>
+<h3>📖 تعریف U-Type</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>U-Type:</strong> یک نمونه موجودیت از G <strong>یا</strong> دارای صفات E هست <strong>یا</strong> دارای صفات F است. G <strong>اجتماع</strong> نمونه موجودیت‌های E, F هست.
+</p>
+
+<p>
+<strong>نکته کلیدی :</strong>  
+مالک یا شخص حقوقی است یا شخص حقیقی یا موسسه دولتی است. <strong>شناسه‌ها هیچ‌کدام با هم سنخیت ندارند</strong>.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Person<br/>شخص حقیقی<br/>NationalID]
+    B[Company<br/>شخص حقوقی<br/>CompanyID]
+    C[Government<br/>موسسه دولتی<br/>GovID]
+    
+    D{U<br/>Union<br/>اجتماع}
+    
+    A --> D
+    B --> D
+    C --> D
+    
+    E[Owner<br/>مالک<br/>OwnerID]
+    
+    D --> E
+    
+    F[Car<br/>خودرو<br/>VIN]
+    
+    E -->|Ownership<br/>N:M| F
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#9b59b6,color:#fff
+    style F fill:#1abc9c,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> حرف <strong>"U"</strong> در دایره (Union)
+</p>
+
+<hr>
+<h3>🎯 مفاهیم کلیدی</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((U-Type<br/>Category))
+    اجتماع Union
+      نه وراثت
+      یا یا یا
+      OR logic
+    شناسه متفاوت
+      سنخیت ندارند
+      فرمت مختلف
+      دامنه مختلف
+    موجودیت مالک
+      Owner
+      OwnerID جدید
+      موجودیت مستقل
+    تفاوت با IsA
+      IsA وراثت
+      UType اجتماع
+      شناسه یکسان vs متفاوت
+</pre></div>
+
+<hr>
+<h3>🔑 ویژگی‌های کلیدی U-Type</h3>
+
+<h4>1. اجتماع (Union) نه وراثت (Inheritance)</h4>
+
+<p>
+<strong>تفاوت اساسی:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>Is-A (وراثت)</th><th>U-Type (اجتماع)</th></tr></thead>
+<tbody>
+<tr><td><strong>رابطه</strong></td><td>عام → خاص</td><td>مستقل → اجتماع</td></tr>
+<tr><td><strong>شناسه</strong></td><td>یکسان (ارثی)</td><td>متفاوت (مستقل)</td></tr>
+<tr><td><strong>صفات</strong></td><td>SubType ارث می‌بره</td><td>هر یک صفات خودش</td></tr>
+<tr><td><strong>منطق</strong></td><td>"است" (IS-A)</td><td>"یا" (OR)</td></tr>
+<tr><td><strong>مثال</strong></td><td>Employee IS-A Male</td><td>Owner = Person OR Company</td></tr>
+</tbody></table></div>#### 2. شناسه‌ها سنخیت ندارند
+
+<p>
+<strong>:</strong>  
+شناسه‌ها هیچ‌کدام با هم سنخیت ندارند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Person:
+- NationalID: کدملی 10 رقمی (0123456789)
+- دامنه: 0000000000 - 9999999999
+
+Company:
+- CompanyID: شناسه ملی 11 رقمی (12345678901)
+- دامنه: 10000000000 - 99999999999
+
+Government:
+- GovID: کد دولتی با حروف (GOV-001)
+- دامنه: GOV-xxx
+
+→ نمی‌شه یک شناسه مشترک داشت! ❌</code></pre></div>
+
+<h4>3. موجودیت Owner مستقل است</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Owner (مالک):
+- OwnerID: شناسه جدید مستقل
+- شامل: Person OR Company OR Government
+- این موجودیت واقعی است (نه مجازی)</code></pre></div>
+
+<hr>
+<h3>🎨 مثال 1: مالکیت خودرو ()</h3>
+
+<p>
+<strong>سناریو:</strong>  
+سیستم ثبت مالکیت خودرو که مالک می‌تونه شخص حقیقی، شرکت، یا موسسه دولتی باشه.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph موجودیت‌های مبدا
+    A[Person<br/>شخص حقیقی]
+    A1((NationalID))
+    A2((Name))
+    A3((Address))
+    
+    A --- A1
+    A --- A2
+    A --- A3
+    
+    B[Company<br/>شخص حقوقی]
+    B1((CompanyID))
+    B2((CompanyName))
+    B3((CEO))
+    
+    B --- B1
+    B --- B2
+    B --- B3
+    
+    C[Government<br/>موسسه دولتی]
+    C1((GovID))
+    C2((OrgName))
+    C3((Minister))
+    
+    C --- C1
+    C --- C2
+    C --- C3
+    end
+    
+    D{U<br/>اجتماع}
+    
+    A --> D
+    B --> D
+    C --> D
+    
+    E[Owner<br/>مالک]
+    E1((OwnerID))
+    
+    E --- E1
+    
+    D --> E
+    
+    F[Car<br/>خودرو]
+    F1((VIN))
+    F2((Brand))
+    F3((Model))
+    
+    F --- F1
+    F --- F2
+    F --- F3
+    
+    G{Ownership<br/>مالکیت}
+    
+    E -->|N| G
+    F -->|M| G
+    
+    G1((StartDate))
+    G2((SharePercent))
+    
+    G --- G1
+    G --- G2
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#9b59b6,color:#fff
+    style F fill:#1abc9c,color:#fff
+</pre></div>
+
+<h4>داده‌ها</h4>
+
+<p>
+<strong>Person (شخص حقیقی):</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>NationalID</th><th>Name</th><th>Address</th></tr></thead>
+<tbody>
+<tr><td>0123456789</td><td>علی رضایی</td><td>تهران</td></tr>
+<tr><td>9876543210</td><td>مریم احمدی</td><td>اصفهان</td></tr>
+</tbody></table></div><strong>Company (شخص حقوقی):</strong>
+<div class="table-container"><table>
+<thead><tr><th>CompanyID</th><th>CompanyName</th><th>CEO</th></tr></thead>
+<tbody>
+<tr><td>10123456789</td><td>شرکت صنعتی ABC</td><td>رضا نوری</td></tr>
+<tr><td>10987654321</td><td>شرکت تجاری XYZ</td><td>سارا کریمی</td></tr>
+</tbody></table></div><strong>Government (موسسه دولتی):</strong>
+<div class="table-container"><table>
+<thead><tr><th>GovID</th><th>OrgName</th><th>Minister</th></tr></thead>
+<tbody>
+<tr><td>GOV-001</td><td>وزارت راه</td><td>احمدی</td></tr>
+<tr><td>GOV-002</td><td>شهرداری تهران</td><td>محمدی</td></tr>
+</tbody></table></div><strong>Owner (مالک):</strong>
+<div class="table-container"><table>
+<thead><tr><th>OwnerID</th><th>Type</th><th>OriginalID</th></tr></thead>
+<tbody>
+<tr><td>O-001</td><td>Person</td><td>0123456789</td></tr>
+<tr><td>O-002</td><td>Company</td><td>10123456789</td></tr>
+<tr><td>O-003</td><td>Government</td><td>GOV-001</td></tr>
+<tr><td>O-004</td><td>Person</td><td>9876543210</td></tr>
+</tbody></table></div><strong>Car (خودرو):</strong>
+<div class="table-container"><table>
+<thead><tr><th>VIN</th><th>Brand</th><th>Model</th></tr></thead>
+<tbody>
+<tr><td>V-001</td><td>پژو</td><td>206</td></tr>
+<tr><td>V-002</td><td>سمند</td><td>LX</td></tr>
+<tr><td>V-003</td><td>پژو</td><td>پارس</td></tr>
+</tbody></table></div><strong>Ownership (مالکیت):</strong>
+<div class="table-container"><table>
+<thead><tr><th>OwnerID</th><th>VIN</th><th>StartDate</th><th>SharePercent</th></tr></thead>
+<tbody>
+<tr><td>O-001</td><td>V-001</td><td>2020-01-15</td><td>100%</td></tr>
+<tr><td>O-002</td><td>V-002</td><td>2019-06-20</td><td>50%</td></tr>
+<tr><td>O-003</td><td>V-002</td><td>2019-06-20</td><td>50%</td></tr>
+<tr><td>O-004</td><td>V-003</td><td>2021-03-10</td><td>100%</td></tr>
+</tbody></table></div><strong>توضیحات:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>خودرو V-001:
+→ مالک: علی رضایی (شخص حقیقی)
+→ سهم: 100%
+
+خودرو V-002:
+→ مالک 1: شرکت ABC (شخص حقوقی) - سهم 50%
+→ مالک 2: وزارت راه (دولتی) - سهم 50%
+→ مالکیت مشترک! ✅
+
+خودرو V-003:
+→ مالک: مریم احمدی (شخص حقیقی)
+→ سهم: 100%</code></pre></div>
+
+<hr>
+<h3>🎨 مثال 2: سهامداران شرکت</h3>
+
+<p>
+<strong>سناریو:</strong>  
+سهامداران یک شرکت می‌تونن شخص حقیقی یا شخص حقوقی (شرکت دیگه) باشند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Individual<br/>شخص حقیقی]
+    A1((NationalID))
+    A2((Name))
+    
+    A --- A1
+    A --- A2
+    
+    B[Corporation<br/>شرکت]
+    B1((CompanyID))
+    B2((CompanyName))
+    
+    B --- B1
+    B --- B2
+    
+    C{U<br/>اجتماع}
+    
+    A --> C
+    B --> C
+    
+    D[Shareholder<br/>سهامدار]
+    D1((ShareholderID))
+    
+    D --- D1
+    
+    C --> D
+    
+    E[Stock<br/>سهم]
+    E1((StockID))
+    E2((Value))
+    
+    E --- E1
+    E --- E2
+    
+    F{Ownership<br/>مالکیت}
+    
+    D -->|N| F
+    E -->|M| F
+    
+    F1((Quantity))
+    
+    F --- F1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#9b59b6,color:#fff
+    style E fill:#1abc9c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Individual:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>NationalID</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>1234567890</td><td>احمد کریمی</td></tr>
+<tr><td>9876543210</td><td>فاطمه نوری</td></tr>
+</tbody></table></div><strong>Corporation:</strong>
+<div class="table-container"><table>
+<thead><tr><th>CompanyID</th><th>CompanyName</th></tr></thead>
+<tbody>
+<tr><td>11234567890</td><td>شرکت سرمایه‌گذاری الف</td></tr>
+<tr><td>11987654321</td><td>هلدینگ ب</td></tr>
+</tbody></table></div><strong>Shareholder:</strong>
+<div class="table-container"><table>
+<thead><tr><th>ShareholderID</th><th>Type</th><th>OriginalID</th></tr></thead>
+<tbody>
+<tr><td>SH-001</td><td>Individual</td><td>1234567890</td></tr>
+<tr><td>SH-002</td><td>Corporation</td><td>11234567890</td></tr>
+<tr><td>SH-003</td><td>Individual</td><td>9876543210</td></tr>
+</tbody></table></div><strong>Stock:</strong>
+<div class="table-container"><table>
+<thead><tr><th>StockID</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>ST-001</td><td>10,000</td></tr>
+<tr><td>ST-002</td><td>25,000</td></tr>
+</tbody></table></div><strong>Ownership:</strong>
+<div class="table-container"><table>
+<thead><tr><th>ShareholderID</th><th>StockID</th><th>Quantity</th></tr></thead>
+<tbody>
+<tr><td>SH-001</td><td>ST-001</td><td>1000</td></tr>
+<tr><td>SH-002</td><td>ST-001</td><td>5000</td></tr>
+<tr><td>SH-003</td><td>ST-002</td><td>500</td></tr>
+</tbody></table></div><hr>
+
+<h3>🔄 تفاوت Is-A و U-Type</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "Is-A (وراثت)"
+    A1[Employee<br/>EmpID شناسه یکسان]
+    
+    B1{d<br/>Gender}
+    
+    A1 --> B1
+    
+    C1[Male<br/>EmpID ارثی]
+    D1[Female<br/>EmpID ارثی]
+    
+    B1 --> C1
+    B1 --> D1
+    
+    style A1 fill:#3498db,color:#fff
+    end
+    
+    subgraph "U-Type (اجتماع)"
+    A2[Person<br/>NationalID شناسه متفاوت]
+    B2[Company<br/>CompanyID شناسه متفاوت]
+    
+    C2{U<br/>اجتماع}
+    
+    A2 --> C2
+    B2 --> C2
+    
+    D2[Owner<br/>OwnerID شناسه جدید]
+    
+    C2 --> D2
+    
+    style D2 fill:#9b59b6,color:#fff
+    end
+</pre></div>
+
+<p>
+<strong>جدول مقایسه:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>Is-A (مثال: Employee)</th><th>U-Type (مثال: Owner)</th></tr></thead>
+<tbody>
+<tr><td><strong>رابطه</strong></td><td>عام → خاص (تخصیص)</td><td>مستقل → اجتماع</td></tr>
+<tr><td><strong>منطق</strong></td><td>Employee <strong>IS-A</strong> Male</td><td>Owner = Person <strong>OR</strong> Company</td></tr>
+<tr><td><strong>شناسه SuperType</strong></td><td>EmpID</td><td>- (ندارد!)</td></tr>
+<tr><td><strong>شناسه SubTypes</strong></td><td>همان EmpID (ارثی)</td><td>NationalID, CompanyID (متفاوت)</td></tr>
+<tr><td><strong>شناسه Category</strong></td><td>-</td><td>OwnerID (جدید)</td></tr>
+<tr><td><strong>سنخیت شناسه</strong></td><td>بله ✅</td><td>خیر ❌</td></tr>
+<tr><td><strong>صفات</strong></td><td>ارث‌بری دارد</td><td>ارث‌بری ندارد</td></tr>
+<tr><td><strong>وابستگی</strong></td><td>SubType به SuperType وابسته</td><td>مستقل</td></tr>
+<tr><td><strong>مثال شناسه</strong></td><td>Male: EmpID=100<br/>Female: EmpID=110</td><td>Person: NationalID=0123456789<br/>Company: CompanyID=10123456789</td></tr>
+</tbody></table></div><strong>نکته طلایی:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Is-A:
+→ Employee با شناسه 100 که Male است
+→ همان EmpID=100 ✅
+
+U-Type:
+→ Owner با شناسه O-001 که Person است
+→ Person با NationalID=0123456789 ✅
+→ دو شناسه متفاوت! ✅</code></pre></div>
+
+<hr>
+<h3>📊 نگاشت U-Type به جداول</h3>
+
+<p>
+<strong> (صفحه 44):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Car(VID, …)
+Person(NID, Name, …, OID)
+Company(RID, …, OID)
+Government(DID, …, OID)
+Owner(OID) ← موجودیت مالک
+
+Ownership(VID, OID, Part)</code></pre></div>
+
+<p>
+<strong>توضیحات:</strong>
+</p>
+
+<p>
+<strong>جداول:</strong>
+</p>
+
+<ol>
+<li><strong>Owner (جدول مالک):</strong></li>
+</ol>
+<ul>
+<li>OID (شناسه مالک) - PK</li>
+<li>فقط شناسه! بقیه اطلاعات در Person/Company/Government</li>
+</ul>
+
+<ol>
+<li><strong>Person:</strong></li>
+</ol>
+<ul>
+<li>NID (کدملی) - PK</li>
+<li>Name, ...</li>
+<li>OID (کلید خارجی به Owner) - FK</li>
+</ul>
+
+<ol>
+<li><strong>Company:</strong></li>
+</ol>
+<ul>
+<li>RID (شناسه شرکت) - PK</li>
+<li>...</li>
+<li>OID (کلید خارجی به Owner) - FK</li>
+</ul>
+
+<ol>
+<li><strong>Government:</strong></li>
+</ol>
+<ul>
+<li>DID (کد دولتی) - PK</li>
+<li>...</li>
+<li>OID (کلید خارجی به Owner) - FK</li>
+</ul>
+
+<ol>
+<li><strong>Car:</strong></li>
+</ol>
+<ul>
+<li>VID (شناسه خودرو) - PK</li>
+<li>...</li>
+</ul>
+
+<ol>
+<li><strong>Ownership (ارتباط مالکیت):</strong></li>
+</ol>
+<ul>
+<li>VID, OID - PK (کلید ترکیبی)</li>
+<li>Part (درصد سهم)</li>
+</ul>
+
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Owner:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>OID</th></tr></thead>
+<tbody>
+<tr><td>O-001</td></tr>
+<tr><td>O-002</td></tr>
+<tr><td>O-003</td></tr>
+</tbody></table></div><strong>Person:</strong>
+<div class="table-container"><table>
+<thead><tr><th>NID</th><th>Name</th><th>OID</th></tr></thead>
+<tbody>
+<tr><td>0123456789</td><td>علی</td><td>O-001</td></tr>
+</tbody></table></div><strong>Company:</strong>
+<div class="table-container"><table>
+<thead><tr><th>RID</th><th>CompanyName</th><th>OID</th></tr></thead>
+<tbody>
+<tr><td>10123456789</td><td>شرکت ABC</td><td>O-002</td></tr>
+</tbody></table></div><strong>Government:</strong>
+<div class="table-container"><table>
+<thead><tr><th>DID</th><th>OrgName</th><th>OID</th></tr></thead>
+<tbody>
+<tr><td>GOV-001</td><td>وزارت راه</td><td>O-003</td></tr>
+</tbody></table></div><strong>Car:</strong>
+<div class="table-container"><table>
+<thead><tr><th>VID</th><th>Brand</th></tr></thead>
+<tbody>
+<tr><td>V-001</td><td>پژو</td></tr>
+<tr><td>V-002</td><td>سمند</td></tr>
+</tbody></table></div><strong>Ownership:</strong>
+<div class="table-container"><table>
+<thead><tr><th>VID</th><th>OID</th><th>Part</th></tr></thead>
+<tbody>
+<tr><td>V-001</td><td>O-001</td><td>100%</td></tr>
+<tr><td>V-002</td><td>O-002</td><td>50%</td></tr>
+<tr><td>V-002</td><td>O-003</td><td>50%</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۲.۴.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+بانک:
+</p>
+<ul>
+<li>حساب بانکی می‌تونه متعلق باشه به:</li>
+<li>Person (شخص حقیقی) - NationalID</li>
+<li>Company (شرکت) - CompanyID</li>
+<li>NonProfit (موسسه خیریه) - NonProfitID</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER با U-Type</li>
+<li>چرا U-Type استفاده می‌شه نه Is-A؟</li>
+<li>جداول نگاشت</li>
+<li>مثال داده برای حساب مشترک</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه درباره U-Type <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) شناسه‌های موجودیت‌های مبدا باید سنخیت داشته باشند  
+ب) موجودیت Category شناسه مستقل دارد  
+ج) U-Type برای اجتماع موجودیت‌های مستقل استفاده می‌شود  
+د) یک نمونه Category متعلق به یکی از موجودیت‌های مبدا است
+</p>
+
+<h4>تمرین 3 (مقایسه):</h4>
+<p>
+تفاوت‌های اساسی Is-A و U-Type را با یک مثال کامل توضیح دهید.  
+چه زمانی از هر کدام استفاده می‌کنیم؟
+</p>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+کتابخانه دانشگاه:
+</p>
+<ul>
+<li>امانت‌گیرنده می‌تونه باشه:</li>
+<li>Student (دانشجو) - StudentID</li>
+<li>Faculty (استاد) - FacultyID</li>
+<li>Staff (کارمند) - StaffID</li>
+<li>Visitor (مهمان خارجی) - VisitorID</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER کامل با U-Type</li>
+<li>ارتباط Borrow بین Borrower و Book</li>
+<li>جداول نگاشت</li>
+<li>محدودیت: هر نفر حداکثر 5 کتاب</li>
+</ul>
+
+<h4>تمرین 5 (تحلیلی):</h4>
+<p>
+چرا در U-Type نمی‌تونیم از شناسه یکی از موجودیت‌های مبدا به عنوان شناسه Category استفاده کنیم؟  
+مشکلات این کار چیست؟
+</p>
+
+<h4>تمرین 6 (سناریو پیشرفته):</h4>
+<p>
+سیستم پرداخت:
+</p>
+<ul>
+<li>Payment (پرداخت)</li>
+<li>CreditCard - CardNumber</li>
+<li>BankAccount - IBAN</li>
+<li>DigitalWallet - WalletID</li>
+<li>Cash - ReceiptNumber</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER با U-Type</li>
+<li>ارتباط با Invoice (فاکتور)</li>
+<li>آیا Cash هم باید در U-Type باشه؟ چرا؟</li>
+<li>چطور پرداخت ترکیبی رو مدل می‌کنید؟ (50% کارت + 50% نقد)</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((U-Type<br/>Category))
+    مفهوم
+      اجتماع Union
+      یا یا یا OR
+      نه وراثت
+    شناسه
+      متفاوت
+      سنخیت ندارند
+      Category شناسه جدید
+    تفاوت با IsA
+      IsA عام خاص
+      UType مستقل اجتماع
+      IsA شناسه یکسان
+      UType شناسه متفاوت
+    کاربرد
+      مالک خودرو
+      سهامدار
+      امانت گیرنده
+      پرداخت کننده
+    نگاشت
+      جدول Category
+      FK در مبدا
+      OID جدید
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>U-Type:</strong> اجتماع موجودیت‌های مستقل با شناسه‌های متفاوت</li>
+<li>✅ <strong>شناسه:</strong> هر موجودیت مبدا شناسه خودش + شناسه جدید Category</li>
+<li>✅ <strong>منطق:</strong> Owner = Person <strong>OR</strong> Company <strong>OR</strong> Government</li>
+<li>✅ <strong>تفاوت با Is-A:</strong> شناسه‌ها سنخیت ندارند (متفاوت هستند)</li>
+<li>✅ <strong>نگاشت:</strong> جدول Owner فقط OID، بقیه اطلاعات در Person/Company/Government</li>
+<li>✅ <strong>کاربرد:</strong> زمانی که موجودیت‌های مستقل با شناسه‌های مختلف رو می‌خوایم اجتماع بدیم</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="2-3-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">محدودیت‌های تخصیص</span></a><a href="2-4-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">Aggregation (تجمع)</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل رابطه‌ای و نگاشت - قواعد نگاشت ER به رابطه‌ای - بخش ۲">
+    <meta name="keywords" content="پایگاه داده, Database Design, قواعد نگاشت ER به رابطه‌ای - بخش ۲">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>قواعد نگاشت ER به رابطه‌ای - بخش ۲ | مدل رابطه‌ای و نگاشت | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل رابطه‌ای و نگاشت</a>
+                <span class="separator">›</span>
+                <span class="current">قواعد نگاشت ER به رابطه‌ای - بخش ۲</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">قواعد نگاشت ER به رابطه‌ای - بخش ۲</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۴: ساختار مدل رابطه‌ای - ادامه</h1>
+
+<h2>بخش ۴.۳: قواعد نگاشت (Mapping Rules) - بخش دوم</h2>
+
+<p>
+<em>ادامه از بخش اول...</em>
+</p>
+
+<hr>
+<h2>🔷 حالت 5: ارتباط بازگشتی 1:N</h2>
+
+<h3>قاعده</h3>
+
+<p>
+<strong>یک موجودیت با خودش ارتباط 1:N → 1 رابطه</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>E ──1:N── E
+→ 1 جدول: E + FK به خودش</code></pre></div>
+
+<p>
+<strong>نکته مهم:</strong> حتماً <strong>Rename</strong> + <strong>FK به خودش</strong>!
+</p>
+
+<hr>
+<h3>مثال 1: سازمان - کارمند و مدیر (Boss)</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>N              1
+   Employee ──مدیر── Employee</code></pre></div>
+
+<div class="mermaid-container"><pre class="mermaid">
+erDiagram
+    EMPLOYEE ||--o{ EMPLOYEE : "manages"
+    
+    EMPLOYEE {
+        int EmpID PK
+        string Name
+        int Age
+        int BossID FK
+    }
+</pre></div>
+
+<p>
+<strong>نگاشت:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- فقط یک رابطه!
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Age INT,
+    BossID INT,  -- FK به خودش! (Rename شده)
+    FOREIGN KEY (BossID) REFERENCES Employee(EmpID)
+);
+
+-- نماد:
+Employee(EmpID, Name, Age, BossID)
+         ------              ......
+                               ↓ FK به خودش!</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+-----+--------+-----+---------+
+| EID | Name   | Age | BossID  |
++-----+--------+-----+---------+
+| 100 | رضا    | 45  | NULL    |  ← مدیر کل (بدون Boss)
+| 110 | علی    | 35  | 100     |  ← مدیرش رضا است
+| 120 | سارا   | 30  | 100     |  ← مدیرش رضا است
+| 130 | مینا   | 28  | 110     |  ← مدیرش علی است
+| 140 | حسین   | 26  | 110     |  ← مدیرش علی است
++-----+--------+-----+---------+</code></pre></div>
+
+<p>
+<strong>نمودار سلسله‌مراتب:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>رضا (100)
+         /    \
+    علی (110)  سارا (120)
+     /    \
+مینا (130) حسین (140)</code></pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>یک کارمند (Emp=100):
+→ چند زیردست دارد؟ → N زیردست ✅
+
+یک کارمند (Emp=110):
+→ چند مدیر دارد؟ → 1 مدیر ✅
+
+→ 1:N ✅</code></pre></div>
+
+<p>
+<strong>Query‌های مفید:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- زیردستان یک مدیر
+SELECT E.Name AS Employee
+FROM Employee E
+WHERE E.BossID = 100;  -- زیردستان رضا
+
+-- مدیر یک کارمند
+SELECT B.Name AS Boss
+FROM Employee E
+JOIN Employee B ON E.BossID = B.EmpID
+WHERE E.EmpID = 110;  -- مدیر علی
+
+-- همه کارمندها با مدیرشون
+SELECT E.Name AS Employee, B.Name AS Boss
+FROM Employee E
+LEFT JOIN Employee B ON E.BossID = B.EmpID;</code></pre></div>
+
+<hr>
+<h3>مثال 2: فروم - پیام و پاسخ</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>N              1
+   Message ──پاسخ‌به── Message</code></pre></div>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Message (
+    MessageID INT PRIMARY KEY,
+    Content NVARCHAR(1000),
+    PostDate DATETIME,
+    ParentMessageID INT,  -- FK به خودش (پیام اصلی)
+    FOREIGN KEY (ParentMessageID) REFERENCES Message(MessageID)
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+-----+-------------------+---------------------+-----------+
+| ID  | Content           | Date                | ParentID  |
++-----+-------------------+---------------------+-----------+
+| 1   | سوال درباره SQL   | 2024-01-01 10:00:00 | NULL      | ← پیام اصلی
+| 2   | پاسخ: استفاده...  | 2024-01-01 11:00:00 | 1         | ← پاسخ به پیام 1
+| 3   | پاسخ: بله...      | 2024-01-01 12:00:00 | 1         | ← پاسخ دیگر به پیام 1
+| 4   | پاسخ: ممنون       | 2024-01-01 13:00:00 | 2         | ← پاسخ به پاسخ!
++-----+-------------------+---------------------+-----------+</code></pre></div>
+
+<hr>
+<h3>مثال 3: شهر و پایتخت</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>N              1
+   City ──پایتخت── City</code></pre></div>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE City (
+    CityID INT PRIMARY KEY,
+    CityName NVARCHAR(50),
+    Population INT,
+    CapitalOfCityID INT,  -- FK به خودش
+    FOREIGN KEY (CapitalOfCityID) REFERENCES City(CityID)
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+----+----------+------------+-----------+
+| ID | Name     | Population | CapitalOf |
++----+----------+------------+-----------+
+| 1  | Tehran   | 8000000    | NULL      | ← پایتخت کشور (بدون Capital)
+| 2  | Rey      | 500000     | 1         | ← پایتخت استان Tehran
+| 3  | Shiraz   | 1500000    | NULL      | ← شهر مستقل
++----+----------+------------+-----------+</code></pre></div>
+
+<hr>
+<h3>نکات مهم حالت 5 (بازگشتی 1:N)</h3>
+
+<p>
+✅ <strong>نکته 1:</strong> فقط 1 جدول (خودِ موجودیت)
+</p>
+
+<p>
+✅ <strong>نکته 2:</strong> حتماً Rename برای FK
+   → نمی‌شه EmpID, EmpID داشت!
+</p>
+
+<p>
+✅ <strong>نکته 3:</strong> FK به خودش اشاره می‌کنه
+</p>
+
+<p>
+✅ <strong>نکته 4:</strong> FK می‌تونه NULL باشه
+   → برای "ریشه" یا "سطح بالا"
+</p>
+
+<p>
+✅ <strong>نکته 5:</strong> نکات خاص:
+</p>
+<ol>
+<li>R1 و R2 متمایز نیستند (هر دو یکی!)</li>
+<li>لزوم Rename (چون Head مجموعه است)</li>
+<li>درجه: اگر n درجه داریم → حداکثر n-1 دامنه</li>
+</ol>
+<p>
+      (چون EmpID و BossID همان دامنه‌اند)
+</p>
+<ol>
+<li>حلقه یا دور (Cycle) ارجاع!</li>
+</ol>
+
+<p>
+❌ <strong>خطا:</strong> ساختن جدول جداگانه برای ارتباط!
+</p>
+
+
+<hr>
+<h2>🔷 حالت 6: ارتباط بازگشتی 1:1</h2>
+
+<h3>قاعده</h3>
+
+<p>
+<strong>یک موجودیت با خودش ارتباط 1:1 → 1 یا 2 رابطه</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>E ──1:1── E
+→ بستگی به مشارکت دارد:
+  - اگر یک طرف الزامی → 1 جدول
+  - اگر هر دو طرف اختیاری + درصد کم → 2 جدول
+  - اگر هر دو طرف الزامی → 1 جدول</code></pre></div>
+
+<hr>
+<h3>مثال 1: دانشجو - هم‌اتاقی (حداقل یک طرف الزامی)</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1              1
+   Student ──هم‌اتاقی── Student</code></pre></div>
+
+<p>
+<strong>نگاشت - حالت 1 جدول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    RoommateID INT UNIQUE,  -- FK به خودش + UNIQUE!
+    FOREIGN KEY (RoommateID) REFERENCES Student(StudentID)
+);
+
+-- نماد:
+Student(StudentID, Name, RoommateID)
+        ----------       ..........
+                            ↓ FK + UNIQUE</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+-----+--------+-------------+
+| ID  | Name   | RoommateID  |
++-----+--------+-------------+
+| 100 | علی    | 110         |  ← هم‌اتاقی علی = سارا
+| 110 | سارا   | 100         |  ← هم‌اتاقی سارا = علی (متقابل!)
+| 120 | رضا    | 130         |
+| 130 | مینا   | 120         |
+| 140 | حسین   | NULL        |  ← بدون هم‌اتاقی
++-----+--------+-------------+</code></pre></div>
+
+<p>
+<strong>نکته مهم:</strong> داده‌ها باید <strong>متقابل</strong> باشن:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر: Student(100).RoommateID = 110
+→ باید: Student(110).RoommateID = 100 ✅
+
+این رو با Trigger تضمین می‌کنیم:
+
+CREATE TRIGGER trg_roommate_symmetry
+AFTER INSERT, UPDATE ON Student
+FOR EACH ROW
+BEGIN
+    UPDATE Student 
+    SET RoommateID = NEW.StudentID
+    WHERE StudentID = NEW.RoommateID 
+      AND (RoommateID IS NULL OR RoommateID &lt;&gt; NEW.StudentID);
+END;</code></pre></div>
+
+<hr>
+<h3>مثال 2: هر دو طرف اختیاری (درصد < 30%)</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1              1
+   Student ──دوست‌صمیمی── Student
+   (اختیاری)      (اختیاری)</code></pre></div>
+
+<p>
+<strong>نگاشت - حالت 2 جدول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه 1: Student
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Major NVARCHAR(30)
+);
+
+-- رابطه 2: CloseFriend (فقط اگر دوست صمیمی داره!)
+CREATE TABLE CloseFriend (
+    StudentID INT,
+    CloseFriendID INT,
+    PRIMARY KEY (StudentID, CloseFriendID),
+    FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
+    FOREIGN KEY (CloseFriendID) REFERENCES Student(StudentID),
+    CHECK (StudentID &lt; CloseFriendID)  -- جلوگیری از تکرار
+);
+
+-- نماد:
+Student(StudentID, Name, Major)
+        ----------
+
+CloseFriend(StudentID, CloseFriendID)
+            -------------------------</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 100 | علی    | CS    |
+| 110 | سارا   | Math  |
+| 120 | رضا    | Phys  |
+| 130 | مینا   | CS    |
+| 140 | حسین   | Math  |
++-----+--------+-------+
+
+CloseFriend:
++-----+-------+
+| SID | CFID  |
++-----+-------+
+| 100 | 110   |  ← علی و سارا دوست صمیمی‌اند
+| 120 | 140   |  ← رضا و حسین دوست صمیمی‌اند
++-----+-------+
+
+مینا (130) دوست صمیمی نداره → در جدول CloseFriend نیست!</code></pre></div>
+
+<p>
+<strong>چرا 2 جدول؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>درصد مشارکت:
+→ فقط 2 از 5 دانشجو دوست صمیمی دارن
+→ 40% &lt; 50%
+
+اگر 1 جدول می‌ساختیم:
+Student(StudentID, ..., CloseFriendID)
+→ 60% NULL ها! ❌
+
+با 2 جدول:
+→ فقط داده‌های معتبر ذخیره می‌شن ✅
+→ Performance بهتر ✅</code></pre></div>
+
+<hr>
+<h3>مثال 3: هر دو طرف الزامی</h3>
+
+<p>
+<strong>نگاشت - حالت 1 جدول (Split شده!):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    CoStudentID INT,
+    CoStudentName NVARCHAR(50),
+    UNIQUE (StudentID),
+    UNIQUE (CoStudentID)
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+-----+--------+-----------+-------------+
+| ID  | Name   | CoStudID  | CoStudName  |
++-----+--------+-----------+-------------+
+| 100 | علی    | 110       | رضا         |
+| 110 | رضا    | null      | null        |
++-----+--------+-----------+-------------+
+
+نصف جدول!
+→ فقط مزیتش: کاهش طول فایل
+→ معایب: Performance پایین اگر تعداد زیاد باشه</code></pre></div>
+
+<hr>
+<h3>نکات مهم حالت 6 (بازگشتی 1:1)</h3>
+
+<p>
+✅ <strong>نکته 1:</strong> تصمیم‌گیری بر اساس مشارکت:
+</p>
+<ul>
+<li>یک طرف الزامی → 1 جدول</li>
+<li>هر دو اختیاری + %<30 → 2 جدول</li>
+<li>هر دو الزامی → 1 جدول (Split)</li>
+</ul>
+
+<p>
+✅ <strong>نکته 2:</strong> در 1 جدول: FK + UNIQUE
+</p>
+
+<p>
+✅ <strong>نکته 3:</strong> داده‌ها باید متقابل باشن
+   → Trigger برای تضمین!
+</p>
+
+<p>
+✅ <strong>نکته 4:</strong> در 2 جدول: CHECK (ID1 < ID2)
+</p>
+
+<p>
+✅ <strong>نکته 5:</strong> حالات خاص:
+</p>
+<ol>
+<li>یک طرف الزامی → 1 رابطه</li>
+<li>هر دو اختیاری + درصد کم → 2 رابطه</li>
+<li>هر دو الزامی → 1 رابطه (Split)</li>
+</ol>
+
+
+<hr>
+<h2>🔷 حالت 7: نگاشت موجودیت ضعیف</h2>
+
+<h3>قاعده</h3>
+
+<p>
+<strong>موجودیت ضعیف → 2 رابطه</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>E (قوی) ──شناسه─── F (ضعیف)
+→ 2 جدول:
+  1. E
+  2. F + FK از E + صفت ممیزه
+  
+PK(F) = FK + صفت ممیزه</code></pre></div>
+
+<hr>
+<h3>مثال 1: کارمند و مدرک تحصیلی</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+erDiagram
+    EMPLOYEE ||--o{ DEGREE : "has"
+    
+    EMPLOYEE {
+        int EmpID PK
+        string Name
+        int Age
+    }
+    
+    DEGREE {
+        int EmpID FK
+        string Level
+        string University
+        int GradYear
+        decimal Mark
+    }
+</pre></div>
+
+<p>
+<strong>ویژگی‌های موجودیت ضعیف:</strong>
+</p>
+
+<p>
+✅ موجودیت ضعیف (Degree):
+</p>
+<ol>
+<li>استقلال وجودی ندارد</li>
+<li>بدون Employee معنی ندارد</li>
+<li>صفت ممیزه دارد (Level: دیپلم، لیسانس، ...)</li>
+<li>مشارکت الزامی است</li>
+<li>ارتباط شناسه (Identifying Relationship)</li>
+</ol>
+
+
+<p>
+<strong>نگاشت:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه 1: Employee (قوی)
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Age INT
+);
+
+-- رابطه 2: Degree (ضعیف)
+CREATE TABLE Degree (
+    EmpID INT,  -- FK از قوی
+    Level NVARCHAR(20),  -- صفت ممیزه (Discriminator)
+    University NVARCHAR(50),
+    GradYear INT,
+    Mark DECIMAL(4,2),
+    PRIMARY KEY (EmpID, Level),  -- ترکیب FK + ممیزه!
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+        ON DELETE CASCADE  -- حذف کارمند → حذف مدارک
+);
+
+-- نماد:
+Employee(EmpID, Name, Age)
+         ------
+
+Degree(EmpID, Level, University, GradYear, Mark)
+       -------------
+       ↓ PK = FK + ممیزه
+       
+       EmpID → FK
+       ......</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+-----+
+| EID | Name   | Age |
++-----+--------+-----+
+| 10  | علی    | 35  |
+| 11  | سارا   | 30  |
++-----+--------+-----+
+
+Degree:
++-----+---------+---------------+------+------+
+| EID | Level   | University    | Year | Mark |
++-----+---------+---------------+------+------+
+| 10  | BDC     | IAUT          | 1387 | 19   |
+| 10  | MSC     | IAUT          | 1390 | 20   |
+| 11  | Diploma | Alborz        | 1384 | 20   |
+| 11  | BSC     | Sharif        | 1388 | 20   |
+| 11  | MSC     | MIT           | 1390 | 20   |
+| 11  | PhD     | Stanford      | 1394 | 20   |
++-----+---------+---------------+------+------+
+   ↑       ↑
+   FK    ممیزه
+
+3 مدرک برای EmpID=11 (سارا)
+2 مدرک برای EmpID=10 (علی)</code></pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>یکتایی در کل جدول؟
+→ Level به تنهایی یکتا نیست (چند نفر لیسانس دارن)
+→ EmpID به تنهایی یکتا نیست (یک نفر چند مدرک)
+
+یکتایی در زیرمجموعه؟
+→ در مدارک یک کارمند: Level یکتاست! ✅
+→ (10, BDC), (10, MSC) → یکتا ✅
+→ نمی‌شه (10, BDC), (10, BDC) داشت! ❌
+
+→ پس PK = (EmpID, Level) ✅</code></pre></div>
+
+<p>
+<strong>Query‌ها:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- مدارک یک کارمند
+SELECT Level, University, GradYear
+FROM Degree
+WHERE EmpID = 11;
+
+-- کارمندان با مدرک PhD
+SELECT E.Name
+FROM Employee E
+JOIN Degree D ON E.EmpID = D.EmpID
+WHERE D.Level = 'PhD';
+
+-- حذف کارمند (CASCADE)
+DELETE FROM Employee WHERE EmpID = 10;
+-- → مدارک EmpID=10 هم حذف می‌شن! ✅</code></pre></div>
+
+<hr>
+<h3>مثال 2: کارمند و اعضای خانواده</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1              N
+   Employee ──دارد── FamilyMember (ضعیف)
+                      (صفت ممیزه: نام)</code></pre></div>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Salary DECIMAL(10,2)
+);
+
+CREATE TABLE FamilyMember (
+    EmpID INT,
+    MemberName NVARCHAR(50),  -- صفت ممیزه
+    Relationship NVARCHAR(20),
+    BirthDate DATE,
+    PRIMARY KEY (EmpID, MemberName),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+        ON DELETE CASCADE
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+--------+
+| EID | Name   | Salary |
++-----+--------+--------+
+| 100 | احمد   | 500000 |
+| 110 | زهرا   | 600000 |
++-----+--------+--------+
+
+FamilyMember:
++-----+------------+--------------+------------+
+| EID | MemberName | Relationship | BirthDate  |
++-----+------------+--------------+------------+
+| 100 | فاطمه      | همسر         | 1985-05-10 |
+| 100 | علی        | فرزند       | 2010-08-15 |
+| 100 | سارا       | فرزند       | 2012-11-20 |
+| 110 | رضا        | همسر         | 1980-03-25 |
++-----+------------+--------------+------------+</code></pre></div>
+
+<p>
+<strong>چرا MemberName ممیزه است؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>در کل جدول:
+→ MemberName یکتا نیست (چند کارمند اسم فرزندشون علی)
+
+در خانواده یک کارمند:
+→ MemberName یکتاست! (نمی‌شه دو عضو همنام داشت)
+
+→ پس (EmpID, MemberName) یکتاست! ✅</code></pre></div>
+
+<hr>
+<h3>مثال 3: موجودیت ضعیف روی موجودیت ضعیف!</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1         N         1         N
+Employee ──── FamilyMember ──── MedicalRecord (ضعیف روی ضعیف!)
+  (قوی)        (ضعیف)            (ضعیف)</code></pre></div>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50)
+);
+
+CREATE TABLE FamilyMember (
+    EmpID INT,
+    MemberName NVARCHAR(50),
+    BirthDate DATE,
+    PRIMARY KEY (EmpID, MemberName),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID) CASCADE
+);
+
+CREATE TABLE MedicalRecord (
+    EmpID INT,
+    MemberName NVARCHAR(50),
+    RecordDate DATE,  -- صفت ممیزه
+    Disease NVARCHAR(100),
+    Treatment NVARCHAR(200),
+    PRIMARY KEY (EmpID, MemberName, RecordDate),
+    FOREIGN KEY (EmpID, MemberName) REFERENCES FamilyMember(EmpID, MemberName) CASCADE
+);</code></pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سلسله‌مراتب وابستگی:
+Employee (قوی)
+   ↓ قوی برای
+FamilyMember (ضعیف نسبت به Employee)
+   ↓ قوی برای
+MedicalRecord (ضعیف نسبت به FamilyMember)
+
+PK:
+→ MedicalRecord = (EmpID, MemberName, RecordDate)
+→ شامل کلید FamilyMember + ممیزه خودش!</code></pre></div>
+
+<hr>
+<h3>نکات مهم حالت 7 (موجودیت ضعیف)</h3>
+
+<p>
+✅ <strong>نکته 1:</strong> PK ضعیف = FK + صفت ممیزه
+</p>
+
+<p>
+✅ <strong>نکته 2:</strong> صفت ممیزه (Discriminator):
+</p>
+<ul>
+<li>در کل جدول یکتا نیست</li>
+<li>در وابسته به یک قوی یکتاست</li>
+</ul>
+
+<p>
+✅ <strong>نکته 3:</strong> مشارکت ضعیف الزامی است (با دو خط)
+</p>
+
+<p>
+✅ <strong>نکته 4:</strong> ارتباط شناسه (Identifying)
+</p>
+
+<p>
+✅ <strong>نکته 5:</strong> CASCADE DELETE ضروری است!
+</p>
+
+<p>
+✅ <strong>نکته 6:</strong> درجه ارتباط معمولاً 2 است (گاهی بیشتر)
+</p>
+
+<p>
+✅ <strong>نکته 7:</strong> چندی معمولاً 1:N (گاهی M:N)
+</p>
+
+<p>
+✅ <strong>نکته 8:</strong> ضعیف می‌تونه برای ضعیف دیگر قوی باشه!
+</p>
+
+<p>
+❌ <strong>خطا:</strong> فراموش کردن صفت ممیزه در PK!
+</p>
+
+
+<hr>
+<h2>🔷 حالت 8: نگاشت صفت چندمقداری</h2>
+
+<h3>قاعده</h3>
+
+<p>
+<strong>صفت چندمقداری → جدول جداگانه!</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>E با صفت چندمقداری A
+→ +1 جدول برای A:
+  1. E (بدون A)
+  2. E_A (FK + A)</code></pre></div>
+
+<p>
+<strong>فرمول:</strong> اگر n صفت داریم که m تای آن چندمقداری → n+m+1 جدول
+</p>
+
+<hr>
+<h3>مثال 1: کارمند با چند شماره تلفن</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌──────────┐
+│ Employee │
+├──────────┤
+│ EmpID    │
+│ Name     │
+│ {Phone}  │ ← چندمقداری!
+└──────────┘</code></pre></div>
+
+<p>
+<strong>نگاشت:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه 1: Employee (بدون Phone)
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Age INT
+);
+
+-- رابطه 2: EmployeePhone (صفت چندمقداری)
+CREATE TABLE EmployeePhone (
+    EmpID INT,
+    PhoneNumber VARCHAR(15),
+    PRIMARY KEY (EmpID, PhoneNumber),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);
+
+-- نماد:
+Employee(EmpID, Name, Age)
+         ------
+
+EmployeePhone(EmpID, PhoneNumber)
+              -------------------</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+-----+
+| EID | Name   | Age |
++-----+--------+-----+
+| 100 | علی    | 30  |
+| 110 | سارا   | 28  |
++-----+--------+-----+
+
+EmployeePhone:
++-----+--------------+
+| EID | PhoneNumber  |
++-----+--------------+
+| 100 | 09121234567  |  ← علی 2 شماره داره
+| 100 | 02188776655  |
+| 110 | 09359876543  |  ← سارا 1 شماره داره
++-----+--------------+</code></pre></div>
+
+<p>
+<strong>Query:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تلفن‌های یک کارمند
+SELECT PhoneNumber
+FROM EmployeePhone
+WHERE EmpID = 100;
+
+-- کارمندان با بیش از 1 تلفن
+SELECT E.Name, COUNT(*) AS PhoneCount
+FROM Employee E
+JOIN EmployeePhone P ON E.EmpID = P.EmpID
+GROUP BY E.EmpID, E.Name
+HAVING COUNT(*) &gt; 1;</code></pre></div>
+
+<hr>
+<h3>مثال 2: موجودیت با چند صفت چندمقداری</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌──────────┐
+│ Employee │
+├──────────┤
+│ EmpID    │
+│ Name     │
+│ {Phone}  │ ← چندمقداری 1
+│ {Skill}  │ ← چندمقداری 2
+└──────────┘</code></pre></div>
+
+<p>
+<strong>فرمول:</strong> n=2, m=2 → 2+2+1 = 5 جدول؟ ❌
+</p>
+
+<p>
+<strong>واقعیت:</strong> 1+2 = 3 جدول! ✅
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه 1: Employee
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50)
+);
+
+-- رابطه 2: Phone (چندمقداری 1)
+CREATE TABLE EmployeePhone (
+    EmpID INT,
+    Phone VARCHAR(15),
+    PRIMARY KEY (EmpID, Phone),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);
+
+-- رابطه 3: Skill (چندمقداری 2)
+CREATE TABLE EmployeeSkill (
+    EmpID INT,
+    Skill NVARCHAR(50),
+    PRIMARY KEY (EmpID, Skill),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+
+| EID | Name   |
++-----+--------+
+| 100 | علی    |
+| 110 | سارا   |
++-----+--------+
+
+EmployeePhone:
++-----+-------------+
+| EID | Phone       |
++-----+-------------+
+| 100 | 09121234567 |
+| 100 | 02188776655 |
+| 110 | 09359876543 |
++-----+-------------+
+
+EmployeeSkill:
++-----+----------+
+| EID | Skill    |
++-----+----------+
+| 100 | Java     |
+| 100 | Python   |
+| 100 | SQL      |
+| 110 | Python   |
+| 110 | R        |
++-----+----------+</code></pre></div>
+
+<hr>
+<h3>مثال 3: کارمند با سابقه کار</h3>
+
+<p>
+<strong>نمودار ER:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌──────────┐
+│ Employee │
+├──────────┤
+│ EmpID    │
+│ Name     │
+│ {Resume} │ ← مرکب + چندمقداری!
+│   From   │
+│   To     │
+│   Position│
+│   Dept   │
+└──────────┘</code></pre></div>
+
+<p>
+<strong>نگاشت:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50)
+);
+
+CREATE TABLE Resume (
+    EmpID INT,
+    FromDate DATE,
+    ToDate DATE,
+    Position NVARCHAR(50),
+    Department NVARCHAR(50),
+    PRIMARY KEY (EmpID, FromDate),  -- From به عنوان ممیزه
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+
+| EID | Name   |
++-----+--------+
+| 100 | احمد   |
++-----+--------+
+
+Resume:
++-----+------------+------------+------------+------------+
+| EID | From       | To         | Position   | Dept       |
++-----+------------+------------+------------+------------+
+| 100 | 2015-01-01 | 2017-12-31 | Developer  | IT         |
+| 100 | 2018-01-01 | 2020-12-31 | Sr.Dev     | IT         |
+| 100 | 2021-01-01 | NULL       | Manager    | Operations |
++-----+------------+------------+------------+------------+</code></pre></div>
+
+<hr>
+<h3>نکات مهم حالت 8 (صفت چندمقداری)</h3>
+
+<p>
+✅ <strong>نکته 1:</strong> هر صفت چندمقداری → +1 جدول
+</p>
+
+<p>
+✅ <strong>نکته 2:</strong> PK = (FK + مقدار صفت)
+</p>
+
+<p>
+✅ <strong>نکته 3:</strong> صفت مرکب + چندمقداری:
+   → همه اجزا در جدول جدید
+</p>
+
+<p>
+✅ <strong>نکته 4:</strong> اگر n موجودیت با m صفت چندمقداری:
+   → n + m رابطه (نه n×m!)
+</p>
+
+<p>
+✅ <strong>نکته 5:</strong> CASCADE DELETE معمولاً می‌خوایم
+</p>
+
+<p>
+❌ <strong>خطا:</strong> گذاشتن چندمقداری در جدول اصلی!
+   مثلاً: Employee(EmpID, Name, Phones)  ← ❌ نقض 1NF!
+</p>
+
+
+<hr>
+<p>
+<em>ادامه دارد... (حالت‌های 9 تا 14)</em>
+</p>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="4-3-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">قواعد نگاشت ER به رابطه‌ای - بخش ۱</span></a><a href="4-3-3.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">قواعد نگاشت ER به رابطه‌ای - بخش ۳</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

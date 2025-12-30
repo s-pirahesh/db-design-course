@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="زبان‌های کار با داده - حساب رابطه‌ای">
+    <meta name="keywords" content="پایگاه داده, Database Design, حساب رابطه‌ای">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>حساب رابطه‌ای | زبان‌های کار با داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">زبان‌های کار با داده</a>
+                <span class="separator">›</span>
+                <span class="current">حساب رابطه‌ای</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">حساب رابطه‌ای</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۶: حساب رابطه‌ای (Relational Calculus)</h1>
+
+<h2>🔷 بخش ۶.۲: حساب رابطه‌ای - تشریحی و غیررویه‌ای</h2>
+
+<h3>مقدمه - چرا حساب رابطه‌ای؟</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>جبر رابطه‌ای:
+سؤال: توليد کنندگان تهرانی؟
+جواب: σCity='Tehran'(S)
+      ↓
+   چطوری؟ (How)
+   گام به گام! 📋
+
+حساب رابطه‌ای:
+سؤال: توليد کنندگان تهرانی؟
+جواب: {S | S ∈ Supplier ∧ S.City = 'Tehran'}
+       ↓
+   چی؟ (What)
+   توضیحی! 📝</code></pre></div>
+
+<hr>
+<h3>تعریف</h3>
+
+<p>
+<strong>حساب رابطه‌ای (Relational Calculus):</strong>  
+زبانی تشریحی (Declarative) بر پایه منطق محمولات مرتبه اول که در آن:
+</p>
+<ul>
+<li>فقط <strong>چه چیزی</strong> می‌خواهیم را مشخص می‌کنیم (نه چطور!)</li>
+<li>با <strong>گزاره منطقی</strong> (Logical Formula) بیان می‌شود</li>
+<li><strong>غیررویه‌ای</strong> (Non-Procedural) است</li>
+</ul>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[حساب رابطه‌ای<br/>Relational Calculus]
+    
+    B[TRC<br/>Tuple Relational Calculus<br/>حساب تاپل‌محور]
+    C[DRC<br/>Domain Relational Calculus<br/>حساب دامنه‌محور]
+    
+    A --> B
+    A --> C
+    
+    B1[متغیرهای تاپل<br/>S ∈ Supplier]
+    B2[{S ∣ formula}]
+    B3[∃, ∀, ∧, ∨]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    
+    C1[متغیرهای دامنه<br/>s#, sname, ...]
+    C2[{s#, sname ∣ formula}]
+    C3[∃, ∀, ∧, ∨]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>مقایسه TRC و DRC</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>TRC</th><th>DRC</th></tr></thead>
+<tbody>
+<tr><td><strong>متغیر</strong></td><td>تاپل کامل</td><td>دامنه‌های جداگانه</td></tr>
+<tr><td><strong>مثال متغیر</strong></td><td>S (یک تاپل)</td><td>s#, sname, city (جداگانه)</td></tr>
+<tr><td><strong>دسترسی</strong></td><td>S.City</td><td>city</td></tr>
+<tr><td><strong>نمایش نتیجه</strong></td><td>{S ∣ ...}</td><td>{s#, sname ∣ ...}</td></tr>
+<tr><td><strong>نزدیک به</strong></td><td>SQL</td><td>QBE</td></tr>
+<tr><td><strong>یادگیری</strong></td><td>ساده‌تر ✅</td><td>پیچیده‌تر</td></tr>
+</tbody></table></div><hr>
+
+<h2>حساب تاپل‌محور (TRC)</h2>
+
+<h3>ساختار پایه</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{T | Formula(T)}
+
+T: متغیر تاپل (Tuple Variable)
+Formula: گزاره منطقی
+
+معنا: "تمام تاپل‌های T که Formula برایشان صادق است"</code></pre></div>
+
+<hr>
+<h3>عملگرهای منطقی</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>عملگر</th><th>نماد</th><th>معنا</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>AND</strong></td><td>∧</td><td>و</td><td>P ∧ Q</td></tr>
+<tr><td><strong>OR</strong></td><td>∨</td><td>یا</td><td>P ∨ Q</td></tr>
+<tr><td><strong>NOT</strong></td><td>¬</td><td>نقیض</td><td>¬P</td></tr>
+<tr><td><strong>EXISTS</strong></td><td>∃</td><td>وجود دارد</td><td>∃x P(x)</td></tr>
+<tr><td><strong>FOR ALL</strong></td><td>∀</td><td>برای همه</td><td>∀x P(x)</td></tr>
+<tr><td><strong>IMPLIES</strong></td><td>→</td><td>نتیجه می‌دهد</td><td>P → Q</td></tr>
+</tbody></table></div><hr>
+
+<h3>متغیر آزاد و بسته</h3>
+
+<p>
+<strong>متغیر آزاد (Free Variable):</strong>  
+متغیری که به هیچ کوانتیفایر (∃, ∀) بایند نیست.
+</p>
+
+<p>
+<strong>متغیر بسته (Bound Variable):</strong>  
+متغیری که به کوانتیفایر بایند است.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال:
+{S | S ∈ Supplier ∧ S.City = 'Tehran'}
+     ↑
+   آزاد (در نتیجه نمایش داده می‌شود)
+
+{S | S ∈ Supplier ∧ ∃SP(SP.S# = S.S#)}
+     ↑                    ↑
+   آزاد                 بسته (به ∃ بایند)</code></pre></div>
+
+<hr>
+<h2>مثال‌های TRC با Supplier-Product</h2>
+
+<h3>جداول پایه</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S (Supplier):
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Tehran | 150    |
+| 40 | Clark  | Yazd   | 100    |
++----+--------+--------+--------+
+
+P (Product):
++----+--------+-------+--------+
+| P# | PName  | Color | Weight |
++----+--------+-------+--------+
+| 1  | Nut    | Red   | 12     |
+| 2  | Bolt   | Green | 17     |
+| 3  | Screw  | Blue  | 14     |
+| 4  | Cam    | Red   | 15     |
++----+--------+-------+--------+
+
+SP (Supply):
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 300 |
+| 10 | 2  | 200 |
+| 20 | 1  | 400 |
+| 30 | 3  | 200 |
++----+----+-----+</code></pre></div>
+
+<hr>
+<h3>مثال 1: انتخاب ساده</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که شهرشان تهران است؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ S.City = 'Tehran'}
+
+خواندن: "تمام S هایی که عضو Supplier هستند و شهرشان Tehran است"
+
+نتیجه:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 30 | Blake  | Tehran | 150    |
++----+--------+--------+--------+</code></pre></div>
+
+<p>
+<strong>مقایسه با جبر:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>TRC: {S | S ∈ Supplier ∧ S.City = 'Tehran'}
+Algebra: σCity='Tehran'(S)</code></pre></div>
+
+<hr>
+<h3>مثال 2: شرط OR</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که ساکن تهران یا شیراز هستند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ (S.City = 'Tehran' ∨ S.City = 'Shiraz')}
+
+نتیجه:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Tehran | 150    |
++----+--------+--------+--------+</code></pre></div>
+
+<hr>
+<h3>مثال 3: شرط AND</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که ساکن تهران هستند و وضعیتشان بیش از 100 است؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ S.City = 'Tehran' ∧ S.Status &gt; 100}
+
+نتیجه:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 30 | Blake  | Tehran | 150    |  ← فقط Blake!
++----+--------+--------+--------+</code></pre></div>
+
+<hr>
+<h3>مثال 4: Projection (برداشت)</h3>
+
+<p>
+<strong>سؤال:</strong> نام فروشندگانی که ساکن تهران هستند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S.SName | S ∈ Supplier ∧ S.City = 'Tehran'}
+   ↑
+فقط ستون SName در نتیجه!
+
+خواندن: "نام همه S هایی که عضو Supplier و شهرشان Tehran است"
+
+نتیجه:
++--------+
+| SName  |
++--------+
+| Smith  |
+| Blake  |
++--------+</code></pre></div>
+
+<hr>
+<h3>مثال 5: چند ستون</h3>
+
+<p>
+<strong>سؤال:</strong> نام و کد فروشندگانی که ساکن تهران هستند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S.S#, S.SName | S ∈ Supplier ∧ S.City = 'Tehran'}
+
+نتیجه:
++----+--------+
+| S# | SName  |
++----+--------+
+| 10 | Smith  |
+| 30 | Blake  |
++----+--------+</code></pre></div>
+
+<hr>
+<h3>مثال 6: EXISTS (∃) - وجود دارد</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که حداقل یک قطعه تولید می‌کنند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ ∃SP(SP ∈ Supply ∧ SP.S# = S.S#)}
+                    ↑
+                 وجود دارد SP ای که...
+
+خواندن:
+"تمام فروشندگانی که یک SP وجود دارد که 
+ SP عضو Supply است و 
+ S# آن با S# فروشنده برابر است"
+
+نتیجه:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |  ← تولید داره
+| 20 | Jones  | Shiraz | 200    |  ← تولید داره
+| 30 | Blake  | Tehran | 150    |  ← تولید داره
++----+--------+--------+--------+
+
+Clark (S#=40) نیست چون تولیدی نداره!</code></pre></div>
+
+<hr>
+<h3>مثال 7: EXISTS با شرط اضافی</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که قطعه P1 را تولید می‌کنند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ 
+     ∃SP(SP ∈ Supply ∧ SP.S# = S.S# ∧ SP.P# = 1)}
+                                          ↑
+                                    شرط اضافی!
+
+نتیجه:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |  ← P1 تولید می‌کنه
+| 20 | Jones  | Shiraz | 200    |  ← P1 تولید می‌کنه
++----+--------+--------+--------+</code></pre></div>
+
+<hr>
+<h3>مثال 8: EXISTS با Join</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که قطعات قرمز رنگ تولید می‌کنند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ 
+     ∃SP(SP ∈ Supply ∧ SP.S# = S.S# ∧
+         ∃P(P ∈ Product ∧ P.P# = SP.P# ∧ P.Color = 'Red'))}
+         ↑
+      دو EXISTS تو در تو!
+
+خواندن:
+"تمام فروشندگانی که یک SP وجود دارد که
+ S# آن با فروشنده برابر است و
+ یک Product وجود دارد که
+ P# آن با SP برابر است و
+ رنگش قرمز است"
+
+نتیجه:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |  ← P1 (Red) تولید می‌کنه
+| 20 | Jones  | Shiraz | 200    |  ← P1 (Red) تولید می‌کنه
++----+--------+--------+--------+</code></pre></div>
+
+<hr>
+<h3>مثال 9: FOR ALL (∀) - برای همه</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که <strong>همه</strong> قطعات را تولید می‌کنند؟
+</p>
+
+<p>
+<strong>TRC (روش 1 - مستقیم):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ 
+     ∀P(P ∈ Product → ∃SP(SP ∈ Supply ∧ SP.S# = S.S# ∧ SP.P# = P.P#))}
+        ↑                                           
+      برای همه P ها...
+
+خواندن:
+"تمام فروشندگانی که
+ برای هر Product ای،
+ یک Supply وجود دارد که
+ S# آن با فروشنده برابر و
+ P# آن با Product برابر است"
+
+معادل با: Division در جبر!</code></pre></div>
+
+<p>
+<strong>TRC (روش 2 - با تبدیل ∀ به ∃):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قاعده: ∀x P(x) ≡ ¬∃x ¬P(x)
+
+{S | S ∈ Supplier ∧ 
+     ¬∃P(P ∈ Product ∧ ¬∃SP(SP ∈ Supply ∧ SP.S# = S.S# ∧ SP.P# = P.P#))}
+
+خواندن:
+"تمام فروشندگانی که
+ هیچ Product ای وجود ندارد که
+ برای آن Supply ای نباشد"
+
+= "همه Product ها رو دارن"</code></pre></div>
+
+<hr>
+<h2>🎬 مثال‌های Actor-Movie (Ramakrishnan)</h2>
+
+<h3>جداول Actor-Movie</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Actor:
++-----+-----------+------+
+| AID | AName     | Age  |
++-----+-----------+------+
+| 100 | Tom Hanks | 67   |
+| 110 | Al Pacino | 83   |
+| 120 | Brad Pitt | 60   |
+| 130 | Matt Damon| 53   |
++-----+-----------+------+
+
+Movie:
++-----+------------------+------+--------+
+| MID | Title            | Year | Rating |
++-----+------------------+------+--------+
+| 201 | Forrest Gump     | 1994 | 8.8    |
+| 202 | The Godfather    | 1972 | 9.2    |
+| 203 | Fight Club       | 1999 | 8.8    |
+| 204 | The Martian      | 2015 | 8.0    |
+| 205 | Ocean's Eleven   | 2001 | 7.7    |
++-----+------------------+------+--------+
+
+Cast (بازیگری):
++-----+-----+-------+
+| AID | MID | Role  |
++-----+-----+-------+
+| 100 | 201 | Lead  |  ← Tom Hanks در Forrest Gump
+| 110 | 202 | Lead  |  ← Al Pacino در The Godfather
+| 120 | 203 | Lead  |  ← Brad Pitt در Fight Club
+| 120 | 205 | Lead  |  ← Brad Pitt در Ocean's Eleven
+| 130 | 204 | Lead  |  ← Matt Damon در The Martian
+| 130 | 205 | Support | ← Matt Damon در Ocean's Eleven
++-----+-----+-------+</code></pre></div>
+
+<hr>
+<h3>مثال 10: بازیگران فیلم خاص</h3>
+
+<p>
+<strong>سؤال:</strong> بازیگرانی که در "Forrest Gump" بازی کرده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{A | A ∈ Actor ∧ 
+     ∃C(C ∈ Cast ∧ C.AID = A.AID ∧
+         ∃M(M ∈ Movie ∧ M.MID = C.MID ∧ M.Title = 'Forrest Gump'))}
+
+نتیجه:
++-----+-----------+------+
+| AID | AName     | Age  |
++-----+-----------+------+
+| 100 | Tom Hanks | 67   |
++-----+-----------+------+</code></pre></div>
+
+<hr>
+<h3>مثال 11: فیلم‌های بازیگر خاص</h3>
+
+<p>
+<strong>سؤال:</strong> نام فیلم‌هایی که Brad Pitt بازی کرده؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{M.Title | M ∈ Movie ∧ 
+           ∃C(C ∈ Cast ∧ C.MID = M.MID ∧
+               ∃A(A ∈ Actor ∧ A.AID = C.AID ∧ A.AName = 'Brad Pitt'))}
+
+نتیجه:
++------------------+
+| Title            |
++------------------+
+| Fight Club       |
+| Ocean's Eleven   |
++------------------+</code></pre></div>
+
+<hr>
+<h3>مثال 12: بازیگران با شرط سن</h3>
+
+<p>
+<strong>سؤال:</strong> بازیگرانی که سنشان بیش از 60 سال است و در فیلمی با رتبه بالای 8 بازی کرده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{A | A ∈ Actor ∧ A.Age &gt; 60 ∧
+     ∃C(C ∈ Cast ∧ C.AID = A.AID ∧
+         ∃M(M ∈ Movie ∧ M.MID = C.MID ∧ M.Rating &gt; 8))}
+
+نتیجه:
++-----+-----------+------+
+| AID | AName     | Age  |
++-----+-----------+------+
+| 100 | Tom Hanks | 67   |  ← 67&gt;60, Forrest Gump (8.8&gt;8) ✅
+| 110 | Al Pacino | 83   |  ← 83&gt;60, The Godfather (9.2&gt;8) ✅
++-----+-----------+------+</code></pre></div>
+
+<hr>
+<h3>مثال 13: فیلم‌های دهه 90</h3>
+
+<p>
+<strong>سؤال:</strong> نام و سال فیلم‌هایی که در دهه 1990 ساخته شده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{M.Title, M.Year | M ∈ Movie ∧ M.Year &gt;= 1990 ∧ M.Year &lt; 2000}
+
+نتیجه:
++------------------+------+
+| Title            | Year |
++------------------+------+
+| Forrest Gump     | 1994 |
+| Fight Club       | 1999 |
++------------------+------+</code></pre></div>
+
+<hr>
+<h3>مثال 14: بازیگران مشترک</h3>
+
+<p>
+<strong>سؤال:</strong> بازیگرانی که هم در "Ocean's Eleven" و هم در "The Martian" بازی کرده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{A | A ∈ Actor ∧ 
+     ∃C1(C1 ∈ Cast ∧ C1.AID = A.AID ∧
+          ∃M1(M1 ∈ Movie ∧ M1.MID = C1.MID ∧ M1.Title = 'Ocean\'s Eleven')) ∧
+     ∃C2(C2 ∈ Cast ∧ C2.AID = A.AID ∧
+          ∃M2(M2 ∈ Movie ∧ M2.MID = C2.MID ∧ M2.Title = 'The Martian'))}
+     ↑                                                     ↑
+  دو EXISTS جداگانه برای دو فیلم!
+
+نتیجه:
++-----+------------+------+
+| AID | AName      | Age  |
++-----+------------+------+
+| 130 | Matt Damon | 53   |  ← در هر دو فیلم بازی کرده!
++-----+------------+------+</code></pre></div>
+
+<hr>
+<h3>مثال 15: بازیگران بدون فیلم خاص</h3>
+
+<p>
+<strong>سؤال:</strong> بازیگرانی که در هیچ فیلمی در سال 2015 بازی نکرده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{A | A ∈ Actor ∧ 
+     ¬∃C(C ∈ Cast ∧ C.AID = A.AID ∧
+          ∃M(M ∈ Movie ∧ M.MID = C.MID ∧ M.Year = 2015))}
+     ↑
+   نقیض EXISTS = "هیچ ... نداره"
+
+نتیجه:
++-----+-----------+------+
+| AID | AName     | Age  |
++-----+-----------+------+
+| 100 | Tom Hanks | 67   |  ← فیلمی در 2015 نداره
+| 110 | Al Pacino | 83   |  ← فیلمی در 2015 نداره
+| 120 | Brad Pitt | 60   |  ← فیلمی در 2015 نداره
++-----+-----------+------+
+
+Matt Damon نیست چون The Martian (2015) داره!</code></pre></div>
+
+<hr>
+<h3>مثال 16: بازیگران همه فیلم‌های یک سال</h3>
+
+<p>
+<strong>سؤال:</strong> بازیگرانی که در <strong>همه</strong> فیلم‌های سال 2001 بازی کرده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{A | A ∈ Actor ∧ 
+     ∀M(M ∈ Movie ∧ M.Year = 2001 → 
+         ∃C(C ∈ Cast ∧ C.AID = A.AID ∧ C.MID = M.MID))}
+        ↑
+   برای همه فیلم‌های 2001...
+
+خواندن:
+"تمام بازیگرانی که
+ برای هر فیلم 2001،
+ در آن بازی کرده‌اند"
+
+با توجه به داده‌ها:
+فیلم‌های 2001: فقط Ocean's Eleven
+
+نتیجه:
++-----+------------+------+
+| AID | AName      | Age  |
++-----+------------+------+
+| 120 | Brad Pitt  | 60   |  ← در Ocean's Eleven بازی کرده
+| 130 | Matt Damon | 53   |  ← در Ocean's Eleven بازی کرده
++-----+------------+------+</code></pre></div>
+
+<hr>
+<h3>مثال 17: بازیگران پرکار</h3>
+
+<p>
+<strong>سؤال:</strong> بازیگرانی که حداقل در 2 فیلم بازی کرده‌اند؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{A | A ∈ Actor ∧ 
+     ∃C1∃C2(C1 ∈ Cast ∧ C2 ∈ Cast ∧ 
+            C1.AID = A.AID ∧ C2.AID = A.AID ∧ 
+            C1.MID ≠ C2.MID)}
+            ↑
+    دو فیلم مختلف!
+
+نتیجه:
++-----+------------+------+
+| AID | AName      | Age  |
++-----+------------+------+
+| 120 | Brad Pitt  | 60   |  ← Fight Club + Ocean's Eleven
+| 130 | Matt Damon | 53   |  ← The Martian + Ocean's Eleven
++-----+------------+------+</code></pre></div>
+
+<hr>
+<h3>مثال 18: فیلم‌های بدون بازیگر جوان</h3>
+
+<p>
+<strong>سؤال:</strong> فیلم‌هایی که هیچ بازیگری زیر 55 سال در آنها نبوده؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{M | M ∈ Movie ∧ 
+     ¬∃C(C ∈ Cast ∧ C.MID = M.MID ∧
+          ∃A(A ∈ Actor ∧ A.AID = C.AID ∧ A.Age &lt; 55))}
+
+نتیجه:
++-----+------------------+------+--------+
+| MID | Title            | Year | Rating |
++-----+------------------+------+--------+
+| 201 | Forrest Gump     | 1994 | 8.8    |  ← Tom (67) ✅
+| 202 | The Godfather    | 1972 | 9.2    |  ← Al (83) ✅
+| 203 | Fight Club       | 1999 | 8.8    |  ← Brad (60) ✅
++-----+------------------+------+--------+
+
+Ocean's Eleven و The Martian نیستن چون Matt Damon (53) دارن!</code></pre></div>
+
+<hr>
+<h2>حساب دامنه‌محور (DRC)</h2>
+
+<h3>تفاوت با TRC</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>TRC: متغیر = تاپل کامل
+{S | S ∈ Supplier ∧ S.City = 'Tehran'}
+ ↑
+تاپل S با همه صفاتش
+
+DRC: متغیر = دامنه جداگانه
+{s#, sname, city, status | ⟨s#, sname, city, status⟩ ∈ Supplier ∧ city = 'Tehran'}
+ ↑    ↑      ↑      ↑
+دامنه‌های جداگانه (هر صفت یک متغیر)</code></pre></div>
+
+<hr>
+<h3>ساختار DRC</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{x1, x2, ..., xn | Formula}
+
+x1, x2, ..., xn: متغیرهای دامنه (Domain Variables)
+Formula: گزاره منطقی
+
+⟨...⟩: نماد تاپل</code></pre></div>
+
+<hr>
+<h3>مثال‌های DRC</h3>
+
+<h4>مثال 1: انتخاب ساده</h4>
+
+<p>
+<strong>سؤال:</strong> فروشندگان تهرانی؟
+</p>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S | S ∈ Supplier ∧ S.City = 'Tehran'}</code></pre></div>
+
+<p>
+<strong>DRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{s#, sname, city, status | 
+    ⟨s#, sname, city, status⟩ ∈ Supplier ∧ city = 'Tehran'}
+
+نتیجه:
++----+--------+--------+--------+
+| s# | sname  | city   | status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 30 | Blake  | Tehran | 150    |
++----+--------+--------+--------+</code></pre></div>
+
+<hr>
+<h4>مثال 2: Projection</h4>
+
+<p>
+<strong>سؤال:</strong> نام فروشندگان تهرانی؟
+</p>
+
+<p>
+<strong>DRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{sname | ∃s#∃city∃status(
+    ⟨s#, sname, city, status⟩ ∈ Supplier ∧ city = 'Tehran')}
+    ↑
+فقط sname در نتیجه، بقیه با ∃ بسته می‌شن
+
+نتیجه:
++--------+
+| sname  |
++--------+
+| Smith  |
+| Blake  |
++--------+</code></pre></div>
+
+<hr>
+<h4>مثال 3: Actor-Movie با DRC</h4>
+
+<p>
+<strong>سؤال:</strong> نام بازیگرانی که در "Forrest Gump" بازی کرده‌اند؟
+</p>
+
+<p>
+<strong>DRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{aname | ∃aid∃age∃caid∃mid∃role∃mtitle∃year∃rating(
+    ⟨aid, aname, age⟩ ∈ Actor ∧
+    ⟨caid, mid, role⟩ ∈ Cast ∧
+    ⟨mid, mtitle, year, rating⟩ ∈ Movie ∧
+    caid = aid ∧
+    mtitle = 'Forrest Gump')}
+
+نتیجه:
++-----------+
+| aname     |
++-----------+
+| Tom Hanks |
++-----------+</code></pre></div>
+
+<hr>
+<h2>مقایسه نهایی TRC, DRC و جبر</h2>
+
+<h3>مثال یکسان با سه روش</h3>
+
+<p>
+<strong>سؤال:</strong> نام فروشندگانی که قطعه P1 تولید می‌کنند؟
+</p>
+
+<p>
+<strong>جبر رابطه‌ای:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>πSName(σP#=1(S ⋈ SP))</code></pre></div>
+
+<p>
+<strong>TRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{S.SName | S ∈ Supplier ∧ 
+           ∃SP(SP ∈ Supply ∧ SP.S# = S.S# ∧ SP.P# = 1)}</code></pre></div>
+
+<p>
+<strong>DRC:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{sname | ∃s#∃city∃status∃sp_s#∃p#∃qty(
+    ⟨s#, sname, city, status⟩ ∈ Supplier ∧
+    ⟨sp_s#, p#, qty⟩ ∈ Supply ∧
+    sp_s# = s# ∧
+    p# = 1)}</code></pre></div>
+
+<hr>
+<h2>✍️ تمرینات بخش ۶.۲ (حساب رابطه‌ای)</h2>
+
+<h3>تمرین 1 (تشریحی): Query‌های Actor-Movie</h3>
+
+<p>
+با TRC پاسخ دهید:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) بازیگرانی که سنشان کمتر از 60 سال است؟
+ب) فیلم‌هایی که در دهه 2000 ساخته شده‌اند؟
+ج) نام بازیگرانی که در فیلمی با رتبه بالای 8.5 بازی کرده‌اند؟
+د) فیلم‌هایی که Brad Pitt در آنها نقش اصلی (Lead) دارد؟
+ه) بازیگرانی که هیچ فیلمی در دهه 1970 نداشته‌اند؟</code></pre></div>
+
+<hr>
+<h3>تمرین 2 (تستی):</h3>
+
+<p>
+کدام عبارت <strong>درست</strong> است؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) در TRC، متغیرها نمایانگر دامنه‌های جداگانه هستند.
+ب) ∀x P(x) معادل ¬∃x ¬P(x) است.
+ج) حساب رابطه‌ای رویه‌ای (Procedural) است.
+د) DRC ساده‌تر از TRC است.</code></pre></div>
+
+<hr>
+<h3>تمرین 3 (تحلیلی): تبدیل</h3>
+
+<p>
+<strong>عبارت جبری زیر را به TRC و DRC تبدیل کنید:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>πAName,Title(σAge&gt;65(Actor ⋈ Cast ⋈ Movie))
+
+بازیگرانی که سنشان بیش از 65 است به همراه فیلم‌هایشان</code></pre></div>
+
+<hr>
+<h3>تمرین 4 (طراحی): Query پیچیده با Actor-Movie</h3>
+
+<p>
+<strong>با TRC بنویسید:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) بازیگرانی که با Tom Hanks در حداقل یک فیلم بازی کرده‌اند؟
+ب) فیلم‌هایی که حداقل 3 بازیگر دارند؟
+ج) بازیگرانی که در همه فیلم‌های دهه 1990 بازی کرده‌اند؟
+د) فیلم‌هایی که میانگین سن بازیگرانشان بیش از 60 است؟</code></pre></div>
+
+<hr>
+<h3>تمرین 5 (مفهومی):</h3>
+
+<p>
+<strong>سؤال 1:</strong> تفاوت ∃ و ∀ را با مثال Actor-Movie توضیح دهید.
+</p>
+
+<p>
+<strong>سؤال 2:</strong> چرا TRC غیررویه‌ای است؟
+</p>
+
+<p>
+<strong>سؤال 3:</strong> چه موقع از DRC به جای TRC استفاده می‌شود؟
+</p>
+
+<hr>
+<h3>تمرین 6 (پیشرفته): Actor-Movie</h3>
+
+<p>
+<strong>با TRC پیاده کنید:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>**سؤال:** بازیگرانی که:
+1. سنشان بین 50 تا 70 سال است
+2. در حداقل 2 فیلم با رتبه بالای 8 بازی کرده‌اند
+3. هیچ فیلمی قبل از سال 1990 نداشته‌اند
+4. در حداقل یک فیلم نقش اصلی (Lead) داشته‌اند
+
+**راهنمایی:**
+- ترکیب ∃ و ∀
+- استفاده از ∧ و ∨ و ¬
+- چند EXISTS تو در تو</code></pre></div>
+
+<hr>
+<h2>📌 خلاصه فصل 6</h2>
+
+<p>
+✅ <strong>جبر رابطه‌ای:</strong>
+</p>
+<ul>
+<li>رویه‌ای (Procedural)</li>
+<li>چطوری؟ (How)</li>
+<li>عملگرها: σ, π, ⋈, ÷, ...</li>
+</ul>
+
+<p>
+✅ <strong>حساب رابطه‌ای:</strong>
+</p>
+<ul>
+<li>غیررویه‌ای (Declarative)</li>
+<li>چی؟ (What)</li>
+<li>گزاره منطقی: ∃, ∀, ∧, ∨</li>
+</ul>
+
+<p>
+✅ <strong>TRC:</strong>
+</p>
+<ul>
+<li>متغیر = تاپل کامل</li>
+<li>{S | Formula}</li>
+<li>ساده‌تر ✅</li>
+</ul>
+
+<p>
+✅ <strong>DRC:</strong>
+</p>
+<ul>
+<li>متغیر = دامنه جداگانه</li>
+<li>{x1, x2, ... | Formula}</li>
+<li>نزدیک به QBE</li>
+</ul>
+
+<p>
+✅ <strong>قدرت بیان:</strong>
+</p>
+<ul>
+<li>جبر ≡ TRC ≡ DRC</li>
+<li>همه معادل SQL</li>
+</ul>
+
+
+<hr>
+<p>
+<strong>پایان فصل ۶ - زبان‌های کار با داده</strong>
+</p>
+
+<p>
+<em>فصل بعدی: ۷ - نرمال‌سازی (Normalization)</em>
+</p>
+
+                </div>
+
+                <div class="page-navigation"><a href="6-1-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">جبر رابطه‌ای - عملگرهای پیشرفته</span></a><a href="../chapter-7/7-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">آنومالی و وابستگی تابعی</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

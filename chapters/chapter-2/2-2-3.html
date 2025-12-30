@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - مشارکت (Participation)">
+    <meta name="keywords" content="پایگاه داده, Database Design, مشارکت (Participation)">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>مشارکت (Participation) | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">مشارکت (Participation)</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">مشارکت (Participation)</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۲.۳: مشارکت (Participation)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، تا اینجا یاد گرفتیم:
+</p>
+<ul>
+<li>موجودیت‌ها چطور <strong>ارتباط</strong> دارن</li>
+<li><strong>چند تا</strong> ارتباط دارن (چندی)</li>
+</ul>
+
+<p>
+حالا سوال جدید: <strong>همه باید شرکت کنن؟</strong> 🤔
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اداره ↔ کارمند (مدیریت):
+- آیا هر اداره حتماً باید مدیر داشته باشه؟ ✅ (الزامی)
+- آیا هر کارمند حتماً باید مدیر یک اداره باشه؟ ❌ (اختیاری)
+
+دانشجو ↔ درس:
+- آیا هر دانشجو حتماً باید درس داشته باشه؟ ✅ (الزامی)
+- آیا هر درس حتماً باید دانشجو داشته باشه؟ ❌ (اختیاری)
+
+این "حتماً" همون مشارکت (Participation) است! ✨</code></pre></div>
+
+<hr>
+<h3>📖 تعریف مشارکت (Participation)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>مشارکت در ارتباط:</strong>
+</p>
+<ul>
+<li><strong>الزامی یا تام (Total):</strong> اگر تمامی نمونه موجودیت‌های یک نوع موجودیت در ارتباط شرکت داشته باشند، مشارکت آن نوع موجودیت در ارتباط <strong>الزامی</strong> است.</li>
+<li><strong>اختیاری یا جزئی (Partial / Optional):</strong> اگر فقط برخی نمونه‌ها شرکت داشته باشند، مشارکت <strong>اختیاری</strong> است.</li>
+</ul>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مشارکت<br/>Participation))
+    الزامی Total
+      همه شرکت می کنن
+      100 درصد
+      خط دولایه
+    اختیاری Partial
+      بعضی شرکت می کنن
+      کمتر از 100 درصد
+      خط تک لایه
+</pre></div>
+
+<hr>
+<h3>🔢 انواع مشارکت</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[انواع مشارکت] --> B[الزامی<br/>Total<br/>Mandatory]
+    A --> C[اختیاری<br/>Partial<br/>Optional]
+    
+    B --> B1[نماد: خط دولایه<br/>==========]
+    C --> C1[نماد: خط تک لایه<br/>----------]
+    
+    style B fill:#e74c3c,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<hr>
+<h3>1️⃣ مشارکت الزامی (Total / Mandatory Participation)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+<strong>همه</strong> نمونه‌های موجودیت باید در ارتباط شرکت کنند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Entity E]
+    B{Relationship}
+    C[Entity F]
+    
+    A ===|الزامی| B
+    B ---|اختیاری| C
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> <strong>خط دو لایه</strong> (دو خط موازی یا خط ضخیم)
+</p>
+
+<h4>مثال 1: کارمند - اداره (کار کردن)</h4>
+
+<p>
+<strong>سناریو:</strong>  
+هر کارمند <strong>حتماً</strong> باید در یک اداره کار کنه. (ولی اداره ممکنه کارمند نداشته باشه - اداره تازه تأسیس)
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند]
+    B{WorksIn<br/>کار می‌کند}
+    C[Department<br/>اداره]
+    
+    A ===|الزامی<br/>N| B
+    B ---|اختیاری<br/>1| C
+    
+    A1((EmpID))
+    A2((Name))
+    
+    C1((DeptID))
+    C2((DeptName))
+    
+    A --- A1
+    A --- A2
+    
+    C --- C1
+    C --- C2
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Employee:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>DeptID</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>D1</td></tr>
+<tr><td>110</td><td>رضا</td><td>D1</td></tr>
+<tr><td>120</td><td>مریم</td><td>D2</td></tr>
+</tbody></table></div>همه کارمندها DeptID دارن ✅ (الزامی)
+
+<p>
+<strong>Department:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>DeptID</th><th>DeptName</th><th>کارمند داره؟</th></tr></thead>
+<tbody>
+<tr><td>D1</td><td>فروش</td><td>بله (علی، رضا)</td></tr>
+<tr><td>D2</td><td>IT</td><td>بله (مریم)</td></tr>
+<tr><td>D3</td><td>منابع انسانی</td><td>خیر! ❌ (تازه تأسیس)</td></tr>
+</tbody></table></div>اداره D3 کارمند نداره ✅ (اختیاری)
+
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li><strong>کارمند → اداره:</strong> الزامی ✅ (همه کارمندها باید در یک اداره کار کنن)</li>
+<li><strong>اداره → کارمند:</strong> اختیاری ✅ (اداره ممکنه کارمند نداشته باشه)</li>
+</ul>
+
+<h4>مثال 2: موجودیت ضعیف (همیشه الزامی!)</h4>
+
+<p>
+<strong>:</strong>  
+"نوع مشارکت موجودیت ضعیف در ارتباط شناسه <strong>الزامی</strong> می‌باشد."
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند<br/>قوی]
+    B{Has<br/>دارد}
+    C[EducationHistory<br/>سابقه تحصیلی<br/>ضعیف]
+    
+    A ---|اختیاری<br/>1| B
+    B ===|الزامی<br/>N| C
+    
+    style A fill:#2ecc71,color:#fff
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:6px
+    style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
+</pre></div>
+
+<p>
+<strong>چرا الزامی؟</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سابقه تحصیلی بدون کارمند معنا نداره! ❌
+→ سابقه تحصیلی وابستگی وجودی به کارمند داره
+→ پس حتماً باید به یک کارمند تعلق داشته باشه
+→ مشارکت الزامی ✅</code></pre></div>
+
+<h4>مثال 3: دانشجو - درس (ثبت‌نام)</h4>
+
+<p>
+<strong>سناریو:</strong>  
+هر دانشجو <strong>حتماً</strong> باید حداقل یک درس ثبت‌نام کرده باشه. (ولی درس ممکنه دانشجو نداشته باشه - درس تازه افتتاح شده)
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>دانشجو]
+    B{Enroll<br/>ثبت‌نام}
+    C[Course<br/>درس]
+    
+    A ===|الزامی<br/>M| B
+    B ---|اختیاری<br/>N| C
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<hr>
+<h3>2️⃣ مشارکت اختیاری (Partial / Optional Participation)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+فقط <strong>برخی</strong> نمونه‌های موجودیت در ارتباط شرکت می‌کنند، نه همه.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Entity E]
+    B{Relationship}
+    C[Entity F]
+    
+    A ---|اختیاری| B
+    B ---|اختیاری| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> <strong>خط تک‌لایه</strong> (خط معمولی)
+</p>
+
+<h4>مثال 1: کارمند - اداره (مدیریت)</h4>
+
+<p>
+<strong>سناریو :</strong>  
+یک کارمند می‌تواند مدیر اداره باشد. مشارکت الزامی را با دو خط نشان می‌دهیم. اگر 100 کارمند باشد شاید 2 تایش در ارتباط شرکت نمایند. اما همه اداره‌ها باید مدیر داشته باشند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند]
+    B{Manage<br/>مدیریت}
+    C[Department<br/>اداره]
+    
+    A ---|اختیاری<br/>1| B
+    B ===|الزامی<br/>1| C
+    
+    A1((EmpID))
+    A2((Name))
+    
+    C1((DeptID))
+    C2((DeptName))
+    
+    A --- A1
+    A --- A2
+    
+    C --- C1
+    C --- C2
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Employee:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>مدیر کجا؟</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>D1 (مدیر) ✅</td></tr>
+<tr><td>110</td><td>رضا</td><td>D2 (مدیر) ✅</td></tr>
+<tr><td>120</td><td>مریم</td><td>- (مدیر نیست) ❌</td></tr>
+<tr><td>130</td><td>سارا</td><td>- (مدیر نیست) ❌</td></tr>
+<tr><td>...</td><td>...</td><td>...</td></tr>
+</tbody></table></div>فقط 2 نفر از 100 نفر مدیرن! (اختیاری ✅)
+
+<p>
+<strong>Department:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>DeptID</th><th>DeptName</th><th>ManagerID</th></tr></thead>
+<tbody>
+<tr><td>D1</td><td>فروش</td><td>100 ✅</td></tr>
+<tr><td>D2</td><td>IT</td><td>110 ✅</td></tr>
+<tr><td>D3</td><td>منابع انسانی</td><td>140 ✅</td></tr>
+</tbody></table></div>همه اداره‌ها مدیر دارن! (الزامی ✅)
+
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li><strong>کارمند → اداره (مدیریت):</strong> اختیاری ✅ (فقط بعضی کارمندها مدیرن)</li>
+<li><strong>اداره → کارمند (مدیریت):</strong> الزامی ✅ (همه اداره‌ها باید مدیر داشته باشن)</li>
+</ul>
+
+<h4>مثال 2: کارمند - اداره (هر دو اختیاری)</h4>
+
+<p>
+<strong>سناریو:</strong>  
+کارمند می‌تونه در یک اداره کار کنه یا نکنه (فریلنسر). اداره هم می‌تونه کارمند داشته باشه یا نداشته باشه.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند]
+    B{WorksIn<br/>کار می‌کند}
+    C[Department<br/>اداره]
+    
+    A ---|اختیاری<br/>N| B
+    B ---|اختیاری<br/>1| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>این حالت نادر است!</strong> معمولاً حداقل یک طرف الزامی است.
+</p>
+
+<hr>
+<h3>🎯 ترکیبات ممکن مشارکت</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>حالت</th><th>E → R</th><th>R → F</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>الزامی</td><td>الزامی</td><td>دانشجو-ثبت‌نام، درس-دانشجو (هر دو حتماً)</td></tr>
+<tr><td><strong>2</strong></td><td>الزامی</td><td>اختیاری</td><td>کارمند-اداره (کار)، اداره-کارمند</td></tr>
+<tr><td><strong>3</strong></td><td>اختیاری</td><td>الزامی</td><td>کارمند-اداره (مدیریت)، اداره-مدیر</td></tr>
+<tr><td><strong>4</strong></td><td>اختیاری</td><td>اختیاری</td><td>کارمند-اداره (فریلنسر)، اداره-کارمند (نادر)</td></tr>
+</tbody></table></div><hr>
+
+<h3>📊 نمادگذاری کامل در نمودار ER</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Entity E]
+    B{Relationship}
+    C[Entity F]
+    
+    A ===|Total<br/>الزامی<br/>M| B
+    B ---|Partial<br/>اختیاری<br/>N| C
+    
+    A1[چندی: M<br/>مشارکت: الزامی]
+    C1[چندی: N<br/>مشارکت: اختیاری]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>هر خط دو چیز نشون می‌ده:</strong>
+</p>
+<ol>
+<li><strong>چندی (Cardinality):</strong> 1, N, M</li>
+<li><strong>مشارکت (Participation):</strong> الزامی (==) یا اختیاری (—)</li>
+</ol>
+
+<hr>
+<h3>🔍 تشخیص مشارکت</h3>
+
+<h4>چگونه مشارکت رو مشخص کنیم?</h4>
+
+<p>
+<strong>سوالات کلیدی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای E → R:
+"آیا همه E‌ها حتماً باید در R شرکت کنن؟"
+→ اگر بله: الزامی ✅
+→ اگر خیر: اختیاری ✅
+
+برای F → R:
+"آیا همه F‌ها حتماً باید در R شرکت کنن؟"
+→ اگر بله: الزامی ✅
+→ اگر خیر: اختیاری ✅</code></pre></div>
+
+<h4>مثال: استاد - گروه آموزشی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال 1: "آیا همه استادها حتماً عضو یک گروه هستن؟"
+پاسخ: بله، هر استاد باید عضو یک گروه باشه ✅
+→ مشارکت استاد: الزامی ✅
+
+سوال 2: "آیا همه گروه‌ها حتماً استاد دارن؟"
+پاسخ: بله، هر گروه حداقل یک استاد داره ✅
+→ مشارکت گروه: الزامی ✅</code></pre></div>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Teacher<br/>استاد]
+    B{MemberOf<br/>عضو}
+    C[Department<br/>گروه آموزشی]
+    
+    A ===|الزامی<br/>N| B
+    B ===|الزامی<br/>1| C
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>هر دو الزامی!</strong> ✅✅
+</p>
+
+<hr>
+<h3>🎨 مثال کامل: سیستم دانشگاه</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student<br/>دانشجو]
+    B{Enroll<br/>ثبت‌نام}
+    C[Course<br/>درس]
+    D{Teach<br/>تدریس}
+    E[Teacher<br/>استاد]
+    F{BelongsTo<br/>تعلق دارد}
+    G[Department<br/>دانشکده]
+    
+    A ===|الزامی<br/>M| B
+    B ---|اختیاری<br/>N| C
+    
+    C ===|الزامی<br/>M| D
+    D ---|اختیاری<br/>N| E
+    
+    E ===|الزامی<br/>N| F
+    F ===|الزامی<br/>1| G
+    
+    style A fill:#e74c3c,color:#fff
+    style C fill:#3498db,color:#fff
+    style E fill:#e74c3c,color:#fff
+    style G fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>ارتباط</th><th>موجودیت 1</th><th>مشارکت 1</th><th>موجودیت 2</th><th>مشارکت 2</th></tr></thead>
+<tbody>
+<tr><td>Enroll</td><td>Student</td><td>الزامی ✅</td><td>Course</td><td>اختیاری</td></tr>
+<tr><td>Teach</td><td>Course</td><td>الزامی ✅</td><td>Teacher</td><td>اختیاری</td></tr>
+<tr><td>BelongsTo</td><td>Teacher</td><td>الزامی ✅</td><td>Department</td><td>الزامی ✅</td></tr>
+</tbody></table></div><strong>دلایل:</strong>
+<ul>
+<li><strong>دانشجو:</strong> باید حداقل یک درس ثبت‌نام کرده باشه → الزامی ✅</li>
+<li><strong>درس:</strong> ممکنه هنوز دانشجو نداشته باشه (تازه افتتاح شده) → اختیاری</li>
+<li><strong>درس:</strong> باید حداقل یک استاد داشته باشه → الزامی ✅</li>
+<li><strong>استاد:</strong> ممکنه درس نداشته باشه (سال تحقیقاتی) → اختیاری</li>
+<li><strong>استاد:</strong> باید عضو یک دانشکده باشه → الزامی ✅</li>
+<li><strong>دانشکده:</strong> باید حداقل یک استاد داشته باشه → الزامی ✅</li>
+</ul>
+
+<hr>
+<h3>💡 رابطه بین چندی و مشارکت</h3>
+
+<h4>آیا مشارکت و چندی وابسته‌اند؟</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>خیر! مستقل هستن ✅
+
+می‌شه داشت:
+- چندی 1:N + مشارکت (الزامی، اختیاری) ✅
+- چندی 1:N + مشارکت (اختیاری، الزامی) ✅
+- چندی M:N + مشارکت (الزامی، الزامی) ✅
+- چندی M:N + مشارکت (اختیاری، اختیاری) ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>چندی</th><th>مشارکت E</th><th>مشارکت F</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td>1:N</td><td>الزامی</td><td>اختیاری</td><td>کارمند-اداره (کار)</td></tr>
+<tr><td>1:N</td><td>اختیاری</td><td>الزامی</td><td>کارمند-اداره (مدیریت)</td></tr>
+<tr><td>M:N</td><td>الزامی</td><td>الزامی</td><td>دانشجو-درس (هر دو حتماً)</td></tr>
+<tr><td>M:N</td><td>اختیاری</td><td>اختیاری</td><td>نویسنده-کتاب (نادر)</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۲.۲.۳</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+برای هر یک از موارد زیر مشارکت را مشخص کنید و نمودار ER کامل (با چندی + مشارکت) بکشید:
+</p>
+
+<p>
+الف) مادر - فرزند  
+ب) کتاب - ناشر  
+ج) دانشجو - پروژه (پایان‌نامه)  
+د) پزشک - بیمارستان
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) مشارکت موجودیت ضعیف همیشه الزامی است  
+ب) مشارکت الزامی با خط دو لایه نشان داده می‌شود  
+ج) اگر مشارکت E الزامی باشد، مشارکت F هم باید الزامی باشد  
+د) مشارکت و چندی مستقل از هم هستند
+</p>
+
+<h4>تمرین 3 (تحلیلی):</h4>
+<p>
+چرا در ارتباط شناسه (قوی-ضعیف) مشارکت ضعیف همیشه الزامی است؟  
+با مثال "کارمند-سابقه تحصیلی" توضیح دهید.
+</p>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+محیط بیمارستان:
+</p>
+<ul>
+<li>بیمار حتماً باید در حداقل یک بخش بستری شود</li>
+<li>بخش ممکن است بیمار نداشته باشد (خالی)</li>
+<li>پزشک حتماً در حداقل یک بخش کار می‌کند</li>
+<li>بخش حتماً حداقل یک پزشک دارد</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>چندی هر ارتباط</li>
+<li>مشارکت هر موجودیت</li>
+<li>نمودار ER کامل</li>
+</ul>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+شرکت نرم‌افزاری:
+</p>
+<ul>
+<li>برنامه‌نویس ممکن است در یک پروژه کار کنه یا نکنه (bench)</li>
+<li>پروژه حتماً حداقل یک برنامه‌نویس دارد</li>
+<li>برنامه‌نویس حتماً عضو یک تیم است</li>
+<li>تیم ممکن است برنامه‌نویس نداشته باشد (تازه تشکیل شده)</li>
+</ul>
+
+<p>
+<strong>تحلیل کنید:</strong>
+</p>
+<ul>
+<li>چندی و مشارکت همه ارتباطات</li>
+<li>نمودار ER کامل با نمادگذاری دقیق</li>
+<li>دلایل منطقی برای هر مشارکت</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+آیا می‌توان یک ارتباط داشت که هر دو طرف آن اختیاری باشند؟  
+اگر بله، مثال واقعی بزنید.  
+اگر خیر، چرا؟  
+چه مشکلاتی ممکن است ایجاد شود؟
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مشارکت<br/>Participation))
+    تعریف
+      آیا همه شرکت می کنن
+      الزامی یا اختیاری
+    الزامی Total
+      همه 100 درصد
+      خط دولایه
+      موجودیت ضعیف همیشه الزامی
+    اختیاری Partial
+      بعضی کمتر از 100 درصد
+      خط تک لایه
+      نادرتر از الزامی
+    رابطه با چندی
+      مستقل هستن
+      هر ترکیبی ممکنه
+    تشخیص
+      آیا همه E حتما در R
+      آیا همه F حتما در R
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>مشارکت:</strong> آیا همه باید شرکت کنن؟</li>
+<li>✅ <strong>الزامی (Total):</strong> همه شرکت می‌کنن → خط دولایه (==)</li>
+<li>✅ <strong>اختیاری (Partial):</strong> بعضی شرکت می‌کنن → خط تک‌لایه (—)</li>
+<li>✅ <strong>موجودیت ضعیف:</strong> همیشه الزامی! (وابستگی وجودی)</li>
+<li>✅ <strong>مستقل از چندی:</strong> مشارکت و چندی به هم ربطی ندارن</li>
+<li>✅ <strong>تشخیص:</strong> "آیا همه E‌ها حتماً...؟"</li>
+</ul>
+
+<hr>
+<p>
+ ✅✅✅
+</p>
+
+<p>
+<strong>بخش‌های تکمیل شده:</strong>
+</p>
+<ul>
+<li>✅ بخش ۲.۲.۱: مفهوم ارتباط و درجه</li>
+<li>✅ بخش ۲.۲.۲: چندی (Cardinality)</li>
+<li>✅ بخش ۲.۲.۳: مشارکت (Participation)</li>
+</ul>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="2-2-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">چندی (Cardinality)</span></a><a href="2-3-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">وراثت Is-A</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

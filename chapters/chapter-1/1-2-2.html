@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - مشکلات فایلینگ و مزایای DBMS">
+    <meta name="keywords" content="پایگاه داده, Database Design, مشکلات فایلینگ و مزایای DBMS">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>مشکلات فایلینگ و مزایای DBMS | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">مشکلات فایلینگ و مزایای DBMS</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">مشکلات فایلینگ و مزایای DBMS</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادین و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۲.۲: مشکلات روش فایلینگ و ظهور DBMS</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، در بخش قبل دیدیم که چطور تکنولوژی از نسل 1 تا نسل 6 تکامل پیدا کرد. حالا می‌خوایم عمیق‌تر بریم و ببینیم <strong>چرا</strong> این تکامل اتفاق افتاد؟
+</p>
+
+<p>
+بیا با یک سناریو واقعی شروع کنیم:
+</p>
+
+<hr>
+<h3>📖 سناریو: سیستم اطلاعاتی دانشگاه (روش فایلینگ)</h3>
+
+<p>
+فرض کن یک دانشگاه در سال 1965 می‌خواد سیستم اطلاعاتیش رو بسازه. اون موقع فقط <strong>روش فایلینگ</strong> وجود داشت.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[دانشگاه] --> B[واحد مالی]
+    A --> C[واحد آموزش]
+    A --> D[واحد پرسنلی]
+    
+    B --> B1[فایل Students_Finance.dat<br/>شامل: کد، نام، شهریه]
+    C --> C1[فایل Students_Education.dat<br/>شامل: کد، نام، رشته، نمرات]
+    D --> D1[فایل Students_HR.dat<br/>شامل: کد، نام، آدرس، تلفن]
+    
+    style B1 fill:#e74c3c,color:#fff
+    style C1 fill:#f39c12,color:#fff
+    style D1 fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>نگاه کن!</strong> اطلاعات یک دانشجو در <strong>3 فایل مختلف</strong> تکرار شده! 😱
+</p>
+
+<h4>داده‌های تکراری</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>فایل</th><th>کد دانشجو</th><th>نام</th><th>سایر اطلاعات</th></tr></thead>
+<tbody>
+<tr><td><strong>مالی</strong></td><td>123</td><td>علی علیزاده</td><td>شهریه: 5M</td></tr>
+<tr><td><strong>آموزش</strong></td><td>123</td><td>علی علیزاده</td><td>رشته: کامپیوتر</td></tr>
+<tr><td><strong>پرسنلی</strong></td><td>123</td><td>علی علیزاده</td><td>تلفن: 09123456789</td></tr>
+</tbody></table></div>این یعنی <strong>افزونگی (Redundancy)</strong>! 🔴
+
+<hr>
+<h3>🔴 مشکل 1: افزونگی داده (Data Redundancy)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>افزونگی در بحث فایلینگ یا محدود:</strong> تکرار ذخیره‌سازی مقدار یک یا چند صفت در فایل.
+</p>
+
+<p>
+<strong>افزونگی در سطح Database:</strong> تکرار ذخیره‌سازی داده‌های یک نمونه موجودیت در چند سیستم مختلف.
+</p>
+
+<h4>چرا افزونگی مشکل است؟</h4>
+
+<p>
+<strong>1. هدر رفت فضای ذخیره‌سازی</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>فایل 1: کد=123، نام=علی علیزاده (30 بایت)
+فایل 2: کد=123، نام=علی علیزاده (30 بایت)
+فایل 3: کد=123، نام=علی علیزاده (30 بایت)
+
+جمع: 90 بایت
+
+اگر افزونگی نداشتیم: 30 بایت کافی بود!
+هدر رفت: 60 بایت (67% اتلاف!)</code></pre></div>
+
+<p>
+برای 10,000 دانشجو:
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>با افزونگی: 900,000 بایت = 900 KB
+بدون افزونگی: 300,000 بایت = 300 KB
+اتلاف: 600 KB برای همین فقط نام و کد!</code></pre></div>
+
+<p>
+<strong>2. پیچیدگی به‌روزرسانی</strong>
+</p>
+
+<p>
+فرض کن <strong>نام علی</strong> باید تغییر کنه (مثلاً تصحیح املایی):
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant U as کاربر
+    participant F1 as فایل مالی
+    participant F2 as فایل آموزش
+    participant F3 as فایل پرسنلی
+    
+    U->>F1: تغییر نام به "علی علی‌زاده"
+    Note over F1: ✅ تغییر انجام شد
+    
+    U->>F2: تغییر نام به "علی علی‌زاده"
+    Note over F2: ✅ تغییر انجام شد
+    
+    U->>F3: تغییر نام به "علی علی‌زاده"
+    Note over F3: ❌ فراموش شد!
+    
+    Note over F1,F3: حالا داده‌ها ناسازگار هستند! 🔴
+</pre></div>
+
+<hr>
+<h3>🔴 مشکل 2: ناسازگاری داده (Data Inconsistency)</h3>
+
+<p>
+<strong>نکته :</strong>  
+<strong>هر کجا افزونگی دیدیم حتما ناسازگاری هم وجود خواهد داشت.</strong>
+</p>
+
+<p>
+افزونگی کنترل نشده و ناسازگاری داده‌ها <strong>دو روی یک سکه</strong> هستند.
+</p>
+
+<h4>مثال واقعی: تغییر آدرس دانشجو</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>زمان</th><th>فایل مالی</th><th>فایل آموزش</th><th>فایل پرسنلی</th></tr></thead>
+<tbody>
+<tr><td><strong>قبل</strong></td><td>آدرس: تهران</td><td>آدرس: تهران</td><td>آدرس: تهران</td></tr>
+<tr><td><strong>کاربر تغییر می‌ده</strong></td><td>آدرس: اصفهان ✅</td><td>آدرس: تهران ❌</td><td>آدرس: اصفهان ✅</td></tr>
+</tbody></table></div><strong>نتیجه:</strong> حالا دو فایل می‌گن "اصفهان" و یکی می‌گه "تهران"! 😱
+
+<p>
+<strong>کدوم درسته؟</strong> هیچ‌کس نمی‌دونه! این یعنی <strong>ناسازگاری</strong>.
+</p>
+
+<h4>چرخه شیطانی</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[افزونگی<br/>تکرار داده] --> B[تغییر جزئی<br/>فقط بعضی فایل‌ها]
+    B --> C[ناسازگاری<br/>داده‌های متناقض]
+    C --> D[عدم اعتماد<br/>کدوم درسته؟]
+    D --> E[تصمیم‌گیری اشتباه]
+    
+    style A fill:#e74c3c,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style E fill:#c0392b,color:#fff
+</pre></div>
+
+<hr>
+<h3>📋 معایب کامل سیستم‌های فایلینگ ()</h3>
+
+<p>
+بیا حالا <strong>همه معایب</strong> رو با جزئیات ببینیم:
+</p>
+
+<h4>معیب 1: امکان ایجاد ناسازگاری داده‌ها ✅ (دیدیم)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>3 فایل → 3 نسخه از یک داده → ناسازگاری</code></pre></div>
+
+<h4>معیب 2: تکرار ذخیره‌سازی اطلاعات (افزونگی) ✅ (دیدیم)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اتلاف فضا + پیچیدگی</code></pre></div>
+
+<h4>معیب 3: وجود Application‌های متفاوت</h4>
+
+<p>
+<strong>مشکل:</strong> هر واحد برنامه‌ی جداگانه‌ای داره!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[واحد مالی] --> A1[برنامه مالی<br/>زبان: COBOL]
+    B[واحد آموزش] --> B1[برنامه آموزش<br/>زبان: FORTRAN]
+    C[واحد پرسنلی] --> C1[برنامه پرسنلی<br/>زبان: C]
+    
+    style A1 fill:#e74c3c,color:#fff
+    style B1 fill:#f39c12,color:#fff
+    style C1 fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>مشکلات:</strong>
+</p>
+<ul>
+<li>برنامه‌ها نمی‌تونن با هم کار کنن</li>
+<li>هر واحد تیم برنامه‌نویس جداگانه نیاز داره</li>
+<li>نگهداری و ارتقا خیلی سخته</li>
+</ul>
+
+<p>
+<strong>مثال:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>واحد مالی می‌خواد ببینه دانشجو چه رشته‌ای داره (برای تخفیف)
+→ باید به فایل واحد آموزش دسترسی داشته باشه
+→ ولی برنامه‌اش با COBOL نوشته شده
+→ برنامه آموزش با FORTRAN نوشته شده
+→ نمی‌تونن با هم کار کنن! ❌</code></pre></div>
+
+<h4>معیب 4: عدم امکان اعمال استانداردها</h4>
+
+<p>
+<strong>مشکل:</strong> هر واحد فرمت خودش رو داره!
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>واحد</th><th>فرمت نام</th><th>فرمت تاریخ</th><th>فرمت شماره تلفن</th></tr></thead>
+<tbody>
+<tr><td>مالی</td><td>نام خانوادگی، نام</td><td>YYYY/MM/DD</td><td>09123456789</td></tr>
+<tr><td>آموزش</td><td>نام + نام خانوادگی</td><td>DD-MM-YYYY</td><td>0912-345-6789</td></tr>
+<tr><td>پرسنلی</td><td>FirstName LastName</td><td>MM/DD/YYYY</td><td>(0912) 345-6789</td></tr>
+</tbody></table></div><strong>نتیجه:</strong> نمی‌شه داده‌ها رو با هم ترکیب کرد! 😱
+
+<h4>معیب 5: حجم بالای برنامه‌نویسی</h4>
+
+<p>
+<strong>مشکل:</strong> هر برنامه‌نویس باید همه چیز رو از صفر بنویسه!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برنامه‌نویس واحد مالی:
+- کد باز کردن فایل: 50 خط
+- کد خواندن رکورد: 30 خط
+- کد جستجو: 100 خط
+- کد به‌روزرسانی: 80 خط
+- کد بستن فایل: 20 خط
+جمع: 280 خط برای یک عملیات ساده!
+
+برنامه‌نویس واحد آموزش:
+- همه این کدها رو دوباره می‌نویسه! 😱</code></pre></div>
+
+<p>
+<strong>نتیجه:</strong>
+</p>
+<ul>
+<li>تکرار کد زیاد</li>
+<li>هزینه بالا</li>
+<li>زمان توسعه طولانی</li>
+</ul>
+
+<h4>معیب 6: مصرف حافظه</h4>
+
+<p>
+با افزونگی، حافظه زیادی هدر می‌ره:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>10,000 دانشجو
+3 فایل
+هر فایل 100 بایت برای هر دانشجو
+
+بدون افزونگی: 10,000 × 100 = 1 MB
+با افزونگی: 10,000 × 300 = 3 MB
+
+2 MB اتلاف! (67%)</code></pre></div>
+
+<h4>معیب 7: عدم اشتراک داده‌ها</h4>
+
+<p>
+<strong>مشکل:</strong> واحدها نمی‌تونن داده‌های همدیگه رو استفاده کنن!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>واحد مالی نمی‌تونه ببینه:
+- دانشجو چند واحد گذرونده (واحد آموزش)
+- دانشجو چه تلفنی داره (واحد پرسنلی)
+
+واحد آموزش نمی‌تونه ببینه:
+- دانشجو شهریه پرداخت کرده یا نه (واحد مالی)</code></pre></div>
+
+<hr>
+<h3>💡 راه حل: ظهور روش پایگاهی (DBMS)</h3>
+
+<p>
+<strong>ایده:</strong> به جای فایل‌های جداگانه، یک <strong>پایگاه داده مرکزی</strong>!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[پایگاه داده مرکزی<br/>Database] --> B[DBMS]
+    
+    C[واحد مالی] --> B
+    D[واحد آموزش] --> B
+    E[واحد پرسنلی] --> B
+    
+    B --> F[داده‌های یکپارچه<br/>بدون افزونگی]
+    
+    style A fill:#2ecc71,color:#fff
+    style B fill:#3498db,color:#fff
+    style F fill:#27ae60,color:#fff
+</pre></div>
+
+<h4>مقایسه: فایلینگ vs پایگاهی</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "روش فایلینگ (بد) ❌"
+    A1[واحد مالی] --> A2[فایل 1]
+    B1[واحد آموزش] --> B2[فایل 2]
+    C1[واحد پرسنلی] --> C2[فایل 3]
+    
+    A2 -.->|افزونگی| D[داده تکراری 😱]
+    B2 -.->|افزونگی| D
+    C2 -.->|افزونگی| D
+    end
+    
+    subgraph "روش پایگاهی (خوب) ✅"
+    E1[واحد مالی] --> F[DBMS]
+    E2[واحد آموزش] --> F
+    E3[واحد پرسنلی] --> F
+    
+    F --> G[پایگاه داده<br/>یکپارچه 🎉]
+    end
+    
+    style D fill:#e74c3c,color:#fff
+    style G fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>✅ مزایای روش پایگاهی (Database)</h3>
+
+<h4>1. حذف افزونگی (یا کاهش آن)</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>روش</th><th>تعداد ذخیره</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>فایلینگ</strong></td><td>3 بار</td><td>نام در 3 فایل</td></tr>
+<tr><td><strong>پایگاهی</strong></td><td>1 بار</td><td>نام فقط در یک جدول</td></tr>
+</tbody></table></div><strong>نتیجه:</strong> 
+<ul>
+<li>صرفه‌جویی 67% در فضا</li>
+<li>به‌روزرسانی راحت‌تر</li>
+</ul>
+
+<h4>2. حذف ناسازگاری</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>با پایگاه داده:
+- فقط یک نسخه از داده
+- یک‌بار تغییر می‌دی → همه جا تغییر می‌کنه ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تغییر آدرس
+UPDATE Students 
+SET Address = 'اصفهان' 
+WHERE StudentID = 123;
+
+-- تمام! همه واحدها آدرس جدید رو می‌بینن ✅</code></pre></div>
+
+<h4>3. اشتراک داده‌ها (Data Sharing)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>همه واحدها به یک پایگاه داده دسترسی دارن:</code></pre></div>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- واحد مالی می‌تونه رشته دانشجو رو ببینه
+SELECT Department FROM Students WHERE StudentID = 123;
+
+-- واحد آموزش می‌تونه وضعیت مالی رو ببینه
+SELECT PaymentStatus FROM Students WHERE StudentID = 123;</code></pre></div>
+
+<h4>4. استقلال داده (Data Independence)</h4>
+
+<p>
+<strong>برنامه‌ها</strong> از <strong>ساختار فیزیکی داده‌ها</strong> مستقل هستن!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر ساختار فایل تغییر کنه:
+→ برنامه‌ها نیازی به تغییر ندارن ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>روی دیسک: Track 45, Sector 3
+برنامه‌نویس: SELECT * FROM Students
+
+تغییر روی دیسک به SSD:
+→ برنامه بدون تغییر کار می‌کنه! ✅</code></pre></div>
+
+<h4>5. کنترل متمرکز</h4>
+
+<p>
+یک <strong>DBMS</strong> همه چیز رو مدیریت می‌کنه:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[DBMS مرکزی] --> B[امنیت]
+    A --> C[جامعیت داده]
+    A --> D[کنترل همزمانی]
+    A --> E[بازیابی]
+    A --> F[بهینه‌سازی]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#9b59b6,color:#fff
+    style F fill:#1abc9c,color:#fff
+</pre></div>
+
+<h4>6. کاهش هزینه توسعه</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>روش فایلینگ:
+- هر واحد نیاز به تیم برنامه‌نویسی دارد
+- 3 واحد × 5 برنامه‌نویس = 15 نفر
+
+روش پایگاهی:
+- یک تیم مرکزی کافیه
+- 1 تیم × 5 برنامه‌نویس = 5 نفر
+
+صرفه‌جویی: 10 نفر (67%)!</code></pre></div>
+
+<h4>7. استانداردسازی</h4>
+
+<p>
+با DBMS، همه چیز استاندارد میشه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- فرمت نام: یکسان در همه جا
+Name VARCHAR(50)
+
+-- فرمت تاریخ: یکسان
+Date DATE -- YYYY-MM-DD
+
+-- فرمت شماره تلفن: یکسان  
+Phone VARCHAR(11)</code></pre></div>
+
+<hr>
+<h3>📊 تعریف دقیق Database ()</h3>
+
+<p>
+<strong>تعریف کامل:</strong>
+</p>
+
+<p>
+Database مجموعه‌ای است از:
+</p>
+<ol>
+<li><strong>داده‌های ذخیره شده (Stored Data)</strong> بصورت مانا</li>
+<li><strong>به هم مرتبط</strong></li>
+<li><strong>مجتمع</strong></li>
+<li><strong>حتی‌الامکان فاقد افزونگی</strong></li>
+<li><strong>دارای معماری مشخص</strong> مبتنی بر یک مدل داده‌ای خاص (Data Model)</li>
+<li><strong>تحت مدیریت یک سیستم کنترل متمرکز</strong></li>
+<li><strong>مورد استفاده یک یا چند کاربر (برنامه کاربردی)</strong> بصورت اشتراکی و همزمان</li>
+</ol>
+
+<p>
+بیا هر کدوم رو باز کنیم:
+</p>
+
+<h4>1. داده‌های ذخیره شده (Stored Data)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>= داده‌های عملیاتی
+= داده‌هایی که کاربران بصورت روزمره با آنها کار دارند</code></pre></div>
+
+<p>
+<strong>مثال:</strong> اطلاعات دانشجویان فعلی، نه دانشجویان 20 سال پیش
+</p>
+
+<h4>2. به هم مرتبط</h4>
+
+<p>
+داده‌ها <strong>ارتباط منطقی</strong> با هم دارن:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جدول Students
+StudentID, Name, DepartmentID
+
+-- جدول Departments  
+DepartmentID, DepartmentName
+
+-- ارتباط: Students.DepartmentID → Departments.DepartmentID</code></pre></div>
+
+<h4>3. مجتمع</h4>
+
+<p>
+همه داده‌ها در <strong>یک مکان</strong>:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل (فایلینگ): 
+- فایل در سرور 1
+- فایل در سرور 2
+- فایل در سرور 3
+
+بعد (Database):
+- همه داده‌ها در یک Database ✅</code></pre></div>
+
+<h4>4. حتی‌الامکان فاقد افزونگی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>"حتی‌الامکان" چون گاهی افزونگی لازمه:
+- برای سرعت (Index)
+- برای پشتیبان (Backup)
+- برای کلید خارجی</code></pre></div>
+
+<h4>5. دارای معماری مشخص</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>معماری 3 سطحی ANSI/SPARC:
+- سطح خارجی (دید کاربر)
+- سطح منطقی (دید طراح)
+- سطح فیزیکی (دید سیستم)</code></pre></div>
+
+<p>
+(این رو در فصل بعد کامل یاد می‌گیریم)
+</p>
+
+<h4>6. تحت مدیریت DBMS</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>DBMS همه چیز رو کنترل می‌کنه:
+✅ ذخیره
+✅ بازیابی  
+✅ امنیت
+✅ جامعیت
+✅ همزمانی</code></pre></div>
+
+<h4>7. استفاده اشتراکی و همزمان</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>چند کاربر می‌تونن هم‌زمان کار کنن:
+
+کاربر A: SELECT * FROM Students
+کاربر B: UPDATE Students SET ...
+کاربر C: INSERT INTO Students ...
+
+همه هم‌زمان! ✅</code></pre></div>
+
+<hr>
+<h3>🎯 مثال جامع: دانشگاه</h3>
+
+<h4>قبل از DBMS (فایلینگ)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[دانشگاه] --> B[واحد مالی]
+    A --> C[واحد آموزش]
+    A --> D[واحد پرسنلی]
+    
+    B --> B1["فایل Students_Finance
+    کد: 123, نام: علی, شهریه: 5M"]
+    
+    C --> C1["فایل Students_Education  
+    کد: 123, نام: علی, رشته: کامپیوتر"]
+    
+    D --> D1["فایل Students_HR
+    کد: 123, نام: علی, تلفن: 091234"]
+    
+    style B1 fill:#e74c3c,color:#fff
+    style C1 fill:#e74c3c,color:#fff
+    style D1 fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مشکلات:</strong>
+</p>
+<ul>
+<li>❌ افزونگی (کد و نام 3 بار)</li>
+<li>❌ ناسازگاری (اگر نام تغییر کنه)</li>
+<li>❌ 3 برنامه جداگانه</li>
+<li>❌ عدم اشتراک داده</li>
+</ul>
+
+<h4>بعد از DBMS (پایگاهی)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[دانشگاه] --> B[واحد مالی]
+    A --> C[واحد آموزش]
+    A --> D[واحد پرسنلی]
+    
+    B --> E[DBMS]
+    C --> E
+    D --> E
+    
+    E --> F["جدول Students
+    کد: 123, نام: علی, تلفن: 091234"]
+    
+    E --> G["جدول Finance
+    کد: 123, شهریه: 5M"]
+    
+    E --> H["جدول Education
+    کد: 123, رشته: کامپیوتر"]
+    
+    style E fill:#2ecc71,color:#fff
+    style F fill:#3498db,color:#fff
+    style G fill:#3498db,color:#fff
+    style H fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>مزایا:</strong>
+</p>
+<ul>
+<li>✅ بدون افزونگی (نام فقط 1 بار)</li>
+<li>✅ سازگاری (تغییر فقط 1 بار)</li>
+<li>✅ یک سیستم یکپارچه</li>
+<li>✅ اشتراک کامل داده‌ها</li>
+</ul>
+
+<p>
+<strong>کد:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- واحد مالی می‌تونه همه اطلاعات رو ببینه
+SELECT s.Name, s.Phone, f.Tuition, e.Department
+FROM Students s
+JOIN Finance f ON s.StudentID = f.StudentID
+JOIN Education e ON s.StudentID = e.StudentID
+WHERE s.StudentID = 123;
+
+-- نتیجه: نام=علی، تلفن=091234، شهریه=5M، رشته=کامپیوتر
+-- همه از یک پایگاه داده! ✅</code></pre></div>
+
+<hr>
+<h3>🔄 دلایل بروز افزونگی ()</h3>
+
+<p>
+حتی در پایگاه داده، گاهی افزونگی لازمه! بیا ببینیم چرا:
+</p>
+
+<h4>1. افزونگی طبیعی داده‌ها</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: آدرس شهر
+- دانشجو 1: تهران
+- دانشجو 2: تهران  
+- دانشجو 3: تهران
+...
+- دانشجو 1000: تهران
+
+کلمه "تهران" 1000 بار تکرار شده!</code></pre></div>
+
+<p>
+<strong>راه حل:</strong> فشرده‌سازی یا ساختار بهتر
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- بهتر:
+Table Cities: (CityID, CityName)
+1, تهران
+
+Table Students: (StudentID, CityID)  
+..., 1
+..., 1
+..., 1
+
+حالا "تهران" فقط 1 بار ذخیره شده ✅</code></pre></div>
+
+<h4>2. افزونگی تکنیکی (Index)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای سرعت جستجو، Index می‌سازیم:
+
+جدول اصلی: StudentID, Name, ...
+Index روی Name: (Name → StudentID)
+
+این Index یک نوع افزونگی است ولی برای سرعت لازمه!</code></pre></div>
+
+<h4>3. افزونگی ناشی از کلید خارجی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Table Students:
+StudentID, Name, DepartmentID ← این کلید خارجی است
+
+Table Departments:
+DepartmentID, DepartmentName
+
+DepartmentID در هر دو جدول هست → افزونگی
+ولی برای نگه داشتن ارتباط لازمه! ✅</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۱.۲.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+یک مثال واقعی از زندگی خودتان بزنید که افزونگی و ناسازگاری داده باعث مشکل شده باشد.
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) افزونگی باعث هدر رفت فضا می‌شود  
+ب) ناسازگاری نتیجه‌ی افزونگی کنترل نشده است  
+ج) در سیستم پایگاهی هیچ افزونگی وجود ندارد  
+د) روش فایلینگ امکان اشتراک داده را ندارد
+</p>
+
+<h4>تمرین 3 (محاسباتی):</h4>
+<p>
+یک شرکت با 3 واحد (فروش، انبار، حسابداری) دارد که هرکدام فایل جداگانه‌ای برای مشتریان دارند.
+</p>
+
+<p>
+<strong>داده‌ها:</strong>
+</p>
+<ul>
+<li>تعداد مشتریان: 50,000</li>
+<li>اطلاعات هر مشتری: 200 بایت</li>
+<li>افزونگی: اطلاعات اساسی (نام، آدرس، تلفن) = 80 بایت</li>
+</ul>
+
+<p>
+<strong>محاسبه کنید:</strong>
+</p>
+<ol>
+<li>فضای کل (با افزونگی)</li>
+<li>فضای بدون افزونگی (با Database)</li>
+<li>درصد صرفه‌جویی</li>
+</ol>
+
+<h4>تمرین 4 (سناریو):</h4>
+<p>
+شما مدیر IT یک بیمارستان هستید. بیمارستان از روش فایلینگ استفاده می‌کند:
+</p>
+<ul>
+<li>واحد پذیرش: فایل بیماران</li>
+<li>واحد درمان: فایل بیماران</li>
+<li>واحد دارویی: فایل بیماران</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>5 مشکل اصلی را نام ببرید</li>
+<li>چگونه DBMS این مشکلات را حل می‌کند؟</li>
+<li>طراحی ساده‌ای از Database پیشنهاد دهید</li>
+</ul>
+
+<h4>تمرین 5 (تحلیلی):</h4>
+<p>
+چرا در جزوه گفته "<strong>حتی‌الامکان</strong> فاقد افزونگی"؟ چرا نگفته "<strong>کاملاً</strong> فاقد افزونگی"؟
+</p>
+
+<p>
+3 مورد افزونگی <strong>مجاز</strong> و <strong>لازم</strong> بیاورید.
+</p>
+
+<h4>تمرین 6 (مقایسه):</h4>
+<p>
+جدول مقایسه کاملی بین روش فایلینگ و روش پایگاهی بکشید از نظر:
+</p>
+<ul>
+<li>افزونگی</li>
+<li>ناسازگاری</li>
+<li>اشتراک داده</li>
+<li>هزینه توسعه</li>
+<li>هزینه نگهداری</li>
+<li>امنیت</li>
+<li>عملکرد</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((روش فایلینگ<br/>vs<br/>پایگاهی))
+    مشکلات فایلینگ
+      افزونگی
+      ناسازگاری
+      Application های مختلف
+      عدم استاندارد
+      حجم برنامه نویسی
+      اتلاف حافظه
+      عدم اشتراک
+    مزایای پایگاهی
+      حذف افزونگی
+      حذف ناسازگاری
+      یکپارچگی
+      اشتراک داده
+      استقلال داده
+      کنترل متمرکز
+      کاهش هزینه
+</pre></div>
+
+<p>
+<strong>قانون طلایی :</strong>
+</p>
+<blockquote><strong>"هر کجا افزونگی دیدیم حتماً ناسازگاری هم وجود خواهد داشت"</strong></blockquote>
+
+<p>
+<strong>تعریف Database (خلاصه):</strong>
+</p>
+<blockquote>مجموعه‌ای از داده‌های مانا، مرتبط، مجتمع، حتی‌الامکان فاقد افزونگی، با معماری مشخص، تحت مدیریت DBMS، برای استفاده اشتراکی و همزمان</blockquote>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="1-2-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">نسل‌های ذخیره‌سازی</span></a><a href="1-3-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">معماری متمرکز و کلاینت/سرور</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

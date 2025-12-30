@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - Aggregation (تجمع)">
+    <meta name="keywords" content="پایگاه داده, Database Design, Aggregation (تجمع)">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>Aggregation (تجمع) | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">Aggregation (تجمع)</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">Aggregation (تجمع)</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۴.۲: Aggregation (تجمع) و Composition (ترکیب)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا یکی از پیچیده‌ترین مفاهیم ER رو یاد می‌گیریم! 🚀
+</p>
+
+<p>
+فرض کن می‌خوای یک <strong>ارتباط</strong> رو به عنوان یک <strong>موجودیت</strong> ببینی:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مسئله: دانشجو - درس - استاد
+
+رابطه عادی:
+دانشجو → انتخاب → درس
+استاد → تدریس → درس
+
+ولی سوال:
+"نمره دانشجو در یک گروه درسی (که استاد مشخصی تدریس می‌کنه) چیه؟"
+
+این نمره مربوط به چیه؟
+→ نه فقط دانشجو-درس ❌
+→ نه فقط استاد-درس ❌
+→ به ترکیب هر سه! ✅ (دانشجو + درس + استاد)
+
+چطور مدل کنیم؟ 🤔</code></pre></div>
+
+<p>
+<strong>راه حل: Aggregation (تجمع)!</strong> ✨
+</p>
+
+<p>
+<strong>تعریف ساده:</strong>  
+از یک <strong>ارتباط</strong> و موجودیت‌هایش، یک <strong>موجودیت مجازی</strong> می‌سازیم که بعداً با موجودیت‌های دیگه ارتباط برقرار کنه!
+</p>
+
+<hr>
+<h3>📖 تعریف Aggregation</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>Aggregation:</strong> از ارتباط چند موجودیت یک <strong>موجودیت مجازی</strong> ایجاد می‌نماییم که <strong>در محیط وجود ندارد</strong>.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "ارتباط عادی"
+    A1[Student<br/>دانشجو]
+    B1[Course<br/>درس]
+    C1[Teacher<br/>استاد]
+    
+    R1{Teaches<br/>تدریس}
+    
+    B1 --> R1
+    C1 --> R1
+    end
+    
+    subgraph "Aggregation"
+    D[CourseOffering<br/>گروه درسی<br/>موجودیت مجازی]
+    
+    R1 -.->|تبدیل به| D
+    
+    E[Student<br/>دانشجو]
+    
+    R2{Enrollment<br/>ثبت‌نام}
+    
+    E --> R2
+    D --> R2
+    
+    R2G((Grade<br/>نمره))
+    R2 --- R2G
+    end
+    
+    style D fill:#f39c12,color:#fff
+    style R1 fill:#3498db,color:#fff
+    style R2 fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نکته کلیدی:</strong>  
+CourseOffering در محیط واقعی موجودیت نیست! این یک <strong>انتزاع</strong> است که ما برای مدل‌سازی ساختیم.
+</p>
+
+<hr>
+<h3>🎯 مفاهیم کلیدی</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((Aggregation<br/>تجمع))
+    مفهوم
+      ارتباط به موجودیت
+      موجودیت مجازی
+      در محیط نیست
+    کاربرد
+      ارتباط بر ارتباط
+      نمره گروه درسی
+      تخصیص منابع
+    تفاوت با Composition
+      Aggregation مجازی
+      Composition واقعی
+      وابستگی متفاوت
+    ویژگی
+      شناسه ترکیبی
+      وابستگی وجودی
+      حذف آبشاری
+</pre></div>
+
+<hr>
+<h3>🎨 مثال 1: گروه درسی دانشگاه (کلاسیک!)</h3>
+
+<p>
+<strong>سناریو:</strong>  
+دانشگاه - دانشجو درسی رو انتخاب می‌کنه که استاد خاصی تدریس می‌کنه.
+</p>
+
+<h4>مرحله 1: مدل عادی (بدون Aggregation)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student<br/>دانشجو<br/>StudentID]
+    B[Course<br/>درس<br/>CourseID]
+    C[Teacher<br/>استاد<br/>TeacherID]
+    
+    R1{Enroll<br/>انتخاب}
+    R2{Teaches<br/>تدریس}
+    
+    A -->|N| R1
+    B -->|M| R1
+    
+    C -->|N| R2
+    B -->|M| R2
+    
+    R1G((Grade<br/>نمره))
+    R1 --- R1G
+    
+    style R1 fill:#e74c3c,color:#fff
+    style R2 fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>مشکل:</strong>  
+نمره کجا ذخیره می‌شه؟ در Enroll یا Teaches؟ 🤔
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشجو علی + درس DB:
+→ استاد A تدریس کرده: نمره 18 ✅
+→ استاد B تدریس کرده: نمره 15 ✅
+
+نمره مربوط به (دانشجو + درس + استاد) است!
+ولی رابطه Enroll فقط (دانشجو + درس) رو داره ❌</code></pre></div>
+
+<h4>مرحله 2: مدل با Aggregation (صحیح!)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Teacher<br/>استاد]
+    A1((TeacherID))
+    A2((Name))
+    
+    A --- A1
+    A --- A2
+    
+    B[Course<br/>درس]
+    B1((CourseID))
+    B2((CourseName))
+    
+    B --- B1
+    B --- B2
+    
+    R1{Teaches<br/>تدریس}
+    
+    A -->|N| R1
+    B -->|M| R1
+    
+    R1T((Term))
+    R1S((Section))
+    
+    R1 --- R1T
+    R1 --- R1S
+    
+    subgraph Aggregation موجودیت مجازی
+    C[CourseOffering<br/>گروه درسی<br/>CourseOfferingID]
+    
+    R1 -.->|تبدیل به| C
+    end
+    
+    D[Student<br/>دانشجو]
+    D1((StudentID))
+    D2((Name))
+    
+    D --- D1
+    D --- D2
+    
+    R2{Enrollment<br/>ثبت‌نام}
+    
+    D -->|N| R2
+    C -->|M| R2
+    
+    R2G((Grade<br/>نمره))
+    R2T((EnrollDate))
+    
+    R2 --- R2G
+    R2 --- R2T
+    
+    style C fill:#f39c12,color:#fff
+    style R1 fill:#3498db,color:#fff
+    style R2 fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>توضیحات:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>CourseOffering (گروه درسی):
+= Course + Teacher + Term + Section
+
+مثال:
+- CourseOffering#1: DB + استاد احمدی + ترم 1403-1 + بخش 01
+- CourseOffering#2: DB + استاد رضایی + ترم 1403-1 + بخش 02
+
+دانشجو در کدام گروه ثبت‌نام کرده؟
+→ Enrollment(StudentID, CourseOfferingID) → Grade</code></pre></div>
+
+<h4>داده‌ها</h4>
+
+<p>
+<strong>Teacher:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>TeacherID</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>T-001</td><td>دکتر احمدی</td></tr>
+<tr><td>T-002</td><td>دکتر رضایی</td></tr>
+</tbody></table></div><strong>Course:</strong>
+<div class="table-container"><table>
+<thead><tr><th>CourseID</th><th>CourseName</th></tr></thead>
+<tbody>
+<tr><td>C-001</td><td>پایگاه داده</td></tr>
+<tr><td>C-002</td><td>ساختمان داده</td></tr>
+</tbody></table></div><strong>Teaches (تدریس):</strong>
+<div class="table-container"><table>
+<thead><tr><th>TeacherID</th><th>CourseID</th><th>Term</th><th>Section</th></tr></thead>
+<tbody>
+<tr><td>T-001</td><td>C-001</td><td>1403-1</td><td>01</td></tr>
+<tr><td>T-002</td><td>C-001</td><td>1403-1</td><td>02</td></tr>
+<tr><td>T-001</td><td>C-002</td><td>1403-1</td><td>01</td></tr>
+</tbody></table></div><strong>CourseOffering (گروه درسی - موجودیت مجازی):</strong>
+<div class="table-container"><table>
+<thead><tr><th>CourseOfferingID</th><th>TeacherID</th><th>CourseID</th><th>Term</th><th>Section</th></tr></thead>
+<tbody>
+<tr><td>CO-001</td><td>T-001</td><td>C-001</td><td>1403-1</td><td>01</td></tr>
+<tr><td>CO-002</td><td>T-002</td><td>C-001</td><td>1403-1</td><td>02</td></tr>
+<tr><td>CO-003</td><td>T-001</td><td>C-002</td><td>1403-1</td><td>01</td></tr>
+</tbody></table></div><strong>Student:</strong>
+<div class="table-container"><table>
+<thead><tr><th>StudentID</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>S-001</td><td>علی</td></tr>
+<tr><td>S-002</td><td>مریم</td></tr>
+<tr><td>S-003</td><td>رضا</td></tr>
+</tbody></table></div><strong>Enrollment (ثبت‌نام):</strong>
+<div class="table-container"><table>
+<thead><tr><th>StudentID</th><th>CourseOfferingID</th><th>EnrollDate</th><th>Grade</th></tr></thead>
+<tbody>
+<tr><td>S-001</td><td>CO-001</td><td>2024-09-15</td><td>18</td></tr>
+<tr><td>S-002</td><td>CO-002</td><td>2024-09-15</td><td>17</td></tr>
+<tr><td>S-003</td><td>CO-001</td><td>2024-09-15</td><td>15</td></tr>
+<tr><td>S-001</td><td>CO-003</td><td>2024-09-16</td><td>19</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>علی (S-001):
+→ گروه CO-001: DB با دکتر احمدی، بخش 01 → نمره 18 ✅
+→ گروه CO-003: ساختمان داده با دکتر احمدی → نمره 19 ✅
+
+مریم (S-002):
+→ گروه CO-002: DB با دکتر رضایی، بخش 02 → نمره 17 ✅
+
+→ نمره دقیقاً به (دانشجو + گروه درسی) وابسته است! ✅</code></pre></div>
+
+<hr>
+<h3>🎨 مثال 2: پروژه (Supplier-Part-Project)</h3>
+
+<p>
+<strong>سناریو:</strong>  
+تولیدکننده، قطعه‌ای رو برای پروژه‌ای تولید می‌کنه.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Supplier<br/>تولیدکننده<br/>S#]
+    B[Part<br/>قطعه<br/>P#]
+    C[Project<br/>پروژه<br/>J#]
+    
+    R1{Supply<br/>تامین}
+    
+    A -->|N| R1
+    B -->|M| R1
+    
+    R1Q((Quantity<br/>تعداد))
+    R1 --- R1Q
+    
+    subgraph Aggregation
+    D[SupplyContract<br/>قرارداد تامین<br/>مجازی]
+    
+    R1 -.->|تبدیل به| D
+    end
+    
+    R2{Allocate<br/>تخصیص}
+    
+    D -->|N| R2
+    C -->|M| R2
+    
+    R2D((Deadline<br/>مهلت))
+    R2 --- R2D
+    
+    style D fill:#f39c12,color:#fff
+    style R1 fill:#3498db,color:#fff
+    style R2 fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>داده‌ها:</strong>
+</p>
+
+<p>
+<strong>Supplier:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>S#</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>شرکت الف</td></tr>
+<tr><td>S2</td><td>شرکت ب</td></tr>
+</tbody></table></div><strong>Part:</strong>
+<div class="table-container"><table>
+<thead><tr><th>P#</th><th>PartName</th></tr></thead>
+<tbody>
+<tr><td>P1</td><td>پیچ</td></tr>
+<tr><td>P2</td><td>مهره</td></tr>
+</tbody></table></div><strong>Supply:</strong>
+<div class="table-container"><table>
+<thead><tr><th>S#</th><th>P#</th><th>Quantity</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>P1</td><td>1000</td></tr>
+<tr><td>S1</td><td>P2</td><td>2000</td></tr>
+<tr><td>S2</td><td>P1</td><td>1500</td></tr>
+</tbody></table></div><strong>SupplyContract (مجازی):</strong>
+<div class="table-container"><table>
+<thead><tr><th>ContractID</th><th>S#</th><th>P#</th><th>Quantity</th></tr></thead>
+<tbody>
+<tr><td>SC-001</td><td>S1</td><td>P1</td><td>1000</td></tr>
+<tr><td>SC-002</td><td>S1</td><td>P2</td><td>2000</td></tr>
+<tr><td>SC-003</td><td>S2</td><td>P1</td><td>1500</td></tr>
+</tbody></table></div><strong>Project:</strong>
+<div class="table-container"><table>
+<thead><tr><th>J#</th><th>ProjectName</th></tr></thead>
+<tbody>
+<tr><td>J1</td><td>ساختمان A</td></tr>
+<tr><td>J2</td><td>ساختمان B</td></tr>
+</tbody></table></div><strong>Allocate:</strong>
+<div class="table-container"><table>
+<thead><tr><th>ContractID</th><th>J#</th><th>Deadline</th></tr></thead>
+<tbody>
+<tr><td>SC-001</td><td>J1</td><td>2024-12-31</td></tr>
+<tr><td>SC-002</td><td>J1</td><td>2024-11-30</td></tr>
+<tr><td>SC-003</td><td>J2</td><td>2024-10-31</td></tr>
+</tbody></table></div><strong>معنا:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قرارداد SC-001:
+→ شرکت الف (S1) + پیچ (P1) + 1000 عدد
+→ برای پروژه ساختمان A (J1)
+→ مهلت: 2024-12-31
+
+→ Aggregation: (S1, P1, 1000) = یک قرارداد ✅</code></pre></div>
+
+<hr>
+<h3>🔄 Composition (ترکیب) - تفاوت با Aggregation</h3>
+
+<p>
+<strong>تعریف :</strong>  
+</p>
+<ul>
+<li><strong>تجزیه (Decomposition):</strong> شناسایی موجودیت‌های <strong>جز</strong> یک موجودیت <strong>کل</strong> را تجزیه می‌گویند.</li>
+<li><strong>ترکیب (Composition):</strong> شناسایی یک موجودیت <strong>کل</strong> برای چند موجودیت <strong>جز</strong> را ترکیب یا Composition می‌نامند.</li>
+</ul>
+
+<p>
+<strong>فرمول:</strong> F <strong>is a part of</strong> E
+</p>
+
+<h4>مثال: خودرو</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Car<br/>خودرو<br/>VIN]
+    
+    B[Engine<br/>موتور<br/>EngineID]
+    C[Chassis<br/>شاسی<br/>ChassisID]
+    D[Wheel<br/>چرخ<br/>WheelID]
+    
+    R1{has}
+    R2{has}
+    R3{has}
+    
+    A -->|1| R1
+    B -->|1| R1
+    
+    A -->|1| R2
+    C -->|1| R2
+    
+    A -->|1| R3
+    D -->|4| R3
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>:</strong>  
+موجودیت ضعیف از خودش شناسه ندارد و با حذف موجودیت کل، موجودیت ضعیف از بین می‌رود.
+</p>
+
+<p>
+<strong>ویژگی‌های Composition:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>Composition (ترکیب)</th><th>Aggregation (تجمع)</th></tr></thead>
+<tbody>
+<tr><td><strong>رابطه</strong></td><td><strong>کل-جزء</strong> (Part-Of)</td><td><strong>ارتباط-موجودیت</strong></td></tr>
+<tr><td><strong>وجود واقعی</strong></td><td>در محیط وجود دارد</td><td>موجودیت مجازی</td></tr>
+<tr><td><strong>وابستگی وجودی</strong></td><td>قوی (حذف کل = حذف جزء)</td><td>متوسط</td></tr>
+<tr><td><strong>شناسه</strong></td><td>جزء بدون کل شناسه ندارد</td><td>شناسه ترکیبی دارد</td></tr>
+<tr><td><strong>مثال</strong></td><td>خودرو → موتور، شاسی</td><td>گروه درسی → (استاد + درس)</td></tr>
+</tbody></table></div><strong>مثال داده:</strong>
+
+<p>
+<strong>Car:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>VIN</th><th>Brand</th></tr></thead>
+<tbody>
+<tr><td>V-001</td><td>پژو</td></tr>
+<tr><td>V-002</td><td>سمند</td></tr>
+</tbody></table></div><strong>Engine:</strong>
+<div class="table-container"><table>
+<thead><tr><th>VIN</th><th>EngineID</th><th>Power</th></tr></thead>
+<tbody>
+<tr><td>V-001</td><td>ENG-001</td><td>110hp</td></tr>
+<tr><td>V-002</td><td>ENG-002</td><td>95hp</td></tr>
+</tbody></table></div><strong>Chassis:</strong>
+<div class="table-container"><table>
+<thead><tr><th>VIN</th><th>ChassisID</th><th>Material</th></tr></thead>
+<tbody>
+<tr><td>V-001</td><td>CHS-001</td><td>Steel</td></tr>
+<tr><td>V-002</td><td>CHS-002</td><td>Aluminum</td></tr>
+</tbody></table></div>→ اگر خودرو V-001 حذف شه:
+<p>
+→ موتور ENG-001 هم حذف می‌شه ✅
+→ شاسی CHS-001 هم حذف می‌شه ✅
+</p>
+
+
+<hr>
+<h3>📊 جدول مقایسه Aggregation vs Composition</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>Aggregation</th><th>Composition</th></tr></thead>
+<tbody>
+<tr><td><strong>تعریف</strong></td><td>ارتباط → موجودیت مجازی</td><td>کل → اجزای واقعی</td></tr>
+<tr><td><strong>وجود</strong></td><td>مجازی (انتزاعی)</td><td>واقعی (ملموس)</td></tr>
+<tr><td><strong>مثال</strong></td><td>گروه درسی (استاد+درس)</td><td>خودرو (موتور+شاسی)</td></tr>
+<tr><td><strong>در محیط</strong></td><td>خیر ❌</td><td>بله ✅</td></tr>
+<tr><td><strong>وابستگی</strong></td><td>متوسط</td><td>قوی (Existential)</td></tr>
+<tr><td><strong>حذف</strong></td><td>حذف کل ≠ حذف جزء</td><td>حذف کل = حذف جزء ✅</td></tr>
+<tr><td><strong>شناسه</strong></td><td>ترکیبی از اجزا</td><td>جزء بدون کل شناسه ندارد</td></tr>
+<tr><td><strong>نماد</strong></td><td>خط چین به موجودیت</td><td>خط با لوزی پر</td></tr>
+<tr><td><strong>UML</strong></td><td>◇ (لوزی خالی)</td><td>◆ (لوزی پر)</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۲.۴.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+بیمارستان:
+</p>
+<ul>
+<li>پزشک → معاینه → بیمار (در یک تاریخ مشخص)</li>
+<li>این معاینه نسخه داره که شامل داروهاست</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>آیا Aggregation نیاز است؟ چرا؟</li>
+<li>نمودار ER کامل</li>
+<li>جداول نگاشت</li>
+<li>مثال داده</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه درباره Aggregation <strong>درست</strong> است؟
+</p>
+
+<p>
+الف) موجودیت مجازی در محیط واقعی وجود دارد  
+ب) برای ایجاد ارتباط بین یک ارتباط و موجودیت استفاده می‌شود  
+ج) مثل Composition وابستگی وجودی قوی دارد  
+د) شناسه مستقل از موجودیت‌های سازنده دارد
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+شرکت توسعه نرم‌افزار:
+</p>
+<ul>
+<li>برنامه‌نویس → کار می‌کنه → پروژه (با نقش مشخص: Developer/Tester/Designer)</li>
+<li>به این تخصیص کار، ساعت کار تخصیص می‌شه (روزانه)</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER با Aggregation</li>
+<li>چرا Aggregation؟</li>
+<li>جداول نگاشت</li>
+</ul>
+
+<h4>تمرین 4 (مقایسه):</h4>
+<p>
+تفاوت Aggregation و Composition را با دو مثال کامل توضیح دهید.
+</p>
+
+<h4>تمرین 5 (تحلیلی):</h4>
+<p>
+کتاب:
+</p>
+<ul>
+<li>کتاب شامل فصل‌ها</li>
+<li>هر فصل شامل بخش‌ها</li>
+<li>هر بخش شامل پاراگراف‌ها</li>
+</ul>
+
+<p>
+<strong>تحلیل کنید:</strong>
+</p>
+<ul>
+<li>این Aggregation است یا Composition؟</li>
+<li>آیا فصل بدون کتاب معنا دارد؟</li>
+<li>نمودار ER کامل</li>
+<li>جداول نگاشت با کلیدهای خارجی</li>
+</ul>
+
+<h4>تمرین 6 (سناریو پیشرفته):</h4>
+<p>
+کنفرانس علمی:
+</p>
+<ul>
+<li>مقاله → نویسنده (چند نویسنده)</li>
+<li>مقاله → داور (چند داور برای بررسی)</li>
+<li>به ارزیابی (مقاله + داور) یک امتیاز تخصیص داده می‌شه</li>
+<li>سپس مقاله در یک Session ارائه می‌شه (اگر قبول شده باشه)</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>کجا Aggregation نیاز است؟</li>
+<li>نمودار ER کامل با همه ارتباطات</li>
+<li>چطور "قبولی مقاله" رو مدل می‌کنید؟</li>
+<li>جداول نگاشت</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((Aggregation<br/>تجمع))
+    تعریف
+      ارتباط به موجودیت
+      موجودیت مجازی
+      در محیط نیست
+    کاربرد
+      ارتباط بر ارتباط
+      گروه درسی
+      قرارداد تامین
+      معاینه بیمار
+    Composition
+      کل جزء
+      وجود واقعی
+      وابستگی قوی
+      خودرو موتور
+    تفاوت
+      Aggregation مجازی
+      Composition واقعی
+      وابستگی متفاوت
+    نگاشت
+      جدول جدید
+      شناسه ترکیبی
+      FK به اجزا
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>Aggregation:</strong> ارتباط → موجودیت مجازی (در محیط نیست)</li>
+<li>✅ <strong>کاربرد:</strong> ارتباط بین یک ارتباط و موجودیت دیگر</li>
+<li>✅ <strong>مثال:</strong> گروه درسی = (استاد + درس + ترم + بخش)</li>
+<li>✅ <strong>شناسه:</strong> ترکیبی از شناسه‌های اجزا</li>
+<li>✅ <strong>Composition:</strong> کل-جزء واقعی (خودرو → موتور)</li>
+<li>✅ <strong>تفاوت:</strong> Aggregation مجازی، Composition واقعی</li>
+<li>✅ <strong>حذف:</strong> Composition حذف کل = حذف جزء، Aggregation نه</li>
+<li>✅ <strong>نگاشت:</strong> جدول جدید با FK به موجودیت‌های سازنده</li>
+</ul>
+
+<hr>
+<p>
+ ✅✅
+</p>
+
+<p>
+<strong>بخش‌های تکمیل شده:</strong>
+</p>
+<ul>
+<li>✅ بخش ۲.۴.۱: U-Type (Category)</li>
+<li>✅ بخش ۲.۴.۲: Aggregation & Composition</li>
+</ul>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="2-4-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">U-Type (دسته‌بندی یونیون)</span></a><a href="../chapter-3/3-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">ساختار سلسله مراتبی HDS</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="نرمال‌سازی - آنومالی و وابستگی تابعی">
+    <meta name="keywords" content="پایگاه داده, Database Design, آنومالی و وابستگی تابعی">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>آنومالی و وابستگی تابعی | نرمال‌سازی | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">نرمال‌سازی</a>
+                <span class="separator">›</span>
+                <span class="current">آنومالی و وابستگی تابعی</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">آنومالی و وابستگی تابعی</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۷: نرمال‌سازی (Normalization)</h1>
+
+<h2>مقدمه تعاملی - چرا نرمال‌سازی؟</h2>
+
+<p>
+خوب دانشجوی عزیز، تا الان چه کار کردیم؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>فصل 1-3: طراحی مفهومی (ER) ✅
+فصل 4: نگاشت به جداول ✅
+فصل 5: قیود جامعیتی ✅
+فصل 6: زبان‌های Query ✅
+
+حالا سوال اصلی:
+→ آیا جداولی که ساختیم **خوب** هستند؟ 🤔
+→ آیا مشکلی دارند؟
+→ چطوری بفهمیم یک جدول "خوب" است؟
+
+جواب: **نرمال‌سازی (Normalization)**! 💡</code></pre></div>
+
+<hr>
+<h3>سناریو واقعی - مشکل طراحی بد</h3>
+
+<p>
+فرض کنید جدول زیر را طراحی کرده‌ایم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First(S#, P#, Qty, City, Status):
+
++----+----+-----+--------+--------+
+| S# | P# | Qty | City   | Status |
++----+----+-----+--------+--------+
+| 10 | 1  | 300 | Tehran | 100    |  ← S10 در Tehran
+| 10 | 2  | 200 | Tehran | 100    |  ← S10 باز هم Tehran! (تکرار!)
+| 10 | 3  | 150 | Tehran | 100    |  ← S10 باز هم Tehran! (تکرار!)
+| 20 | 1  | 400 | Shiraz | 200    |  ← S20 در Shiraz
+| 20 | 4  | 500 | Shiraz | 200    |  ← S20 باز هم Shiraz! (تکرار!)
+| 30 | 5  | 300 | Isfahan| 150    |
+| 30 | 4  | 350 | Isfahan| 150    |  ← S30 باز هم Isfahan!
+| 40 | 6  | 170 | Yazd   | 100    |
++----+----+-----+--------+--------+
+
+🔴 مشکل می‌بینید؟
+→ City و Status برای هر S# تکرار می‌شه! (افزونگی)</code></pre></div>
+
+<p>
+<strong>سؤال:</strong> این افزونگی چه مشکلاتی ایجاد می‌کنه؟ 🤔
+</p>
+
+<hr>
+<h2>🔷 بخش ۷.۱: آنومالی‌ها (Anomalies)</h2>
+
+<h3>تعریف آنومالی</h3>
+
+<p>
+<strong>آنومالی (Anomaly):</strong>  
+پدیده‌های نامطلوب در عملیات ذخیره‌سازی (INSERT, UPDATE, DELETE) که به دلیل طراحی نادرست جدول رخ می‌دهد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[آنومالی<br/>Anomaly]
+    
+    B[آنومالی درج<br/>Insert Anomaly]
+    C[آنومالی حذف<br/>Delete Anomaly]
+    D[آنومالی بروزرسانی<br/>Update Anomaly]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[عدم توانایی<br/>درج]
+    B2[درج اطلاعات<br/>اضافی اجباری]
+    
+    B --> B1
+    B --> B2
+    
+    C1[حذف ناخواسته<br/>اطلاعات دیگر]
+    C2[از دست رفتن<br/>داده]
+    
+    C --> C1
+    C --> C2
+    
+    D1[بروزرسانی<br/>چندین جا]
+    D2[Overhead<br/>کار اضافی]
+    D3[ناسازگاری<br/>احتمالی]
+    
+    D --> D1
+    D --> D2
+    D --> D3
+    
+    style B fill:#e74c3c,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#3498db,color:#fff
+</pre></div>
+
+<hr>
+<h3>دلیل نرمال‌سازی</h3>
+
+<p>
+<strong>دلیل نرمال‌سازی رابطه‌ها:</strong>
+به خاطر آنومالی است!
+</p>
+
+<p>
+<strong>3 نوع مشکل:</strong>
+</p>
+<ol>
+<li>عدم امکان عملی (مثل درج)</li>
+<li>انجام کارهای اضافی برای انجام یک عمل (Overhead)</li>
+<li>بروز پدیده نامطلوب در اثر انجام یک عمل</li>
+</ol>
+
+
+<hr>
+<h3>1. آنومالی درج (Insert Anomaly)</h3>
+
+<p>
+<strong>تعریف:</strong> عدم توانایی در درج اطلاعات یا نیاز به درج اطلاعات اضافی.
+</p>
+
+<h4>مثال 1: First</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First(S#, P#, Qty, City, Status):
+
+سؤال: فروشنده S40 را در شهر Yazd با Status=100 اضافه کنید؟
+
+❌ مشکل:
+نمی‌تونیم S40 رو اضافه کنیم چون:
+- S40 هنوز قطعه‌ای تولید نکرده!
+- PK = (S#, P#) → باید P# داشته باشیم
+- بدون P#، نمی‌تونیم درج کنیم!
+
+تلاش:
+INSERT INTO First VALUES (40, NULL, NULL, 'Yazd', 100);
+❌ خطا! P# جزو PK است و نمی‌تونه NULL باشه
+
+راه‌حل موقت (بد):
+INSERT INTO First VALUES (40, 999, NULL, 'Yazd', 100);
+→ P# ساختگی! ← مشکل!</code></pre></div>
+
+<hr>
+<h4>مثال 2: Student-Course غیرنرمال</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>جدول غیرنرمال:
+Enrollment(StudentID, CourseID, StudentName, CourseName, Grade):
+
++-----+-----+--------+-----------+-------+
+| SID | CID | SName  | CName     | Grade |
++-----+-----+--------+-----------+-------+
+| 100 | 201 | علی    | Database  | 18.5  |
+| 100 | 202 | علی    | Algorithm | 17.0  |
+| 110 | 201 | سارا   | Database  | 19.0  |
++-----+-----+--------+-----------+-------+
+
+سؤال: دانشجو جدید "رضا" را اضافه کنید که هنوز درسی نگرفته؟
+
+❌ نمی‌شه! باید CID داشته باشه</code></pre></div>
+
+<hr>
+<h3>2. آنومالی حذف (Delete Anomaly)</h3>
+
+<p>
+<strong>تعریف:</strong> حذف ناخواسته اطلاعات دیگر هنگام حذف یک رکورد.
+</p>
+
+<h4>مثال 1: First</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First:
++----+----+-----+--------+--------+
+| S# | P# | Qty | City   | Status |
++----+----+-----+--------+--------+
+| 10 | 1  | 300 | Tehran | 100    |
+| 10 | 2  | 200 | Tehran | 100    |
+| 20 | 1  | 400 | Shiraz | 200    |
+| 40 | 6  | 170 | Yazd   | 100    |  ← فقط یک رکورد برای S40!
++----+----+-----+--------+--------+
+
+سؤال: S40 دیگه P6 رو تولید نمی‌کنه. حذف کنید؟
+
+DELETE FROM First WHERE S# = 40 AND P# = 6;
+
+❌ مشکل:
+→ کل اطلاعات S40 از بین رفت! (City=Yazd, Status=100)
+→ دیگه نمی‌دونیم S40 کجا بود و چه وضعیتی داشت!</code></pre></div>
+
+<hr>
+<h4>مثال 2: دپارتمان-کارمند</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Dept_Emp(DeptID, DeptName, EmpID, EmpName):
+
++------+----------+-----+--------+
+| DID  | DName    | EID | EName  |
++------+----------+-----+--------+
+| 10   | CS       | 100 | علی    |
+| 10   | CS       | 110 | سارا   |
+| 20   | Math     | 120 | رضا    |  ← فقط یک کارمند در Math!
++------+----------+-----+--------+
+
+سؤال: رضا استعفا داد. حذف کنید؟
+
+DELETE FROM Dept_Emp WHERE EID = 120;
+
+❌ مشکل:
+→ دپارتمان Math هم حذف شد!
+→ اطلاعات دپارتمان Math از بین رفت!</code></pre></div>
+
+<hr>
+<h3>3. آنومالی بروزرسانی (Update Anomaly)</h3>
+
+<p>
+<strong>تعریف:</strong> نیاز به بروزرسانی چندین رکورد برای یک تغییر منطقی، با احتمال ناسازگاری.
+</p>
+
+<h4>مثال 1: First</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First:
++----+----+-----+--------+--------+
+| S# | P# | Qty | City   | Status |
++----+----+-----+--------+--------+
+| 10 | 1  | 300 | Tehran | 100    |  ← S10 در Tehran
+| 10 | 2  | 200 | Tehran | 100    |  ← S10 در Tehran
+| 10 | 3  | 150 | Tehran | 100    |  ← S10 در Tehran
+| 20 | 1  | 400 | Shiraz | 200    |
++----+----+-----+--------+--------+
+
+سؤال: S10 به Isfahan نقل مکان کرد. بروزرسانی کنید؟
+
+UPDATE First SET City = 'Isfahan' WHERE S# = 10;
+
+مشکل:
+→ باید 3 رکورد رو بروزرسانی کنیم! (Overhead)
+→ اگر فقط 2 تا رو بروزرسانی کنیم → ناسازگاری!
+
+بعد از Update ناقص:
++----+----+-----+---------+--------+
+| S# | P# | Qty | City    | Status |
++----+----+-----+---------+--------+
+| 10 | 1  | 300 | Isfahan | 100    |  ← بروزرسانی شد
+| 10 | 2  | 200 | Isfahan | 100    |  ← بروزرسانی شد
+| 10 | 3  | 150 | Tehran  | 100    |  ← فراموش شد! ❌
++----+----+-----+---------+--------+
+
+❌ ناسازگاری: S10 هم در Tehran و هم در Isfahan!</code></pre></div>
+
+<hr>
+<h4>مثال 2: قیمت محصول</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Order(OrderID, ProductID, ProductName, Price, Qty):
+
++-----+-----+------------+-------+-----+
+| OID | PID | PName      | Price | Qty |
++-----+-----+------------+-------+-----+
+| 1   | 100 | Laptop     | 5000  | 2   |
+| 2   | 100 | Laptop     | 5000  | 1   |
+| 3   | 100 | Laptop     | 5000  | 3   |
+| 4   | 200 | Mouse      | 100   | 5   |
++-----+-----+------------+-------+-----+
+
+سؤال: قیمت Laptop به 5500 تغییر کرد؟
+
+UPDATE Order SET Price = 5500 WHERE ProductID = 100;
+
+مشکل:
+→ باید 3 رکورد رو بروزرسانی کنیم!
+→ اگر یکی فراموش بشه → قیمت‌های مختلف برای یک محصول!</code></pre></div>
+
+<hr>
+<h2>راه‌حل: تقسیم جدول (Decomposition)</h2>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First(S#, P#, Qty, City, Status)
+     ↓
+  تقسیم به دو جدول:
+
+SP(S#, P#, Qty):
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 300 |
+| 10 | 2  | 200 |
+| 10 | 3  | 150 |
+| 20 | 1  | 400 |
+| 40 | 6  | 170 |
++----+----+-----+
+
+Second(S#, City, Status):
++----+--------+--------+
+| S# | City   | Status |
++----+--------+--------+
+| 10 | Tehran | 100    |  ← فقط یک بار!
+| 20 | Shiraz | 200    |
+| 40 | Yazd   | 100    |
++----+--------+--------+
+
+✅ حل شد!
+→ INSERT: می‌تونیم S40 رو بدون P# اضافه کنیم
+→ DELETE: حذف P6 از SP، اطلاعات S40 رو در Second حفظ می‌کنه
+→ UPDATE: فقط یک رکورد در Second بروزرسانی می‌شه</code></pre></div>
+
+<hr>
+<h3>نکته مهم: تقسیم بدون اتلاف (Lossless Join)</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>شرط:
+First = SP ⋈ Second
+
+بررسی:
+SP ⋈ Second:
++----+----+-----+--------+--------+
+| S# | P# | Qty | City   | Status |
++----+----+-----+--------+--------+
+| 10 | 1  | 300 | Tehran | 100    |
+| 10 | 2  | 200 | Tehran | 100    |
+| 10 | 3  | 150 | Tehran | 100    |
+| 20 | 1  | 400 | Shiraz | 200    |
+| 40 | 6  | 170 | Yazd   | 100    |
++----+----+-----+--------+--------+
+
+✅ دقیقاً برابر First اصلی!
+
+**فرض نرمال‌سازی:**
+در نرمال‌سازی فرض می‌کنیم NULL نداریم.</code></pre></div>
+
+<hr>
+<h2>🔷 وابستگی تابعی (Functional Dependency - FD)</h2>
+
+<h3>تعریف</h3>
+
+<p>
+<strong>وابستگی تابعی (FD):</strong>  
+صفت A از رابطه R با صفت B از همان رابطه FD دارد اگر به ازای هر مقدار از A، <strong>فقط یک</strong> مقدار از B وجود داشته باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نماد: A → B
+
+خواندن: "A تعیین‌کننده B است"
+        "B وابسته تابعی به A است"</code></pre></div>
+
+<hr>
+<h3>نمودار وابستگی تابعی</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A → B:
+
+A:        B:
++----+    +----+
+| a1 | ──→ | b1 |  ← به ازای a1 فقط b1
++----+    +----+
+| a1 | ──→ | b1 |  ← به ازای a1 باز هم b1 (یکسان)
++----+    +----+
+| a2 | ──→ | b2 |  ← به ازای a2 فقط b2
++----+    +----+
+
+✅ A → B برقرار است
+
+اما:
+
+A:        B:
++----+    +----+
+| a1 | ──→ | b1 |  ← به ازای a1، b1
++----+    +----+
+| a1 | ──→ | b2 |  ← به ازای a1، b2 (مختلف!)
++----+    +----+
+
+❌ A → B برقرار نیست!</code></pre></div>
+
+<hr>
+<h3>مثال‌های FD</h3>
+
+<h4>مثال 1: Student</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student(StudentID, Name, Major, GPA):
+
++-----+--------+-------+------+
+| SID | Name   | Major | GPA  |
++-----+--------+-------+------+
+| 100 | علی    | CS    | 18.5 |
+| 110 | سارا   | Math  | 19.0 |
+| 120 | رضا    | CS    | 17.0 |
++-----+--------+-------+------+
+
+FD ها:
+1. StudentID → Name       ✅
+   (هر StudentID فقط یک Name)
+
+2. StudentID → Major      ✅
+   (هر StudentID فقط یک Major)
+
+3. StudentID → GPA        ✅
+   (هر StudentID فقط یک GPA)
+
+4. Name → StudentID       ❌
+   (دو نفر ممکنه اسمشون "علی" باشه)
+
+5. Major → GPA            ❌
+   (دو نفر CS ممکنه GPA متفاوت داشته باشن)</code></pre></div>
+
+<hr>
+<h4>مثال 2: SP</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>SP(S#, P#, Qty):
+
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 300 |
+| 10 | 2  | 200 |
+| 20 | 1  | 400 |
++----+----+-----+
+
+FD ها:
+1. S# → Qty               ❌
+   (S#=10 → Qty=300 و Qty=200، مختلف!)
+
+2. P# → Qty               ❌
+   (P#=1 → Qty=300 و Qty=400، مختلف!)
+
+3. (S#, P#) → Qty         ✅
+   (هر ترکیب (S#, P#) فقط یک Qty)</code></pre></div>
+
+<hr>
+<h4>مثال 3: Second</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Second(S#, City, Status):
+
++----+--------+--------+
+| S# | City   | Status |
++----+--------+--------+
+| 10 | Tehran | 100    |
+| 20 | Shiraz | 200    |
+| 30 | Tehran | 150    |
+| 40 | Yazd   | 100    |
++----+--------+--------+
+
+FD ها:
+1. S# → City              ✅
+   (هر S# فقط یک City)
+
+2. S# → Status            ✅
+   (هر S# فقط یک Status)
+
+3. City → S#              ❌
+   (City=Tehran → S#=10 و S#=30، مختلف!)
+
+4. City → Status          ❌
+   (City=Tehran → Status=100 و Status=150)
+
+5. Status → City          ❌
+   (Status=100 → City=Tehran و City=Yazd)</code></pre></div>
+
+<hr>
+<h3>نکات مهم FD</h3>
+
+<p>
+<strong>1. عدم تقارن:</strong>
+   A → B لزوماً B → A نیست! ❌
+</p>
+
+<p>
+<strong>2. صفات مرکب:</strong>
+   A و B می‌توانند صفات مرکب یا ساده باشند
+   مثال: (A, B) → C یا A → (C, D)
+</p>
+
+<p>
+<strong>3. کلید و FD:</strong>
+   صفات کلید با تمامی صفات، FD دارند
+   مثال: اگر PK = (A, B) → (A, B) → C, (A, B) → D, ...
+</p>
+
+<p>
+<strong>4. FD نامهم (Trivial):</strong>
+   اگر A ⊆ B و B → A → نامهم!
+   مثال: (A, B) → A ← نامهم (مشخصه!)
+   ما دنبال FD های مهم (Non-Trivial) هستیم
+</p>
+
+<p>
+<strong>5. معنا و تفسیر FD:</strong>
+   FD یک قانون (محدودیت) جامعیتی است
+   همیشه باید صفات از آن تبعیت کنند
+   نه فقط در یک لحظه!
+</p>
+
+
+<hr>
+<h3>نمودار FD</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[S#]
+    B[City]
+    C[Status]
+    D[P#]
+    E[Qty]
+    
+    F[Second]
+    G[SP]
+    
+    F --> A
+    F --> B
+    F --> C
+    
+    G --> A
+    G --> D
+    G --> E
+    
+    A -->|→| B
+    A -->|→| C
+    
+    H[S#, P#]
+    H -->|→| E
+    
+    style A fill:#3498db,color:#fff
+    style H fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>مجموعه FD ها (F)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+مجموعه تمام FD های یک رابطه را F می‌نامیم.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال Second:
+R = Second(S#, City, Status)
+F = {S# → City, S# → Status}
+
+مثال SP:
+R = SP(S#, P#, Qty)
+F = {(S#, P#) → Qty}
+
+مثال Student:
+R = Student(StudentID, Name, Major, GPA)
+F = {StudentID → Name,
+     StudentID → Major,
+     StudentID → GPA}
+
+یا به صورت کوتاه:
+F = {StudentID → (Name, Major, GPA)}</code></pre></div>
+
+<hr>
+<h2>نمودار وابستگی تابعی رابطه</h2>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student(StudentID, Name, Major, Code):
+
+      ┌─────────┐
+      │StudentID│
+      └────┬────┘
+           │
+      ┌────┼────┬────┐
+      │    │    │    │
+      ↓    ↓    ↓    ↓
+   ┌────┐┌────┐┌─────┐┌────┐
+   │Name││Major││Code││GPA │
+   └────┘└────┘└─────┘└────┘
+
+FD ها:
+- StudentID → Name
+- StudentID → Major  
+- StudentID → Code
+- StudentID → GPA</code></pre></div>
+
+<hr>
+<p>
+<em>ادامه دارد... (آکسیوم‌های Armstrong و فرم‌های نرمال در بخش بعدی)</em>
+</p>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="../chapter-6/6-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">حساب رابطه‌ای</span></a><a href="7-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">فرم‌های نرمال پایه</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

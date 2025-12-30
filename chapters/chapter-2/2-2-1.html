@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - ارتباط و درجه ارتباط">
+    <meta name="keywords" content="پایگاه داده, Database Design, ارتباط و درجه ارتباط">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>ارتباط و درجه ارتباط | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">ارتباط و درجه ارتباط</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">ارتباط و درجه ارتباط</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۲.۱: ارتباط (Relationship) و درجه (Degree)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، تا اینجا یاد گرفتیم:
+</p>
+<ul>
+<li><strong>موجودیت</strong> چیه (دانشجو، درس، استاد)</li>
+<li><strong>صفت</strong> چیه (نام، کد، رشته)</li>
+</ul>
+
+<p>
+حالا سوال مهم: <strong>موجودیت‌ها چطور با هم ارتباط دارن؟</strong> 🤔
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشگاه:
+- دانشجو ✅
+- درس ✅
+- استاد ✅
+
+ولی:
+- دانشجو چطور با درس ارتباط داره؟
+- استاد چطور با درس ارتباط داره؟
+- دانشجو چطور با استاد ارتباط داره؟
+
+این ارتباط‌ها رو باید مدل کنیم! ✨</code></pre></div>
+
+<hr>
+<h3>📖 تعریف ارتباط (Relationship)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>نوع ارتباط (Relationship Type):</strong> عمل یا کنش بین <strong>n تا موجودیت</strong> (1 < N). خود موجودیت می‌تواند با خودش ارتباط داشته باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>دانشجو]
+    B{Enroll<br/>ثبت‌نام}
+    C[Course<br/>درس]
+    
+    A -->|شرکت کننده 1| B
+    B -->|شرکت کننده 2| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> لوزی (Diamond)
+</p>
+
+<h4>اجزای ارتباط</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((ارتباط))
+    نام دارد
+      Enroll
+      Teach
+      Manage
+    معنا دارد
+      دانشجو درس را ثبت‌نام می کند
+      استاد درس را تدریس می کند
+    شرکت کننده دارد
+      حداقل 1
+      حداکثر N
+    درجه دارد
+      تعداد شرکت کننده ها
+</pre></div>
+
+<hr>
+<h3>📝 خصوصیات ارتباط ()</h3>
+
+<h4>1. ارتباط باید نام داشته باشد</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نام ارتباط = معنای ارتباط
+معمولاً نام‌های مصدری انتخاب می‌شود</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student] 
+    B{Enroll<br/>ثبت‌نام می‌کند}
+    C[Course]
+    
+    A --> B --> C
+    
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>نام‌های خوب:</strong>
+</p>
+<ul>
+<li>Enroll (ثبت‌نام کردن)</li>
+<li>Teach (تدریس کردن)</li>
+<li>Manage (مدیریت کردن)</li>
+<li>Produce (تولید کردن)</li>
+</ul>
+
+<p>
+<strong>نام‌های بد:</strong>
+</p>
+<ul>
+<li>Relation ❌ (خیلی کلی!)</li>
+<li>Connect ❌ (معنای مشخص نداره!)</li>
+</ul>
+
+<h4>2. ارتباط باید معنا داشته باشد</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>معنای ارتباط باید با معناهای دیگر تفاوت داشته باشد</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student]
+    B{Enroll}
+    C{Teach}
+    D[Course]
+    E[Teacher]
+    
+    A --> B --> D
+    E --> C --> D
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<ul>
+<li>Enroll: دانشجو درس را <strong>انتخاب</strong> می‌کند</li>
+<li>Teach: استاد درس را <strong>تدریس</strong> می‌کند</li>
+</ul>
+
+<p>
+<strong>معنا متفاوت است!</strong> ✅
+</p>
+
+<h4>3. ارتباط شرکت‌کننده‌هایی دارد</h4>
+
+<p>
+<strong>:</strong>  
+هر ارتباط شرکت‌کننده‌هایی دارد (1 < N). حتماً یک ارتباط شرکت‌کننده‌هایی دارد. اگر N=1 بشود، بازگشتی می‌شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>حداقل شرکت کننده: 1 (بازگشتی - موجودیت با خودش)
+حداکثر شرکت کننده: N (هر تعداد)</code></pre></div>
+
+<hr>
+<h3>🔢 درجه ارتباط (Relationship Degree)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>به تعداد شرکت‌کننده‌های ارتباط، درجه ارتباط می‌گویند.</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[درجه ارتباط<br/>Degree] --> B[درجه 1<br/>Unary<br/>بازگشتی]
+    A --> C[درجه 2<br/>Binary<br/>دوتایی]
+    A --> D[درجه 3<br/>Ternary<br/>سه‌تایی]
+    A --> E[درجه N<br/>N-ary]
+    
+    style A fill:#e74c3c,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>1️⃣ درجه 1 - ارتباط بازگشتی (Unary / Recursive)</h3>
+
+<p>
+<strong>موجودیت با خودش ارتباط دارد!</strong>
+</p>
+
+<h4>مثال 1: پیش‌نیازی درس</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Course<br/>درس]
+    B{Prerequisite<br/>پیش‌نیاز}
+    
+    A -->|N| B
+    B -->|M| A
+    
+    A1((CourseID))
+    A2((CourseName))
+    
+    A --- A1
+    A --- A2
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>CourseID</th><th>CourseName</th><th>PrerequisiteID</th></tr></thead>
+<tbody>
+<tr><td>DB</td><td>پایگاه داده</td><td>DS</td></tr>
+<tr><td>DS</td><td>ساختمان داده</td><td>ALG</td></tr>
+<tr><td>ALG</td><td>الگوریتم</td><td>-</td></tr>
+<tr><td>ISR</td><td>سیستم‌های اطلاعاتی</td><td>-</td></tr>
+<tr><td>ADVP</td><td>برنامه‌سازی پیشرفته</td><td>MTHZ</td></tr>
+<tr><td>MTHZ</td><td>ریاضی</td><td>-</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>درس "پایگاه داده" پیش‌نیاز "ساختمان داده" رو داره</li>
+<li>درس "ساختمان داده" پیش‌نیاز "الگوریتم" رو داره</li>
+<li>یک موجودیت (درس) با خودش ارتباط داره! ✅</li>
+</ul>
+
+<h4>مثال 2: مسئول کارمند</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    B{Supervise<br/>مسئول}
+    
+    A -->|N| B
+    B -->|1| A
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>EmpName</th><th>BossID</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی (مدیرکل)</td><td>NULL</td></tr>
+<tr><td>110</td><td>رضا</td><td>100</td></tr>
+<tr><td>120</td><td>مریم</td><td>100</td></tr>
+<tr><td>130</td><td>سارا</td><td>110</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>هر کارمند می‌تونه یک مسئول داشته باشه (1)</li>
+<li>هر کارمند می‌تونه چندین کارمند داشته باشه (N)</li>
+<li>1:N بازگشتی ✅</li>
+</ul>
+
+<hr>
+<h3>2️⃣ درجه 2 - ارتباط دوتایی (Binary)</h3>
+
+<p>
+<strong>محبوب‌ترین نوع!</strong> ⭐
+</p>
+
+<h4>مثال 1: دانشجو - درس</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>دانشجو]
+    B{Enroll<br/>ثبت‌نام}
+    C[Course<br/>درس]
+    
+    A -->|شرکت کننده 1| B
+    B -->|شرکت کننده 2| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>2 شرکت کننده:</strong> دانشجو + درس → <strong>درجه 2</strong> ✅
+</p>
+
+<h4>مثال 2: فروشنده - قطعه</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Supplier<br/>فروشنده]
+    B{Supply<br/>تولید}
+    C[Part<br/>قطعه]
+    
+    A --> B --> C
+    
+    A1((SupplierID))
+    B1((Quantity))
+    C1((PartID))
+    
+    A --- A1
+    B --- B1
+    C --- C1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>:</strong> تولیدکننده، قطعه را تولید می‌کند.
+</p>
+
+<p>
+<strong>2 شرکت کننده:</strong> فروشنده + قطعه → <strong>درجه 2</strong> ✅
+</p>
+
+<h4>مثال 3: کارمند - اداره</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند]
+    B{WorksIn<br/>کار می‌کند}
+    C[Department<br/>اداره]
+    
+    A --> B --> C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>3️⃣ درجه 3 - ارتباط سه‌تایی (Ternary)</h3>
+
+<p>
+<strong>سه موجودیت در یک ارتباط!</strong>
+</p>
+
+<h4>مثال: فروشنده - قطعه - پروژه</h4>
+
+<p>
+<strong>:</strong>  
+تولیدکننده S قطعه P را برای پروژه J تولید می‌نماید.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Supplier<br/>فروشنده]
+    B[Part<br/>قطعه]
+    C[Project<br/>پروژه]
+    
+    D{Supply<br/>تأمین}
+    
+    A --> D
+    B --> D
+    C --> D
+    
+    D1((Quantity))
+    D --- D1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>SupplierID</th><th>PartID</th><th>ProjectID</th><th>Quantity</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>P1</td><td>J1</td><td>100</td></tr>
+<tr><td>S1</td><td>P1</td><td>J2</td><td>50</td></tr>
+<tr><td>S2</td><td>P1</td><td>J1</td><td>200</td></tr>
+</tbody></table></div><strong>تحلیل ():</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>I1: فروشنده S1 قطعه P1 را برای پروژه J1 تولید می‌کند
+I2: S1 قطعه P1 را تولید می‌کند (نادرست! پروژه مشخص نیست!)
+I3: P1 برای پروژه J1 تولید می‌شود (نادرست! فروشنده مشخص نیست!)
+I4: S1 برای پروژه J1 تولید می‌کند (نادرست! قطعه مشخص نیست!)
+
+از I1 می‌توان 3 تایی را استنتاج نمود ✅</code></pre></div>
+
+<p>
+<strong>نکته مهم:</strong>  
+نمی‌شه این رو به دو ارتباط Binary تجزیه کرد! چون معنا عوض می‌شه!
+</p>
+
+<h4>مثال 2: دانشجو - درس - استاد</h4>
+
+<p>
+<strong>:</strong>  
+دانشجو درس را با استاد انتخاب می‌نماید.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student<br/>دانشجو]
+    B[Course<br/>درس]
+    C[Teacher<br/>استاد]
+    
+    D{Enroll<br/>انتخاب}
+    
+    A --> D
+    B --> D
+    C --> D
+    
+    D1((Grade))
+    D1((Term))
+    D --- D1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>معنا:</strong>
+</p>
+<ul>
+<li>دانشجو <strong>علی</strong> درس <strong>پایگاه داده</strong> را با استاد <strong>احمدی</strong> در ترم <strong>۱۴۰۳-۱</strong> انتخاب کرد</li>
+<li>نمره: 18</li>
+</ul>
+
+<p>
+<strong>3 شرکت کننده:</strong> دانشجو + درس + استاد → <strong>درجه 3</strong> ✅
+</p>
+
+<hr>
+<h3>4️⃣ درجه N - ارتباط چندتایی (N-ary)</h3>
+
+<p>
+<strong>N موجودیت (N > 3)</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Entity 1]
+    B[Entity 2]
+    C[Entity 3]
+    D[Entity 4]
+    E[...]
+    F[Entity N]
+    
+    G{Relationship<br/>درجه N}
+    
+    A --> G
+    B --> G
+    C --> G
+    D --> G
+    E --> G
+    F --> G
+    
+    style G fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>نادر است!</strong> معمولاً درجه 2 یا 3 کافی است.
+</p>
+
+<hr>
+<h3>🎨 صفات ارتباط</h3>
+
+<p>
+<strong>نکته مهم :</strong>  
+خود ارتباط می‌تواند صفت یا صفاتی داشته باشد. زیرا ارتباط <strong>واقعیتی است در محیط</strong> و ممکن است بخواهیم غیر از اطلاعات مربوط به شرکت‌کننده‌های آن، اطلاعات بیشتری از محیط داشته باشیم.
+</p>
+
+<h4>مثال: فروشنده - قطعه</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Supplier]
+    B{Supply}
+    C[Part]
+    
+    A --> B --> C
+    
+    A1((SupplierID))
+    A2((SName))
+    
+    B1((Quantity))
+    B2((Price))
+    B3((Date))
+    
+    C1((PartID))
+    C2((PName))
+    C2((Color))
+    
+    A --- A1
+    A --- A2
+    
+    B --- B1
+    B --- B2
+    B --- B3
+    
+    C --- C1
+    C --- C2
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>صفات ارتباط Supply:</strong>
+</p>
+<ul>
+<li><strong>Quantity:</strong> چقدر تأمین کرده؟</li>
+<li><strong>Price:</strong> به چه قیمتی؟</li>
+<li><strong>Date:</strong> چه تاریخی؟</li>
+</ul>
+
+<p>
+<strong>چرا صفات ارتباط؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Quantity به کی تعلق داره?
+- به Supplier؟ ❌ (یک Supplier چند Part داره با Quantity مختلف)
+- به Part؟ ❌ (یک Part از چند Supplier تأمین میشه با Quantity مختلف)
+- به رابطه Supply ✅ (Quantity به ترکیب Supplier + Part تعلق داره)</code></pre></div>
+
+<hr>
+<h3>📊 خلاصه درجه‌های ارتباط</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>درجه</th><th>نام</th><th>تعداد شرکت کننده</th><th>نماد</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>Unary / Recursive</td><td>1</td><td>موجودیت → خودش</td><td>پیش‌نیاز درس، مسئول کارمند</td></tr>
+<tr><td><strong>2</strong></td><td>Binary</td><td>2</td><td>موجودیت → موجودیت</td><td>دانشجو-درس، فروشنده-قطعه</td></tr>
+<tr><td><strong>3</strong></td><td>Ternary</td><td>3</td><td>3 موجودیت</td><td>فروشنده-قطعه-پروژه</td></tr>
+<tr><td><strong>N</strong></td><td>N-ary</td><td>N > 3</td><td>N موجودیت</td><td>نادر</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۲.۲.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+برای هر یک از موارد زیر درجه ارتباط را مشخص کنید و نمودار ER بکشید:
+</p>
+
+<p>
+الف) کتاب توسط نویسنده نوشته می‌شود  
+ب) دانشجو در دانشکده تحصیل می‌کند  
+ج) کارمند برای شرکت در پروژه کار می‌کند  
+د) درس پیش‌نیاز درس دیگر است
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) ارتباط حداقل یک شرکت‌کننده دارد  
+ب) ارتباط می‌تواند صفت داشته باشد  
+ج) درجه ارتباط = تعداد صفات ارتباط  
+د) موجودیت می‌تواند با خودش ارتباط داشته باشد
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+محیط بیمارستان:
+</p>
+<ul>
+<li>بیمار دارو را از داروخانه دریافت می‌کند</li>
+<li>دارو توسط پزشک تجویز می‌شود</li>
+<li>پزشک برای بیمار دارو تجویز می‌کند</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>کدام ارتباط درجه 2 است؟</li>
+<li>کدام ارتباط درجه 3 است؟</li>
+<li>صفات هر ارتباط چیست؟</li>
+<li>نمودار ER کامل بکشید</li>
+</ul>
+
+<h4>تمرین 4 (تحلیلی):</h4>
+<p>
+چرا نمی‌توان ارتباط ternary را به دو ارتباط binary تجزیه کرد؟  
+با مثال "فروشنده-قطعه-پروژه" توضیح دهید.
+</p>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+دانشگاه:
+</p>
+<ul>
+<li>استاد عضو گروه آموزشی است</li>
+<li>استاد درس را تدریس می‌کند</li>
+<li>استاد رئیس گروه آموزشی است (یک استاد از همان گروه)</li>
+<li>دانشجو درس را با استاد خاص انتخاب می‌کند</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>همه ارتباطات را شناسایی کنید</li>
+<li>درجه هر ارتباط</li>
+<li>صفات هر ارتباط</li>
+<li>نمودار ER کامل</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+آیا ممکن است یک ارتباط با خودش ارتباط داشته باشد؟  
+(ارتباط بازگشتی روی ارتباط!)  
+مثال بزنید یا ثابت کنید غیرممکن است.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((ارتباط))
+    تعریف
+      عمل یا کنش
+      بین موجودیت ها
+      نماد لوزی
+    ویژگی ها
+      نام دارد
+      معنا دارد
+      شرکت کننده دارد
+      صفت می تواند داشته باشد
+    درجه
+      Unary بازگشتی
+      Binary دوتایی
+      Ternary سه تایی
+      N ary چندتایی
+    صفات ارتباط
+      اطلاعات مربوط به رابطه
+      نه موجودیت
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>ارتباط:</strong> عمل/کنش بین موجودیت‌ها</li>
+<li>✅ <strong>نماد:</strong> لوزی (Diamond)</li>
+<li>✅ <strong>درجه:</strong> تعداد شرکت‌کننده‌ها</li>
+<li>✅ <strong>Binary:</strong> محبوب‌ترین! (2 موجودیت)</li>
+<li>✅ <strong>Ternary:</strong> نمی‌شه به Binary تجزیه کرد!</li>
+<li>✅ <strong>صفات ارتباط:</strong> اطلاعات مربوط به رابطه، نه موجودیت</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="2-1-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">صفات موجودیت، دامنه و مقادیر</span></a><a href="2-2-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">چندی (Cardinality)</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

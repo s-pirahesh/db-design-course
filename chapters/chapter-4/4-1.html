@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل رابطه‌ای و نگاشت - تعریف ریاضی رابطه">
+    <meta name="keywords" content="پایگاه داده, Database Design, تعریف ریاضی رابطه">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>تعریف ریاضی رابطه | مدل رابطه‌ای و نگاشت | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل رابطه‌ای و نگاشت</a>
+                <span class="separator">›</span>
+                <span class="current">تعریف ریاضی رابطه</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">تعریف ریاضی رابطه</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۴: ساختار مدل رابطه‌ای (Relational Model)</h1>
+
+<h2>بخش ۴.۱: تعریف ریاضی رابطه و مفاهیم پایه</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا وارد قلب پایگاه‌های داده می‌شیم! 💓
+</p>
+
+<p>
+فرض کن تا الان با نمودار ER کار کردیم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نمودار ER (دنیای مفهومی):
+┌─────────┐      ┌─────────┐
+│ Student │──────│ Course  │
+└─────────┘      └─────────┘
+     📝 طراحی روی کاغذ
+
+حالا می‌خوایم پیاده‌سازی کنیم! 💻
+
+پایگاه داده واقعی (دنیای فیزیکی):
++-----+------+-------+
+|  ID | Name | Major |
++-----+------+-------+
+| 100 | Ali  | CS    |
++-----+------+-------+
+     🗄️ جدول در DBMS</code></pre></div>
+
+<p>
+<strong>سؤال:</strong> چطور از نمودار به جدول برسیم؟  
+<strong>جواب:</strong> با <strong>مدل رابطه‌ای (Relational Model)</strong>! 🎯
+</p>
+
+<p>
+مدل رابطه‌ای یک <strong>پایه ریاضی محکم</strong> داره که امروز یاد می‌گیریم!
+</p>
+
+<hr>
+<h3>📖 تعریف رابطه (Relation)</h3>
+
+<h4>تعریف غیررسمی (ساده)</h4>
+
+<p>
+<strong>رابطه = جدول!</strong> 📊
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>رابطه Student:
+┌──────────┬──────────┬─────────┐
+│ StudentID│ Name     │ Major   │  ← Header (سرستون)
+├──────────┼──────────┼─────────┤
+│ 100      │ Ali      │ CS      │  ← Row/Tuple (سطر)
+│ 110      │ Sara     │ Math    │  ← Row/Tuple (سطر)
+│ 120      │ Reza     │ Physics │  ← Row/Tuple (سطر)
+└──────────┴──────────┴─────────┘
+     ↑          ↑         ↑
+   ستون      ستون     ستون
+ (Attribute)</code></pre></div>
+
+<p>
+<strong>اما این تعریف کافی نیست!</strong> ❌  
+چون ریاضیات دقیق‌تر از این حرف‌هاست! 🔬
+</p>
+
+<hr>
+<h4>تعریف ریاضی (دقیق)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[مفاهیم پایه]
+    
+    B[1. Domain<br/>دامنه]
+    C[2. Attribute<br/>صفت]
+    D[3. Tuple<br/>تاپل]
+    E[4. Relation<br/>رابطه]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    
+    B --> |مجموعه مقادیر| F[D1 = {100,110,120,...}]
+    C --> |نام ستون| G[StudentID, Name, Major]
+    D --> |یک سطر| H[t = 100, Ali, CS]
+    E --> |مجموعه تاپل‌ها| I[R = t1, t2, t3, ...]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#9b59b6,color:#fff
+</pre></div>
+
+<hr>
+<h3>1️⃣ دامنه (Domain)</h3>
+
+<p>
+<strong>تعریف:</strong> دامنه مقادیر یک صفت، مجموعه مقادیر مجاز برای یک صفت را مشخص می‌نماید.
+</p>
+
+<p>
+<strong>دامنه = مجموعه مقادیر ممکن</strong>
+</p>
+
+<p>
+مثال:
+→ Age: D_Age = {0, 1, 2, ..., 120}
+→ Gender: D_Gender = {'M', 'F'}
+→ Grade: D_Grade = {0.0, 0.25, 0.5, ..., 20.0}
+→ City: D_City = {'Tehran', 'Isfahan', 'Shiraz', ...}
+</p>
+
+
+<p>
+<strong>نکته مهم:</strong> هر صفت <strong>حتماً</strong> باید:
+</p>
+<ul>
+<li>نام داشته باشد ✅</li>
+<li>معنا داشته باشد ✅</li>
+<li><strong>دامنه مقادیر</strong> داشته باشد ✅</li>
+</ul>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((Attribute))
+    Name
+      StudentID
+      Age
+      City
+    Meaning
+      شناسه دانشجو
+      سن
+      شهر محل سکونت
+    Domain
+      D_ID مجموعه اعداد
+      D_Age 0 تا 120
+      D_City شهرهای ایران
+</pre></div>
+
+<hr>
+<h3>2️⃣ صفت (Attribute)</h3>
+
+<p>
+<strong>تعریف:</strong> صفت یک ویژگی از موجودیت است که دامنه مقادیر مشخص دارد.
+</p>
+
+<p>
+<strong>مثال - جدول Student:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+------------+----------+-------------+
+| Attribute  | Domain   | Example     |
++------------+----------+-------------+
+| StudentID  | Integer  | 100, 110    |
+| Name       | String   | 'Ali'       |
+| Age        | Integer  | 20, 21, 22  |
+| GPA        | Decimal  | 15.5, 18.0  |
+| City       | String   | 'Tehran'    |
++------------+----------+-------------+</code></pre></div>
+
+<hr>
+<h3>3️⃣ مجموعه هدینگ (Heading Set)</h3>
+
+<p>
+<strong>تعریف:</strong> مجموعه هدینگ <code>H</code> یک رابطه <code>R</code>، مجموعه صفات آن رابطه است.
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A₁, A₂, A₃, ..., Aₙ)
+
+H = {A₁, A₂, A₃, ..., Aₙ}</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه Student
+Student(StudentID, Name, Major, GPA)
+
+-- مجموعه هدینگ
+H_Student = {StudentID, Name, Major, GPA}
+
+-- تعداد صفات (Degree)
+|H| = 4</code></pre></div>
+
+<p>
+<strong>نکته:</strong> <code>H</code> یک <strong>مجموعه</strong> است، پس:
+</p>
+<ul>
+<li>✅ ترتیب مهم نیست</li>
+<li>✅ تکرار نداریم</li>
+<li>✅ هر صفت یکتاست</li>
+</ul>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>این دو یکسان‌اند:
+H₁ = {StudentID, Name, Major}
+H₂ = {Name, StudentID, Major}
+
+چون مجموعه‌اند! ✅</code></pre></div>
+
+<hr>
+<h3>4️⃣ تاپل (Tuple)</h3>
+
+<p>
+<strong>تعریف:</strong> تاپل یک سطر از جدول است که مقادیر مشخصی برای هر صفت دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Tuple t]
+    
+    B[StudentID: 100]
+    C[Name: Ali]
+    D[Major: CS]
+    E[GPA: 17.5]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    
+    style A fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد ریاضی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>t = &lt;v₁, v₂, v₃, ..., vₙ&gt;
+
+که:
+vᵢ ∈ Dᵢ  (هر مقدار از دامنه مربوطه)</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>t₁ = &lt;100, 'Ali', 'CS', 17.5&gt;
+t₂ = &lt;110, 'Sara', 'Math', 18.0&gt;
+t₃ = &lt;120, 'Reza', 'Physics', 16.5&gt;
+
+هر t یک تاپل است ✅</code></pre></div>
+
+<p>
+<strong>دسترسی به مقادیر تاپل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>t[StudentID] = 100
+t[Name] = 'Ali'
+t[Major] = 'CS'
+
+یا:
+t.StudentID = 100
+t.Name = 'Ali'</code></pre></div>
+
+<hr>
+<h3>5️⃣ رابطه (Relation)</h3>
+
+<p>
+<strong>تعریف نهایی:</strong>  
+<strong>رابطه <code>R</code> روی مجموعه هدینگ <code>H</code>، یک زیرمجموعه از ضرب دکارتی دامنه‌های صفات است.</strong>
+</p>
+
+<p>
+<strong>فرمول ریاضی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R ⊆ D₁ × D₂ × D₃ × ... × Dₙ
+
+که:
+Dᵢ = دامنه صفت Aᵢ</code></pre></div>
+
+<p>
+<strong>به زبان ساده:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>رابطه = مجموعه‌ای از تاپل‌ها
+
+R = {t₁, t₂, t₃, ..., tₘ}
+
+که هر tᵢ یک سطر است ✅</code></pre></div>
+
+<p>
+<strong>مثال کامل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه Student
+Student(StudentID, Name, Major)
+
+-- دامنه‌ها
+D_ID = {100, 110, 120, ...}
+D_Name = {'Ali', 'Sara', 'Reza', ...}
+D_Major = {'CS', 'Math', 'Physics', ...}
+
+-- ضرب دکارتی (همه حالت‌های ممکن)
+D_ID × D_Name × D_Major = همه ترکیبات ممکن
+
+-- رابطه Student (زیرمجموعه‌ای از ضرب دکارتی)
+Student = {
+  &lt;100, 'Ali', 'CS'&gt;,
+  &lt;110, 'Sara', 'Math'&gt;,
+  &lt;120, 'Reza', 'Physics'&gt;
+}</code></pre></div>
+
+<p>
+<strong>نکته مهم:</strong> چرا زیرمجموعه؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ضرب دکارتی:
+→ همه ترکیبات ممکن (حتی بی‌معنی!)
+→ مثلاً: &lt;100, 'Ali', 'Math'&gt; + &lt;100, 'Sara', 'CS'&gt; ممکنه!
+
+رابطه واقعی:
+→ فقط ترکیبات معتبر (با معنا!)
+→ مثلاً: فقط یک دانشجوی Ali با ID=100 داریم ✅</code></pre></div>
+
+<hr>
+<h3>📊 خواص رابطه</h3>
+
+<p>
+رابطه چندین خاصیت مهم داره:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((خواص<br/>رابطه))
+    1 نام دار
+      هر رابطه نام داره
+      Student Course
+    2 مجموعه است
+      ترتیب تاپل مهم نیست
+      تکرار نداریم
+    3 هر تاپل یکتاست
+      دو تاپل یکسان نداریم
+      PK تضمین می کنه
+    4 صفات اتمی
+      تجزیه ناپذیر
+      تک مقداری
+    5 درجه دارد
+      تعداد صفات
+      Degree n
+    6 کاردینالیتی
+      تعداد تاپل ها
+      Cardinality m
+</pre></div>
+
+<h4>خاصیت 1: نام‌دار بودن</h4>
+
+<p>
+<strong>تعریف:</strong> هر رابطه معرفی شده به سیستم به وسیله یک اسم.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (...);  -- Student = نام رابطه
+CREATE TABLE Course (...);   -- Course = نام رابطه</code></pre></div>
+
+<p>
+<strong>نکته:</strong> البته می‌توان رابطه داشت که نام ندارد (رابطه بی‌نام یا anonymous)
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه بی‌نام (نتیجه Query)
+SELECT * FROM Student WHERE GPA &gt; 15;
+-- نتیجه یک رابطه است ولی نامی ندارد</code></pre></div>
+
+<h4>خاصیت 2: رابطه یک مجموعه است</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>چون R مجموعه است:
+
+✅ ترتیب تاپل‌ها مهم نیست:
+R₁ = {t₁, t₂, t₃}
+R₂ = {t₃, t₁, t₂}
+→ R₁ = R₂  (یکسان!)
+
+✅ تکرار نداریم:
+R = {t₁, t₁, t₂}  ❌ اشتباه!
+R = {t₁, t₂}  ✅ درست!</code></pre></div>
+
+<p>
+<strong>در عمل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- این دو Query یکسان‌اند:
+SELECT * FROM Student;  -- ترتیب تصادفی
+SELECT * FROM Student ORDER BY StudentID;  -- ترتیب مشخص
+
+-- ولی همان داده‌ها! ✅</code></pre></div>
+
+<h4>خاصیت 3: هر تاپل یکتاست</h4>
+
+<p>
+<strong>اصل:</strong> دو تاپل یکسان نمی‌توانیم داشته باشیم!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>❌ اشتباه:
+Student = {
+  &lt;100, 'Ali', 'CS'&gt;,
+  &lt;100, 'Ali', 'CS'&gt;  ← تکراری!
+}
+
+✅ درست:
+Student = {
+  &lt;100, 'Ali', 'CS'&gt;,
+  &lt;110, 'Sara', 'Math'&gt;  ← یکتا!
+}</code></pre></div>
+
+<p>
+<strong>چطور تضمین می‌کنیم؟</strong>  
+→ با <strong>کلید اصلی (Primary Key)</strong>! 🔑
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,  -- تضمین یکتایی!
+    Name VARCHAR(50),
+    Major VARCHAR(30)
+);
+
+-- حالا نمی‌شه دو StudentID یکسان داشت ✅</code></pre></div>
+
+<h4>خاصیت 4: صفات اتمی (Atomic)</h4>
+
+<p>
+<strong>تعریف:</strong> صفت ساده صفتی است که تجزیه‌ناپذیر باشد. اجزایش در محیط معنی نداشته باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>✅ اتمی (Atomic):
+→ Age = 25  (تجزیه‌ناپذیر!)
+→ City = 'Tehran'  (تجزیه‌ناپذیر!)
+
+❌ غیراتمی (Non-Atomic):
+→ FullName = 'Ali Rezaei'  (تجزیه‌پذیر: Ali + Rezaei)
+→ Address = 'Tehran, Valiasr, No.10'  (تجزیه‌پذیر!)</code></pre></div>
+
+<p>
+<strong>مثال اصلاح:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ غلط
+CREATE TABLE Student (
+    FullName VARCHAR(100)  -- تجزیه‌پذیر!
+);
+
+-- ✅ درست
+CREATE TABLE Student (
+    FirstName VARCHAR(50),  -- اتمی ✅
+    LastName VARCHAR(50)    -- اتمی ✅
+);</code></pre></div>
+
+<h4>خاصیت 5: درجه رابطه (Degree)</h4>
+
+<p>
+<strong>تعریف:</strong> درجه رابطه <code>n</code> برابر است با تعداد صفات آن رابطه.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Degree(R) = |H| = n</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه Student
+Student(StudentID, Name, Major, GPA)
+
+-- درجه
+Degree(Student) = 4  (4 صفت)</code></pre></div>
+
+<p>
+<strong>انواع رابطه بر اساس درجه:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>Degree</th><th>نام</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Unary</td><td>R(A)</td></tr>
+<tr><td>2</td><td>Binary</td><td>R(A, B)</td></tr>
+<tr><td>3</td><td>Ternary</td><td>R(A, B, C)</td></tr>
+<tr><td>n</td><td>n-ary</td><td>R(A₁, A₂, ..., Aₙ)</td></tr>
+</tbody></table></div>#### خاصیت 6: کاردینالیتی (Cardinality)
+
+<p>
+<strong>تعریف:</strong> کاردینالیتی رابطه <code>R</code> برابر است با تعداد تاپل‌های آن.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Cardinality(R) = |R| = m</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Student = {
+  &lt;100, 'Ali', 'CS'&gt;,
+  &lt;110, 'Sara', 'Math'&gt;,
+  &lt;120, 'Reza', 'Physics'&gt;
+}
+
+Cardinality(Student) = 3  (3 تاپل)</code></pre></div>
+
+<p>
+<strong>نکته:</strong> کاردینالیتی <strong>متغیر</strong> است!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>امروز: Cardinality(Student) = 100
+فردا (بعد از ثبت‌نام): Cardinality(Student) = 150
+
+ولی Degree ثابت است! ✅</code></pre></div>
+
+<hr>
+<h3>🔢 درجه رابطه و تعداد دامنه‌ها</h3>
+
+<p>
+<strong>قاعده مهم:</strong> اگر رابطه <code>R</code> دارای <code>n</code> صفت باشد:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>حداکثر تعداد دامنه‌ها = n
+حداقل تعداد دامنه‌ها = 1</code></pre></div>
+
+<p>
+<strong>چرا؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>حالت 1: هر صفت دامنه جداگانه (بیشترین حالت)
+→ n صفت → n دامنه
+
+Student(ID, Name, Age)
+→ D_ID, D_Name, D_Age  (3 دامنه)
+
+حالت 2: همه صفات یک دامنه (کمترین حالت)
+→ n صفت → 1 دامنه
+
+Points(X, Y, Z)
+→ همه از D_Real  (1 دامنه: اعداد حقیقی)</code></pre></div>
+
+<p>
+<strong>فرمول دقیق:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر درجه رابطه = n
+→ تعداد دامنه‌ها: 1 ≤ d ≤ n</code></pre></div>
+
+<hr>
+<h3>📝 مثال جامع - سیستم دانشگاه</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه 1: Student
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Major VARCHAR(30),
+    GPA DECIMAL(4,2)
+);
+
+-- رابطه 2: Course
+CREATE TABLE Course (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(100),
+    Credits INT,
+    DeptName VARCHAR(50)
+);
+
+-- رابطه 3: Enrollment
+CREATE TABLE Enrollment (
+    StudentID INT,
+    CourseID INT,
+    Semester VARCHAR(10),
+    Grade DECIMAL(4,2),
+    PRIMARY KEY (StudentID, CourseID, Semester)
+);</code></pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+
+<p>
+<strong>Student:</strong>
+</p>
+<ul>
+<li>Heading: H = {StudentID, FirstName, LastName, Major, GPA}</li>
+<li>Degree: 5</li>
+<li>Cardinality: فرض کنیم 1000 دانشجو</li>
+<li>دامنه‌ها: D_ID (Integer), D_Name (String), D_Major (String), D_GPA (Decimal)</li>
+</ul>
+
+<p>
+<strong>Course:</strong>
+</p>
+<ul>
+<li>Degree: 4</li>
+<li>Cardinality: فرض کنیم 200 درس</li>
+</ul>
+
+<p>
+<strong>Enrollment:</strong>
+</p>
+<ul>
+<li>Degree: 4</li>
+<li>Cardinality: فرض کنیم 5000 ثبت‌نام</li>
+<li>کلید اصلی: ترکیبی (Composite Key)</li>
+</ul>
+
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student:
++-----+-------+--------+------+------+
+|  ID | First | Last   | Major| GPA  |
++-----+-------+--------+------+------+
+| 100 | Ali   | Rezaei | CS   | 17.5 |
+| 110 | Sara  | Ahmadi | Math | 18.0 |
+| 120 | Reza  | Karimi | Phys | 16.5 |
++-----+-------+--------+------+------+
+
+Course:
++-----+----------+-------+---------+
+|  ID | Name     | Credit| Dept    |
++-----+----------+-------+---------+
+| 201 | Database | 3     | CS      |
+| 202 | Calculus | 4     | Math    |
+| 203 | Physics  | 3     | Physics |
++-----+----------+-------+---------+
+
+Enrollment:
++-----+-----+----------+-------+
+| SID | CID | Semester | Grade |
++-----+-----+----------+-------+
+| 100 | 201 | Fall2024 | 18.0  |
+| 100 | 202 | Fall2024 | 17.0  |
+| 110 | 201 | Fall2024 | 19.5  |
++-----+-----+----------+-------+</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۴.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+رابطه Employee با صفات زیر داریم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee(EmpID, FullName, DeptCode, Salary, HireDate)</code></pre></div>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>الف) مجموعه هدینگ <code>H</code> را بنویسید.</li>
+<li>ب) درجه رابطه چند است؟</li>
+<li>ج) دامنه مناسب برای هر صفت تعریف کنید.</li>
+<li>د) یک تاپل نمونه بنویسید.</li>
+<li>ه) آیا FullName صفت اتمی است؟ چرا؟</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) رابطه یک مجموعه است، پس ترتیب تاپل‌ها مهم نیست.
+ب) هر رابطه حداقل یک کلید اصلی دارد.
+ج) درجه رابطه با اضافه شدن تاپل جدید تغییر می‌کند.
+د) کاردینالیتی رابطه متغیر است.</code></pre></div>
+
+<h4>تمرین 3 (تحلیلی):</h4>
+<p>
+رابطه Product:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Product (
+    ProductID INT,
+    ProductName VARCHAR(100),
+    Price DECIMAL(10,2),
+    Category VARCHAR(50)
+);
+
+-- داده نمونه
+INSERT INTO Product VALUES
+(1, 'Laptop', 25000000, 'Electronics'),
+(2, 'Mouse', 150000, 'Electronics'),
+(3, 'Book', 50000, 'Stationery');</code></pre></div>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>الف) چند تاپل داریم؟</li>
+<li>ب) درجه چند است؟</li>
+<li>ج) آیا این رابطه کلید اصلی دارد؟ اگر نه، چرا مشکل است؟</li>
+<li>د) اگر دو محصول با همان نام و قیمت داشته باشیم چه اتفاقی می‌افتد؟</li>
+</ul>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+سیستم کتابخانه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>موجودیت‌ها: Book, Member, Borrow
+
+Book: شناسه کتاب، عنوان، نویسنده، سال انتشار
+Member: شناسه عضو، نام، شماره تماس
+Borrow: شناسه قرض، شناسه کتاب، شناسه عضو، تاریخ قرض، تاریخ برگشت</code></pre></div>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>رابطه‌ها را با صفات کامل بنویسید</li>
+<li>برای هر رابطه: Heading, Degree, دامنه‌ها</li>
+<li>یک تاپل نمونه برای هر رابطه</li>
+</ul>
+
+<h4>تمرین 5 (مفهومی):</h4>
+<p>
+<strong>سؤال:</strong> چرا می‌گوییم رابطه <strong>زیرمجموعه</strong> ضرب دکارتی است و نه <strong>برابر</strong>؟
+</p>
+
+<p>
+با مثال کامل توضیح دهید و نشان دهید که چطور ضرب دکارتی شامل ترکیبات بی‌معنی هم می‌شود.
+</p>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+رابطه زیر را در نظر بگیرید:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT,
+    Name VARCHAR(50),
+    Phone VARCHAR(20),  -- چند شماره تلفن!
+    Skills VARCHAR(200)  -- چند مهارت!
+);
+
+-- مثال داده:
+(100, 'Ali', '09121234567, 02188776655', 'Java, Python, SQL')</code></pre></div>
+
+<p>
+<strong>مشکلات:</strong>
+</p>
+<ul>
+<li>الف) کدام خاصیت رابطه نقض شده؟</li>
+<li>ب) چرا این طراحی مشکل‌ساز است؟</li>
+<li>ج) راه‌حل چیست؟ رابطه را اصلاح کنید.</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مدل<br/>رابطه ای))
+    تعاریف پایه
+      Domain دامنه
+      Attribute صفت
+      Tuple تاپل
+      Relation رابطه
+    رابطه
+      R D1 D2 Dn
+      زیرمجموعه ضرب دکارتی
+      مجموعه تاپل ها
+    خواص
+      نام دار
+      مجموعه
+      تاپل یکتا
+      صفات اتمی
+      Degree n
+      Cardinality m
+    فرمول ها
+      H مجموعه صفات
+      Degree H
+      1 d n
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>رابطه:</strong> زیرمجموعه ضرب دکارتی، مجموعه تاپل‌ها</li>
+<li>✅ <strong>تاپل:</strong> یک سطر، مقادیر مشخص برای هر صفت</li>
+<li>✅ <strong>دامنه:</strong> مجموعه مقادیر مجاز برای صفت</li>
+<li>✅ <strong>Heading:</strong> مجموعه صفات (ترتیب مهم نیست)</li>
+<li>✅ <strong>Degree:</strong> تعداد صفات (ثابت)</li>
+<li>✅ <strong>Cardinality:</strong> تعداد تاپل‌ها (متغیر)</li>
+<li>✅ <strong>خواص:</strong> نام‌دار، مجموعه، تاپل یکتا، صفات اتمی</li>
+<li>✅ <strong>تعداد دامنه:</strong> 1 ≤ d ≤ n</li>
+</ul>
+
+<hr>
+<p>
+<em>این فایل بخشی از درس‌نامه جامع طراحی پایگاه داده است.</em>  
+<em>بخش بعدی: ۴.۲ - تئوری کلیدها</em>
+</p>
+
+                </div>
+
+                <div class="page-navigation"><a href="../chapter-3/3-4.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">استقلال داده‌ای</span></a><a href="4-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">تئوری کلیدها</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

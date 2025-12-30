@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - نسل‌های ذخیره‌سازی">
+    <meta name="keywords" content="پایگاه داده, Database Design, نسل‌های ذخیره‌سازی">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>نسل‌های ذخیره‌سازی | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">نسل‌های ذخیره‌سازی</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">نسل‌های ذخیره‌سازی</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۲.۱: نسل‌های ذخیره‌سازی داده (تکامل تاریخی)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، تا اینجا با مفاهیم پایه آشنا شدیم. حالا می‌خوایم ببینیم که <strong>چطور به اینجا رسیدیم؟</strong>
+</p>
+
+<p>
+فرض کن برگردیم به سال 1950 که اولین کامپیوترها ساخته شدن. اون موقع هیچ چیزی به اسم "پایگاه داده" وجود نداشت! برنامه‌نویس‌ها مجبور بودن خودشون همه کارها رو انجام بدن.
+</p>
+
+<p>
+حالا بیا با هم سفری به تاریخ داشته باشیم و ببینیم تکنولوژی ذخیره‌سازی داده چطور تکامل پیدا کرده. این سفر شامل <strong>6 نسل</strong> است:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+timeline
+    title تکامل نسل‌های ذخیره‌سازی داده
+    1950s : نسل اول<br/>بدون File System
+    1960s : نسل دوم<br/>با File System
+    1960s-1970s : نسل سوم<br/>DMS
+    1970s-1980s : نسل چهارم<br/>DBMS
+    1990s : نسل پنجم<br/>KBMS
+    2000s : نسل ششم<br/>Data Mining
+</pre></div>
+
+<hr>
+<h3>📖 نسل اول: دوران ابتدایی (بدون File System)</h3>
+
+<p>
+<strong>دوره زمانی:</strong> دهه 1950
+</p>
+
+<p>
+<strong>تعریف :</strong>  
+نسل اول: فایل سیستم (FS) وجود نداشت و خود برنامه‌نویس مجبور بود توابع مربوط را انجام دهد و مستقیماً با رسانه ذخیره‌سازی کار می‌نمود. زمان‌بر و هزینه‌بر بود. چون سیستم عامل ندارد.
+</p>
+
+<h4>چرا "بدون File System"؟</h4>
+
+<p>
+در این دوران:
+</p>
+<ul>
+<li><strong>سیستم عامل وجود نداشت</strong> ❌</li>
+<li><strong>هیچ ابزاری برای مدیریت فایل نبود</strong> ❌</li>
+<li><strong>برنامه‌نویس باید همه چیز رو خودش می‌نوشت</strong> 😰</li>
+</ul>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه‌نویس] --> B[برنامه]
+    B --> C[کنترل مستقیم<br/>ذخیره‌سازی]
+    C --> D[دیسک<br/>رسانه ذخیره‌سازی]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#e67e22,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#95a5a6,color:#fff
+    
+    E[سیستم عامل ❌] 
+    F[File System ❌]
+    
+    style E fill:#cccccc,color:#666
+    style F fill:#cccccc,color:#666
+</pre></div>
+
+<h4>چالش‌های این دوران</h4>
+
+<p>
+<strong>1. کنترل مستقیم رسانه ذخیره‌سازی</strong>
+</p>
+
+<p>
+برنامه‌نویس باید:
+</p>
+<ul>
+<li>آدرس فیزیکی روی دیسک رو محاسبه کنه</li>
+<li>سکتور و Track رو مشخص کنه</li>
+<li>خودش Read/Write انجام بده</li>
+</ul>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: ذخیره رکورد دانشجو
+↓
+برنامه‌نویس باید بنویسه:
+1. محاسبه آدرس: Track 15, Sector 8
+2. نوشتن مستقیم: WRITE(Track=15, Sector=8, Data=StudentRecord)
+3. کنترل خطا: IF Error THEN Retry</code></pre></div>
+
+<p>
+<strong>2. زمان‌بر و هزینه‌بر</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>کار</th><th>زمان (تخمینی)</th></tr></thead>
+<tbody>
+<tr><td>نوشتن یک برنامه ساده</td><td>6 ماه</td></tr>
+<tr><td>رفع اشکال</td><td>3 ماه</td></tr>
+<tr><td>تغییر ساختار داده</td><td>2 ماه</td></tr>
+<tr><td><strong>جمع</strong></td><td><strong>11 ماه!</strong></td></tr>
+</tbody></table></div>هر برنامه‌نویس باید <strong>همه چیز از صفر</strong> می‌نوشت! 😱
+
+<h4>مثال عملی: سیستم حقوق دانشگاه</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای ذخیره حقوق یک استاد، برنامه‌نویس باید:
+
+1. محاسبه فضای مورد نیاز (دستی)
+   نام: 20 بایت
+   شماره پرسنلی: 4 بایت  
+   حقوق: 4 بایت
+   جمع: 28 بایت
+
+2. پیدا کردن جای خالی روی دیسک
+   بررسی Track 0 → پر است
+   بررسی Track 1 → پر است
+   ...
+   بررسی Track 45 → خالی است ✓
+
+3. نوشتن کد برای ذخیره:
+   WRITE(Track=45, Sector=3, Offset=0, Length=28, Data=TeacherData)
+
+4. نوشتن کد برای خواندن:
+   READ(Track=45, Sector=3, Offset=0, Length=28) → Data
+
+5. اگر خطا رخ بده، خودت باید مدیریت کنی!</code></pre></div>
+
+<h4>معایب نسل اول</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((معایب<br/>نسل اول))
+    زمان‌بر
+      6+ ماه برای یک برنامه
+      تکرار کد
+    هزینه‌بر
+      نیروی انسانی زیاد
+      دستمزد بالا
+    خطاپذیر
+      اشکالات زیاد
+      رفع اشکال سخت
+    غیرقابل استفاده مجدد
+      هر برنامه از صفر
+      تکرار کار
+</pre></div>
+
+<hr>
+<h3>🗂️ نسل دوم: ظهور File System</h3>
+
+<p>
+<strong>دوره زمانی:</strong> دهه 1960
+</p>
+
+<p>
+<strong>تعریف :</strong>  
+نسل دوم: فایل سیستم وجود داشت. برنامه‌های کاربردی با واسطه فایل‌های سیستم، با رسانه‌های ذخیره‌سازی کار می‌نمودند. برنامه‌نویس درگیر کار با فایل‌ها بود.
+</p>
+
+<h4>چه تفاوتی با نسل اول داشت؟</h4>
+
+<p>
+حالا <strong>سیستم عامل</strong> آمده بود و <strong>File System</strong> رو ارائه می‌داد! ✅
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه‌نویس] --> B[برنامه کاربردی]
+    B --> C[File System]
+    C --> D[سیستم عامل]
+    D --> E[دیسک]
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#9b59b6,color:#fff
+    style E fill:#95a5a6,color:#fff
+</pre></div>
+
+<h4>مزایای نسل دوم</h4>
+
+<p>
+<strong>1. انتزاع (Abstraction)</strong>
+</p>
+
+<p>
+برنامه‌نویس دیگه نیاز نداشت با Track و Sector کار کنه! فقط کافی بود بگه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نسل اول (بد):
+WRITE(Track=45, Sector=3, Data)
+
+نسل دوم (خوب):
+File f = OPEN("teachers.dat")
+WRITE(f, Data)
+CLOSE(f)</code></pre></div>
+
+<p>
+<strong>2. استفاده مجدد</strong>
+</p>
+
+<p>
+حالا File System یک‌بار نوشته می‌شد و همه برنامه‌ها ازش استفاده می‌کردن!
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>قبل (نسل اول)</th><th>بعد (نسل دوم)</th></tr></thead>
+<tbody>
+<tr><td>هر برنامه‌نویس کد خودش رو می‌نوشت</td><td>همه از File System استفاده می‌کنن</td></tr>
+<tr><td>1000 برنامه = 1000 کد تکراری</td><td>1000 برنامه = 1 File System</td></tr>
+</tbody></table></div>#### چالش‌های نسل دوم
+
+<p>
+اما هنوز مشکلات زیادی داشت:
+</p>
+
+<p>
+<strong>1. برنامه‌نویس هنوز درگیر فایل‌ها بود</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای پیدا کردن حقوق یک استاد:
+
+1. OPEN("teachers.dat")
+2. خودت باید loop بزنی روی همه رکوردها
+3. مقایسه کنی که کدوم رکورد مال استاد مورد نظرته
+4. اگر پیدا کردی، بخونی
+5. CLOSE("teachers.dat")</code></pre></div>
+
+<p>
+<strong>2. هیچ امکانات پیشرفته‌ای نداشت</strong>
+</p>
+
+<ul>
+<li>جستجوی سریع؟ <strong>خودت بنویس</strong> ❌</li>
+<li>مرتب‌سازی؟ <strong>خودت بنویس</strong> ❌</li>
+<li>شاخص (Index)؟ <strong>خودت بنویس</strong> ❌</li>
+</ul>
+
+<h4>مثال مقایسه: جستجوی استاد</h4>
+
+<p>
+<strong>نسل اول (وحشتناک):</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>// باید خودت Track و Sector رو حساب کنی!
+FOR Track = 0 TO 100
+  FOR Sector = 0 TO 16
+    Data = READ(Track, Sector)
+    IF Data.TeacherID == 123 THEN Found!
+  END
+END</code></pre></div>
+
+<p>
+<strong>نسل دوم (بهتر ولی هنوز سخت):</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>File f = OPEN("teachers.dat")
+WHILE NOT EOF(f)
+  Record = READ(f)
+  IF Record.TeacherID == 123 THEN Found!
+END
+CLOSE(f)</code></pre></div>
+
+<p>
+هنوز برنامه‌نویس باید خودش loop بزنه و جستجو کنه! 😓
+</p>
+
+<hr>
+<h3>🔧 نسل سوم: ظهور DMS (Data Management System)</h3>
+
+<p>
+<strong>دوره زمانی:</strong> اواخر دهه 1960 و اوایل دهه 1970
+</p>
+
+<p>
+<strong>تعریف :</strong>  
+DMS (Data Management System): علاوه بر امکانات FS (فایل سیستم)، امکاناتی مانند زدن شاخص یا مرتب‌سازی را نیز در اختیار برنامه‌نویس قرار می‌دهد.
+</p>
+
+<h4>چه تفاوتی با نسل دوم داشت؟</h4>
+
+<p>
+حالا <strong>امکانات اضافی</strong> اضافه شده بود! 🎉
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه‌نویس] --> B[برنامه کاربردی]
+    B --> C[DMS]
+    
+    C --> D[Index<br/>شاخص‌گذاری]
+    C --> E[Sort<br/>مرتب‌سازی]
+    C --> F[Search<br/>جستجوی سریع]
+    
+    D --> G[File System]
+    E --> G
+    F --> G
+    
+    G --> H[دیسک]
+    
+    style C fill:#e74c3c,color:#fff
+    style D fill:#3498db,color:#fff
+    style E fill:#2ecc71,color:#fff
+    style F fill:#f39c12,color:#fff
+</pre></div>
+
+<h4>امکانات جدید DMS</h4>
+
+<p>
+<strong>1. شاخص‌گذاری (Indexing)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل از DMS:
+برای پیدا کردن Teacher با ID=123، باید کل فایل رو بخونی!
+→ 10,000 رکورد → خیلی کند 🐌
+
+با DMS:
+یک Index (شاخص) روی TeacherID می‌سازیم
+→ جستجوی سریع! ⚡</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Index روی TeacherID:
+ID=100 → Record در Position 0
+ID=123 → Record در Position 450  ← پیداش کردیم!
+ID=200 → Record در Position 1200
+...
+
+حالا دیگه نیازی نیست کل فایل رو بخونیم!</code></pre></div>
+
+<p>
+<strong>2. مرتب‌سازی (Sorting)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل از DMS:
+برای مرتب کردن اساتید بر اساس نام:
+→ خودت باید الگوریتم Sort بنویسی (Bubble Sort, Quick Sort, ...)
+→ 500 خط کد! 😰
+
+با DMS:
+CALL SORT("teachers.dat", BY="Name")
+→ 1 خط کد! 😊</code></pre></div>
+
+<h4>مزایای DMS</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مزایای DMS))
+    کاهش کد
+      از 500 خط به 1 خط
+      راحت‌تر
+    سرعت بیشتر
+      Index → جستجوی سریع
+      Sort → مرتب‌سازی سریع
+    راحتی استفاده
+      توابع آماده
+      کمتر اشکال
+</pre></div>
+
+<h4>چالش‌های DMS</h4>
+
+<p>
+اما هنوز مشکلات زیادی داشت:
+</p>
+
+<p>
+<strong>1. فقط امکانات محدود</strong>
+</p>
+
+<p>
+DMS فقط Index و Sort داشت. چیزهای دیگه نداشت:
+</p>
+<ul>
+<li>امنیت؟ ❌</li>
+<li>کنترل همزمانی (Concurrency)؟ ❌</li>
+<li>بازیابی از خرابی (Recovery)؟ ❌</li>
+<li>ارتباط بین داده‌ها؟ ❌</li>
+</ul>
+
+<p>
+<strong>2. برنامه‌نویس هنوز درگیر جزئیات بود</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای پیدا کردن "اساتید دانشکده کامپیوتر":
+
+1. OPEN("teachers.dat")
+2. CREATE_INDEX("teachers.dat", "Department")
+3. SEARCH(Index, "Computer")
+4. READ_RECORDS(Results)
+5. CLOSE("teachers.dat")</code></pre></div>
+
+<p>
+هنوز زیادی پیچیده بود! 🤔
+</p>
+
+<hr>
+<h3>💾 نسل چهارم: انقلاب DBMS (Database Management System)</h3>
+
+<p>
+<strong>دوره زمانی:</strong> دهه 1970 و 1980
+</p>
+
+<p>
+<strong>تعریف :</strong>  
+DBMS (Database Management System): سیستمی برای مدیریت پایگاه داده که امکانات کاملی برای ذخیره، بازیابی، امنیت، و مدیریت داده‌ها فراهم می‌کند.
+</p>
+
+<h4>انقلاب بزرگ! 🎊</h4>
+
+<p>
+این بزرگ‌ترین تغییر در تاریخ ذخیره‌سازی داده بود!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه‌نویس] --> B[برنامه کاربردی]
+    B --> C[DBMS]
+    
+    C --> D1[امنیت]
+    C --> D2[کنترل همزمانی]
+    C --> D3[بازیابی]
+    C --> D4[زبان Query]
+    C --> D5[استقلال داده]
+    C --> D6[جامعیت داده]
+    
+    D1 --> E[File System]
+    D2 --> E
+    D3 --> E
+    D4 --> E
+    D5 --> E
+    D6 --> E
+    
+    E --> F[دیسک]
+    
+    style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:4px
+    style D1 fill:#3498db,color:#fff
+    style D2 fill:#2ecc71,color:#fff
+    style D3 fill:#f39c12,color:#fff
+    style D4 fill:#9b59b6,color:#fff
+    style D5 fill:#1abc9c,color:#fff
+    style D6 fill:#e67e22,color:#fff
+</pre></div>
+
+<h4>امکانات کامل DBMS</h4>
+
+<p>
+<strong>1. زبان Query (SQL)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">قبل از DBMS (نسل سوم):
+-- 50 خط کد برای جستجو و فیلتر کردن!
+
+با DBMS:
+SELECT * FROM Teachers 
+WHERE Department = 'Computer'
+ORDER BY Salary DESC;
+
+-- فقط 3 خط! 🎉</code></pre></div>
+
+<p>
+<strong>2. امنیت (Security)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>DBMS اجازه دسترسی رو کنترل می‌کنه:
+
+GRANT SELECT ON Teachers TO Professor;
+REVOKE DELETE ON Teachers FROM Student;</code></pre></div>
+
+<p>
+<strong>3. کنترل همزمانی (Concurrency Control)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: دو کاربر هم‌زمان می‌خوان حقوق استاد رو تغییر بدن
+
+کاربر A: Salary = 5000 → 5500
+کاربر B: Salary = 5000 → 5200
+
+بدون DBMS: یکی از تغییرات از دست می‌ره! ❌
+با DBMS: Lock می‌زنه و مدیریت می‌کنه ✅</code></pre></div>
+
+<p>
+<strong>4. بازیابی از خرابی (Recovery)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: وسط Update کردن حقوق، برق می‌ره!
+
+بدون DBMS: داده‌ها خراب می‌شن ❌
+با DBMS: Transaction رو Rollback می‌کنه ✅</code></pre></div>
+
+<h4>انواع DBMS ()</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>نوع</th><th>سال ارائه</th><th>مثال</th><th>ساختار داده</th></tr></thead>
+<tbody>
+<tr><td><strong>HDBMS</strong> (سلسله مراتبی)</td><td>1965</td><td>IMS</td><td>درختی</td></tr>
+<tr><td><strong>NDBMS</strong> (شبکه‌ای)</td><td>1970</td><td>IDMS</td><td>گراف</td></tr>
+<tr><td><strong>RDBMS</strong> (رابطه‌ای)</td><td>1970s</td><td>Oracle, MySQL, PostgreSQL</td><td>جدول</td></tr>
+<tr><td><strong>OODBMS</strong> (شی‌گرا)</td><td>1990s</td><td>ObjectDB</td><td>شی</td></tr>
+</tbody></table></div><strong>RDBMS محبوب‌ترین است!</strong> امروزه بیشتر سیستم‌ها از RDBMS استفاده می‌کنن:
+<ul>
+<li><strong>Oracle</strong></li>
+<li><strong>MySQL</strong></li>
+<li><strong>PostgreSQL</strong></li>
+<li><strong>SQL Server</strong></li>
+<li><strong>DB2</strong></li>
+</ul>
+
+<h4>مزایای DBMS</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مزایای DBMS))
+    سادگی استفاده
+      SQL ساده
+      کد کمتر
+    امنیت
+      کنترل دسترسی
+      رمزنگاری
+    قابلیت اطمینان
+      Transaction
+      Recovery
+    عملکرد
+      Index خودکار
+      بهینه‌سازی Query
+    اشتراک داده
+      چند کاربر همزمان
+      Lock Management
+</pre></div>
+
+<h4>مثال مقایسه کامل: سیستم دانشگاه</h4>
+
+<p>
+<strong>نسل اول (وحشتناک):</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>500 خط کد برای ذخیره یک رکورد دانشجو
+3 ماه زمان توسعه
+خطاپذیری بالا</code></pre></div>
+
+<p>
+<strong>نسل دوم (بهتر):</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>100 خط کد
+1 ماه زمان توسعه
+هنوز پیچیده</code></pre></div>
+
+<p>
+<strong>نسل سوم (خوب):</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>50 خط کد
+2 هفته زمان توسعه
+امکانات محدود</code></pre></div>
+
+<p>
+<strong>نسل چهارم - DBMS (عالی!):</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- فقط 5 خط کد!
+INSERT INTO Students (ID, Name, Department)
+VALUES (123, 'علی علیزاده', 'Computer');
+
+SELECT * FROM Students WHERE Department = 'Computer';
+
+-- زمان توسعه: 2 روز! 🎉
+-- امکانات کامل ✅</code></pre></div>
+
+<hr>
+<h3>🧠 نسل پنجم: KBMS (Knowledge Base Management System)</h3>
+
+<p>
+<strong>دوره زمانی:</strong> دهه 1990
+</p>
+
+<p>
+<strong>تعریف :</strong>  
+KBMS (Knowledge Base Management System): به جای داده، دانش را ذخیره می‌کند. دانش یعنی داده‌های پردازش شده.
+</p>
+
+<h4>تفاوت DBMS و KBMS</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[DBMS] --> B[ذخیره داده]
+    B --> C["مثال: نام=علی، نمره=18"]
+    
+    D[KBMS] --> E[ذخیره دانش]
+    E --> F["مثال: اگر نمره>17 → دانشجوی ممتاز"]
+    
+    style A fill:#3498db,color:#fff
+    style D fill:#9b59b6,color:#fff
+</pre></div>
+
+<h4>مثال: سیستم تشخیص پزشکی</h4>
+
+<p>
+<strong>با DBMS:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ذخیره می‌کنه:
+- بیمار: علی
+- تب: 39 درجه
+- سرفه: دارد</code></pre></div>
+
+<p>
+<strong>با KBMS:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانش (قوانین):
+- اگر (تب &gt; 38) و (سرفه = دارد) → احتمال آنفلوانزا
+- اگر (تب &lt; 37.5) و (سردرد = دارد) → احتمال سرماخوردگی
+
+KBMS خودش نتیجه‌گیری می‌کنه: "علی احتمالاً آنفلوانزا دارد"</code></pre></div>
+
+<h4>کاربردها</h4>
+
+<ul>
+<li>سیستم‌های خبره (Expert Systems)</li>
+<li>هوش مصنوعی (AI)</li>
+<li>سیستم‌های تصمیم‌گیری</li>
+</ul>
+
+<hr>
+<h3>⛏️ نسل ششم: Data Mining (داده‌کاوی)</h3>
+
+<p>
+<strong>دوره زمانی:</strong> دهه 2000 تا امروز
+</p>
+
+<p>
+<strong>تعریف :</strong>  
+Data Mining (داده‌کاوی): کار با مجموعه‌ای از Database‌ها برای کشف الگوها و دانش پنهان.
+</p>
+
+<h4>تفاوت با نسل‌های قبل</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[چندین Database] --> B[Data Mining]
+    B --> C[کشف الگوها]
+    C --> D[دانش جدید]
+    
+    A1[DB دانشگاه 1] --> A
+    A2[DB دانشگاه 2] --> A
+    A3[DB دانشگاه 3] --> A
+    A4[...] --> A
+    A5[DB دانشگاه N] --> A
+    
+    style B fill:#e74c3c,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>مثال: تحلیل دانشجویان دانشگاه‌ها</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>داده‌ها از 100 دانشگاه:
+- 1,000,000 دانشجو
+- نمرات، حضور، فعالیت‌ها
+
+Data Mining کشف می‌کنه:
+"دانشجویانی که بیش از 80٪ کلاس‌ها حاضر هستند،
+معدل آنها 2 نمره بالاتر از بقیه است"
+
+این یک دانش جدید است که قبلاً نمی‌دانستیم! 💡</code></pre></div>
+
+<h4>کاربردها</h4>
+
+<ul>
+<li><strong>تجارت:</strong> کشف رفتار مشتریان</li>
+<li><strong>پزشکی:</strong> کشف الگوهای بیماری</li>
+<li><strong>آموزش:</strong> تحلیل عملکرد دانشجویان</li>
+<li><strong>امنیت:</strong> کشف تقلب و کلاهبرداری</li>
+</ul>
+
+<hr>
+<h3>📊 مقایسه کامل 6 نسل</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>نسل</th><th>نام</th><th>دوره</th><th>ویژگی اصلی</th><th>مثال استفاده</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>بدون FS</td><td>1950s</td><td>کنترل مستقیم دیسک</td><td>Track/Sector</td></tr>
+<tr><td><strong>2</strong></td><td>با FS</td><td>1960s</td><td>فایل‌ها</td><td>OPEN/CLOSE/READ/WRITE</td></tr>
+<tr><td><strong>3</strong></td><td>DMS</td><td>1960s-1970s</td><td>Index + Sort</td><td>CREATE_INDEX, SORT</td></tr>
+<tr><td><strong>4</strong></td><td>DBMS</td><td>1970s-1980s</td><td>SQL + امنیت + ...</td><td>SELECT * FROM</td></tr>
+<tr><td><strong>5</strong></td><td>KBMS</td><td>1990s</td><td>ذخیره دانش</td><td>IF-THEN Rules</td></tr>
+<tr><td><strong>6</strong></td><td>Data Mining</td><td>2000s</td><td>کشف الگو</td><td>الگوریتم‌های ML</td></tr>
+</tbody></table></div>### 🎯 نمودار تکامل (Timeline جامع)
+
+<div class="mermaid-container"><pre class="mermaid">
+gantt
+    title تکامل نسل‌های ذخیره‌سازی
+    dateFormat YYYY
+    
+    section نسل 1
+    بدون FS :1950, 1960
+    
+    section نسل 2
+    با FS :1960, 1970
+    
+    section نسل 3
+    DMS :1965, 1975
+    
+    section نسل 4
+    DBMS :1970, 2000
+    
+    section نسل 5
+    KBMS :1990, 2010
+    
+    section نسل 6
+    Data Mining :2000, 2025
+</pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۱.۲.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+برای هر نسل، یک مزیت و یک معیب بنویسید و توضیح دهید چرا نسل بعدی ظاهر شد.
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>درست</strong> است؟
+</p>
+
+<p>
+الف) DMS قبل از File System ظاهر شد  
+ب) KBMS داده‌های خام ذخیره می‌کند  
+ج) Data Mining روی چندین Database کار می‌کند  
+د) در نسل اول، سیستم عامل وجود داشت
+</p>
+
+<h4>تمرین 3 (مقایسه):</h4>
+<p>
+یک جدول مقایسه بکشید بین:
+</p>
+<ul>
+<li>نسل دوم (با FS)</li>
+<li>نسل سوم (DMS)</li>
+<li>نسل چهارم (DBMS)</li>
+</ul>
+
+<p>
+از نظر: امکانات، سرعت توسعه، هزینه
+</p>
+
+<h4>تمرین 4 (سناریو):</h4>
+<p>
+شما در سال 1960 برنامه‌نویس هستید (نسل دوم). می‌خواهید سیستم کتابخانه بسازید.
+</p>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چه چالش‌هایی دارید؟</li>
+<li>چه کارهایی باید خودتان انجام دهید؟</li>
+<li>اگر به سال 1980 (DBMS) برسید، چه چیزهایی آسان می‌شود؟</li>
+</ul>
+
+<h4>تمرین 5 (تحلیلی):</h4>
+<p>
+چرا RDBMS (رابطه‌ای) محبوب‌ترین نوع DBMS شد؟ سه دلیل بیان کنید.
+</p>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+یک مثال از Data Mining در زندگی واقعی بزنید که:
+</p>
+<ul>
+<li>از چه داده‌هایی استفاده می‌کند؟</li>
+<li>چه الگویی کشف می‌کند؟</li>
+<li>چه کاربردی دارد؟</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TD
+    A[نسل 1: بدون FS<br/>1950s] --> B[نسل 2: با FS<br/>1960s]
+    B --> C[نسل 3: DMS<br/>1960s-1970s]
+    C --> D[نسل 4: DBMS<br/>1970s-1980s]
+    D --> E[نسل 5: KBMS<br/>1990s]
+    E --> F[نسل 6: Data Mining<br/>2000s]
+    
+    A -.->|مشکل: پیچیدگی| B
+    B -.->|مشکل: امکانات محدود| C
+    C -.->|مشکل: فقد امنیت| D
+    D -.->|نیاز: ذخیره دانش| E
+    E -.->|نیاز: کشف الگو| F
+    
+    style D fill:#e74c3c,color:#fff
+    style F fill:#9b59b6,color:#fff
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>نسل 1:</strong> کنترل مستقیم → خیلی سخت!</li>
+<li>✅ <strong>نسل 2:</strong> File System → بهتر ولی هنوز سخت</li>
+<li>✅ <strong>نسل 3:</strong> DMS → Index + Sort</li>
+<li>✅ <strong>نسل 4:</strong> DBMS → انقلاب! SQL + امنیت + ...</li>
+<li>✅ <strong>نسل 5:</strong> KBMS → ذخیره دانش</li>
+<li>✅ <strong>نسل 6:</strong> Data Mining → کشف الگو</li>
+</ul>
+
+<p>
+<strong>امروزه بیشتر از DBMS (نسل 4) استفاده می‌شود!</strong> 🎯
+</p>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="1-1-3.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">داده مانا و عملیاتی</span></a><a href="1-2-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">مشکلات فایلینگ و مزایای DBMS</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="معماری پایگاه داده و دیدها - استقلال داده‌ای">
+    <meta name="keywords" content="پایگاه داده, Database Design, استقلال داده‌ای">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>استقلال داده‌ای | معماری پایگاه داده و دیدها | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">معماری پایگاه داده و دیدها</a>
+                <span class="separator">›</span>
+                <span class="current">استقلال داده‌ای</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">استقلال داده‌ای</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۳: معماری پایگاه داده و دیدها</h1>
+
+<h2>بخش ۳.۴: استقلال داده‌ای (Data Independence)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا یکی از مهم‌ترین مزایای معماری سه‌لایه رو یاد می‌گیریم! 🔓
+</p>
+
+<p>
+فرض کن یک برنامه نوشتیم که با پایگاه داده کار می‌کنه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-python"># برنامه پایتون
+def get_employees():
+    query = "SELECT EmpID, Name, Salary FROM Employee"
+    return execute_query(query)
+
+مشکل:
+❓ اگر ایندکس اضافه کنیم چی می‌شه؟
+❓ اگر فایل رو تغییر بدیم چی می‌شه؟
+❓ اگر ستون جدید اضافه کنیم چی می‌شه؟
+❓ اگر جدول رو Split کنیم چی می‌شه؟
+
+→ باید برنامه رو تغییر بدیم؟ ❌
+→ یا برنامه خودکار کار می‌کنه؟ ✅</code></pre></div>
+
+<p>
+<strong>جواب: استقلال داده‌ای (Data Independence)!</strong> ✨
+</p>
+
+<hr>
+<h3>📖 تعریف استقلال داده‌ای</h3>
+
+<p>
+<strong>مفهوم استقلال داده‌ای:</strong> برنامه کاربردی با Data در ارتباط است. اگر ساختار جداول عوض شود نباید برنامه کاربردی تحت تأثیر قرار بگیرد. اگر هر چیزی در Database عوض شود برنامه نباید تحت تأثیر قرار بگیرد.
+</p>
+
+<p>
+<strong>تعریف دقیق:</strong> مصونیت برنامه‌های کاربردی (کاربران سطح خارجی) در قبال تغییراتی که در سطوح زیرین معماری پایگاه پدید می‌آید.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه کاربر<br/>Application]
+    
+    B[View<br/>سطح خارجی]
+    
+    A --> B
+    
+    C[Conceptual<br/>سطح ادراکی<br/>جداول]
+    
+    B --> C
+    
+    D[Internal<br/>سطح داخلی<br/>فایل‌ها]
+    
+    C --> D
+    
+    E[Physical<br/>سطح فیزیکی<br/>دیسک]
+    
+    D --> E
+    
+    F[استقلال منطقی<br/>Logical Independence]
+    G[استقلال فیزیکی<br/>Physical Independence]
+    
+    B -.->|محافظت| F
+    C -.->|تغییر| F
+    
+    C -.->|محافظت| G
+    D -.->|تغییر| G
+    E -.->|تغییر| G
+    
+    style A fill:#3498db,color:#fff
+    style F fill:#e74c3c,color:#fff
+    style G fill:#f39c12,color:#fff
+</pre></div>
+
+<hr>
+<h3>🔧 دو نوع استقلال</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((استقلال<br/>داده ای))
+    1 فیزیکی PDI
+      تغییر فایل
+      تغییر ایندکس
+      تغییر دیسک
+      برنامه ثابت
+    2 منطقی LDI
+      تغییر جدول
+      اضافه ستون
+      Split جدول
+      View ثابت
+</pre></div>
+
+<hr>
+<h3>1️⃣ استقلال فیزیکی (PDI - Physical Data Independence)</h3>
+
+<p>
+<strong>تعریف:</strong> مصونیت برنامه‌های کاربردی کاربران در قبال تغییرات سطح داخلی یا ادراکی پایگاه که تغییرات در محیط فیزیکی را هم در بر دارد. در سطح داخلی (فیزیکی یا فایلینگ).
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه<br/>Application]
+    
+    B[View]
+    
+    A --> B
+    
+    C[Table]
+    
+    B --> C
+    
+    D[تغییرات فیزیکی<br/>Physical Changes]
+    
+    E[1. ایندکس]
+    F[2. ساختار فایل]
+    G[3. دیسک]
+    H[4. فرمت رکورد]
+    
+    D --> E
+    D --> F
+    D --> G
+    D --> H
+    
+    C --> D
+    
+    I[❌ تأثیر ندارد]
+    
+    D -.->|PDI| I
+    I -.-> A
+    
+    style A fill:#3498db,color:#fff
+    style D fill:#f39c12,color:#fff
+    style I fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>جنبه‌های قابل تغییر</h4>
+
+<p>
+در نوع PDI چه جنبه‌هایی از سطح فیزیکی می‌تواند تغییر یابد؟
+</p>
+
+<p>
+✅ <strong>7 جنبه قابل تغییر:</strong>
+</p>
+
+<ol>
+<li><strong>نوع فیلدها</strong> (Type)</li>
+</ol>
+<ul>
+<li>INT → BIGINT</li>
+<li>VARCHAR(50) → VARCHAR(100)</li>
+</ul>
+
+<ol>
+<li><strong>فرمت رکوردها</strong> (Format)</li>
+</ol>
+<ul>
+<li>Fixed → Variable</li>
+<li>Compressed → Uncompressed</li>
+</ul>
+
+<ol>
+<li><strong>طول رکوردها</strong> (Length)</li>
+</ol>
+<ul>
+<li>100 byte → 200 byte</li>
+</ul>
+
+<ol>
+<li><strong>ساختار فایل‌ها</strong> (File Structure)</li>
+</ol>
+<ul>
+<li>Heap → B+Tree</li>
+<li>Unordered → Ordered</li>
+</ul>
+
+<ol>
+<li><strong>استراتژی دستیابی</strong> (Access Strategy)</li>
+</ol>
+<ul>
+<li>Sequential → Indexed</li>
+<li>Hash → B+Tree</li>
+</ul>
+
+<ol>
+<li><strong>ارتباط منطقی بین فایل‌ها</strong></li>
+</ol>
+<ul>
+<li>1 Table → 1 File</li>
+<li>1 Table → 2 Files</li>
+</ul>
+
+<ol>
+<li><strong>رسانه ذخیره‌سازی</strong> (Storage Media)</li>
+</ol>
+<ul>
+<li>Disk 1 → Disk 2</li>
+<li>HDD → SSD</li>
+</ul>
+
+
+<h4>مثال‌های عملی PDI</h4>
+
+<p>
+<strong>مثال 1: اضافه کردن ایندکس</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- قبل: بدون ایندکس
+SELECT * FROM Employee WHERE Salary &gt; 50000000;
+-- → Full Table Scan (کند!)
+
+-- اضافه کردن ایندکس
+CREATE INDEX idx_salary ON Employee(Salary);
+-- → Indexed Scan (سریع!)
+
+-- برنامه تغییر نمی‌کنه! ✅
+-- همان Query، ولی سریع‌تر! ✅</code></pre></div>
+
+<p>
+<strong>مثال 2: تغییر ساختار فایل</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل: Heap File (نامرتب)
+→ Employee.dat (Unordered)
+
+بعد: B+Tree File (مرتب)
+→ Employee_indexed.dat (Ordered on EmpID)
+
+برنامه تغییر نمی‌کنه! ✅
+همان SELECT، ولی سریع‌تر! ✅</code></pre></div>
+
+<p>
+<strong>مثال 3: انتقال به دیسک دیگر</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل: /disk1/data/employee.dat
+بعد: /disk2/data/employee.dat
+
+برنامه:
+SELECT * FROM Employee;
+
+→ همچنان کار می‌کنه! ✅
+→ تغییر path لازم نیست! ✅</code></pre></div>
+
+<p>
+<strong>مثال 4: تغییر نگاشت Table→File</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل:
+Employee Table → 1 File
+
+بعد:
+Employee Table → 2 Files
+  - employee_current.dat (سال جاری)
+  - employee_archive.dat (آرشیو)
+
+برنامه:
+SELECT * FROM Employee WHERE Year = 2024;
+
+→ DBMS خودش مدیریت می‌کنه! ✅
+→ برنامه تغییر نمی‌کنه! ✅</code></pre></div>
+
+<h4>چرا PDI تأثیر نمی‌گذارد؟</h4>
+
+<p>
+چرا مواردی در سطح برنامه‌های کاربردی تأثیر نمی‌گذارد:
+</p>
+
+<p>
+✅ <strong>دو دلیل:</strong>
+</p>
+
+<ol>
+<li><strong>برنامه‌ها در سطح خارجی کار می‌کنن:</strong></li>
+</ol>
+<ul>
+<li>برنامه با View کار می‌کنه</li>
+<li>View فرا فایلی است</li>
+<li>جنبه‌های فایلینگ نداره</li>
+</ul>
+
+<ol>
+<li><strong>سطح ادراکی واسط است:</strong></li>
+</ol>
+<ul>
+<li>بین خارجی و داخلی</li>
+<li>نگاشت C/I تغییرات رو جذب می‌کنه</li>
+<li>برنامه محافظت می‌شه</li>
+</ul>
+
+
+<hr>
+<h3>2️⃣ استقلال منطقی (LDI - Logical Data Independence)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+مصونیت برنامه‌های کاربردی در قبال تغییرات در <strong>سطح ادراکی</strong> (جداول، ستون‌ها، ساختار منطقی).
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه<br/>Application]
+    
+    B[View<br/>دید خارجی]
+    
+    A --> B
+    
+    C[تغییرات منطقی<br/>Logical Changes]
+    
+    D[1. اضافه ستون]
+    E[2. حذف ستون]
+    F[3. Split جدول]
+    G[4. Merge جدول]
+    
+    C --> D
+    C --> E
+    C --> F
+    C --> G
+    
+    H[Table<br/>جداول]
+    
+    C --> H
+    
+    I[❌ تأثیر ندارد]
+    
+    C -.->|LDI| I
+    I -.-> B
+    
+    style A fill:#3498db,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style I fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>دلایل تغییرات منطقی</h4>
+
+<p>
+دلایلی که باعث تغییرات در سطح ادراکی می‌شوند:
+</p>
+
+<p>
+✅ <strong>4 دسته کلی:</strong>
+</p>
+
+<ol>
+<li><strong>رشد دیتابیس:</strong></li>
+</ol>
+<ul>
+<li>افزایش داده</li>
+<li>نیاز به بهینه‌سازی</li>
+</ul>
+
+<ol>
+<li><strong>سازماندهی مجدد:</strong></li>
+</ol>
+<ul>
+<li>Reorganization</li>
+<li>بهبود ساختار</li>
+</ul>
+
+<ol>
+<li><strong>نیازهای جدید:</strong></li>
+</ol>
+<ul>
+<li>صفت جدید (ستون)</li>
+<li>ارتباط جدید</li>
+<li>موجودیت جدید</li>
+</ul>
+
+<ol>
+<li><strong>بهینه‌سازی:</strong></li>
+</ol>
+<ul>
+<li>نرمال‌سازی</li>
+<li>De-normalization</li>
+</ul>
+
+
+<hr>
+<h3>🔧 دلایل سازماندهی مجدد پایگاه (5 دلیل)</h3>
+
+<p>
+به چه دلایلی طراح تصمیم به تغییر طراحی می‌گیرد:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((5 دلیل<br/>سازماندهی))
+    1 فایلینگ کارآتر
+      ساختار بهتر
+      دسترسی سریع‌تر
+      بهینه‌سازی Query
+    2 نرمال‌سازی
+      حذف آنومالی
+      کاهش افزونگی
+      2NF 3NF BCNF
+    3 توزیع DDB
+      Split برای سایت‌ها
+      Database توزیع‌شده
+      شکستن جدول
+    4 کاهش Lock
+      Granularity پایین‌تر
+      همروندی بیشتر
+      Row-Level Lock
+    5 محدودیت DBMS
+      حداکثر ستون
+      255 یا 1024 ستون
+      Split اجباری
+</pre></div>
+
+<h4>دلیل 1: ایجاد فایلینگ کارآتر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل:
+→ جدول Employee (1,000,000 رکورد)
+→ 20 ستون، بعضی کم‌استفاده
+→ Query‌ها روی 5 ستون اول خیلی زیاده
+→ I/O زیاد، کندی!
+
+راه‌حل: Split
+→ Emp_Frequent (5 ستون پرکاربرد)
+→ Emp_Details (15 ستون کم‌استفاده)
+
+نتیجه:
+→ Query‌ها سریع‌تر ✅
+→ I/O کمتر ✅
+→ فایلینگ کارآتر ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- قبل: یک جدول بزرگ
+Employee (EmpID, Name, Dept, Salary, Phone, Email, 
+          Address, City, Country, ZipCode, ...) -- 20 ستون
+
+-- 90% Query‌ها:
+SELECT EmpID, Name, Dept, Salary FROM Employee;
+-- → باید 20 ستون رو بخونه! ❌
+
+-- بعد: Split
+Emp_Main (EmpID, Name, Dept, Salary)  -- پرکاربرد
+Emp_Contact (EmpID, Phone, Email, Address, ...)  -- کم‌استفاده
+
+-- حالا:
+SELECT EmpID, Name, Dept, Salary FROM Emp_Main;
+-- → فقط 4 ستون رو می‌خونه! ✅</code></pre></div>
+
+<h4>دلیل 2: نرمال‌تر سازی رابطه‌های موجود</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل: جداول دارای آنومالی
+
+مثال:
+Student_Course (StudentID, Name, CourseID, CourseName, Grade)
+→ افزونگی: Name و CourseName تکرار می‌شن ❌
+→ آنومالی Update: تغییر CourseName همه‌جا ❌
+→ آنومالی Delete: حذف آخرین دانشجو → حذف درس ❌
+
+راه‌حل: نرمال‌سازی (3NF)
+→ Student (StudentID, Name)
+→ Course (CourseID, CourseName)
+→ Enrollment (StudentID, CourseID, Grade)
+
+نتیجه:
+→ هیچ افزونگی ✅
+→ هیچ آنومالی ✅</code></pre></div>
+
+<h4>دلیل 3: توزیع در سایت‌های مختلف (DDB)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل: یک شرکت با 3 شعبه
+
+Employee (EmpID, Name, Branch, Salary, ...)
+→ همه داده‌ها در یک سایت (مرکزی)
+→ شعبه تهران باید به مرکز متصل بشه
+→ شعبه اصفهان باید به مرکز متصل بشه
+→ Network traffic زیاد ❌
+
+راه‌حل: Split بر اساس Branch
+→ Emp_Tehran در سایت تهران
+→ Emp_Isfahan در سایت اصفهان
+→ Emp_Shiraz در سایت شیراز
+
+نتیجه:
+→ هر شعبه داده‌های خودش رو داره ✅
+→ دسترسی محلی (Local Access) ✅
+→ Network traffic کمتر ✅
+→ View کلی برای سازگاری ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- قبل: یک جدول مرکزی
+Employee (EmpID, Name, Branch, Salary)
+-- در Server مرکزی
+
+-- بعد: Split جغرافیایی
+-- Site Tehran:
+CREATE TABLE Emp_Tehran AS
+SELECT * FROM Employee WHERE Branch = 'Tehran';
+
+-- Site Isfahan:
+CREATE TABLE Emp_Isfahan AS
+SELECT * FROM Employee WHERE Branch = 'Isfahan';
+
+-- View کلی (در مرکز):
+CREATE VIEW Employee AS
+SELECT * FROM Emp_Tehran
+UNION ALL
+SELECT * FROM Emp_Isfahan
+UNION ALL
+SELECT * FROM Emp_Shiraz;</code></pre></div>
+
+<h4>دلیل 4: کاهش Granularity Lock و افزایش همروندی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل: Table-Level Lock
+
+Scenario:
+→ User1: UPDATE Employee SET Salary = ... WHERE EmpID = 100
+→ User2: UPDATE Employee SET Salary = ... WHERE EmpID = 200
+→ با Table-Lock: User2 باید صبر کنه! ❌
+→ همروندی پایین ❌
+
+راه‌حل: Split + Row-Level Lock
+→ Emp_Dept1 (100 رکورد)
+→ Emp_Dept2 (100 رکورد)
+→ Lock کوچک‌تر
+→ همروندی بالاتر ✅
+
+یا با Row-Level Lock:
+→ User1 روی Row 100 Lock
+→ User2 روی Row 200 Lock
+→ همزمان کار می‌کنن! ✅</code></pre></div>
+
+<p>
+<strong>Granularity Lock:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Lock Levels:
+┌─────────────────┐
+│ Database Lock   │ (خیلی درشت - همروندی صفر)
+├─────────────────┤
+│ Table Lock      │ (درشت - همروندی پایین)
+├─────────────────┤
+│ Page Lock       │ (متوسط)
+├─────────────────┤
+│ Row Lock        │ (ریز - همروندی بالا) ✅
+└─────────────────┘
+
+با Split جدول:
+→ Lock‌ها کوچک‌تر می‌شن
+→ Conflict کمتر
+→ همروندی بیشتر</code></pre></div>
+
+<h4>دلیل 5: محدودیت DBMS از نظر حداکثر ستون</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل: محدودیت تعداد ستون
+
+مثال:
+→ SQL Server: حداکثر 1024 ستون
+→ MySQL: حداکثر 4096 ستون (با محدودیت سایز)
+→ Oracle: حداکثر 1000 ستون
+
+Scenario:
+→ Patient جدول بیمارستان
+→ 500 ستون: اطلاعات پایه، تاریخچه، آزمایش، ...
+→ می‌خوایم 600 ستون اضافه کنیم
+→ DBMS اجازه نمی‌ده! ❌
+
+راه‌حل: Split اجباری
+→ Patient_Basic (200 ستون)
+→ Patient_Medical (200 ستون)
+→ Patient_Lab (200 ستون)
+→ View: Patient (همه رو JOIN می‌کنه)
+
+نتیجه:
+→ محدودیت رعایت شده ✅
+→ همه داده‌ها ذخیره شده ✅</code></pre></div>
+
+<p>
+<strong>مثال واقعی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ خطا!
+CREATE TABLE HugeTable (
+    Col1 INT,
+    Col2 INT,
+    ...
+    Col1025 INT  -- خطا: بیشتر از 1024!
+);
+-- ERROR: Too many columns
+
+-- ✅ راه‌حل:
+CREATE TABLE HugeTable_Part1 (Col1...Col512);
+CREATE TABLE HugeTable_Part2 (Col513...Col1024);
+
+CREATE VIEW HugeTable AS
+SELECT T1.*, T2.*
+FROM HugeTable_Part1 T1
+JOIN HugeTable_Part2 T2 ON T1.ID = T2.ID;</code></pre></div>
+
+<hr>
+<h3>📊 خلاصه 5 دلیل</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>#</th><th>دلیل</th><th>مشکل</th><th>راه‌حل</th><th>نتیجه</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>فایلینگ</td><td>Query کند</td><td>Split بر اساس Usage</td><td>سرعت بالا</td></tr>
+<tr><td>2</td><td>نرمال‌سازی</td><td>آنومالی</td><td>2NF/3NF/BCNF</td><td>بدون افزونگی</td></tr>
+<tr><td>3</td><td>توزیع</td><td>Network traffic</td><td>Split جغرافیایی</td><td>دسترسی محلی</td></tr>
+<tr><td>4</td><td>Lock</td><td>همروندی پایین</td><td>Split + Row Lock</td><td>همروندی بالا</td></tr>
+<tr><td>5</td><td>محدودیت</td><td>حداکثر ستون</td><td>Split به چند جدول</td><td>رفع محدودیت</td></tr>
+</tbody></table></div>#### مثال‌های عملی LDI
+
+<p>
+<strong>مثال 1: اضافه کردن ستون</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جدول قبل
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Salary DECIMAL(12,2)
+);
+
+-- View برنامه
+CREATE VIEW EmpView AS
+SELECT EmpID, Name
+FROM Employee;
+
+-- برنامه
+SELECT * FROM EmpView;  -- فقط EmpID, Name
+
+-- تغییر: اضافه کردن Email
+ALTER TABLE Employee ADD Email NVARCHAR(100);
+
+-- برنامه همچنان کار می‌کنه! ✅
+SELECT * FROM EmpView;  -- همچنان EmpID, Name</code></pre></div>
+
+<p>
+<strong>مثال 2: Split جدول (تقسیم)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- قبل: یک جدول
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Major NVARCHAR(30),
+    GPA DECIMAL(3,2),
+    Phone NVARCHAR(20),
+    Address NVARCHAR(100)
+);
+
+-- بعد: دو جدول
+CREATE TABLE Student_Personal (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Major NVARCHAR(30),
+    GPA DECIMAL(3,2)
+);
+
+CREATE TABLE Student_Contact (
+    StudentID INT PRIMARY KEY,
+    Phone NVARCHAR(20),
+    Address NVARCHAR(100)
+);
+
+-- ایجاد View برای سازگاری
+CREATE VIEW Student AS
+SELECT 
+    P.StudentID,
+    P.Name,
+    P.Major,
+    P.GPA,
+    C.Phone,
+    C.Address
+FROM Student_Personal P
+JOIN Student_Contact C ON P.StudentID = C.StudentID;
+
+-- برنامه تغییر نمی‌کنه! ✅
+SELECT * FROM Student;  -- همچنان کار می‌کنه!</code></pre></div>
+
+<p>
+<strong>مثال Split:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جدول قبل
+CREATE TABLE S (
+    S# INT PRIMARY KEY,
+    SName NVARCHAR(50),
+    City NVARCHAR(30),
+    Status INT
+);
+
+-- Split به دو جدول
+CREATE TABLE Sx (
+    S# INT PRIMARY KEY,
+    SName NVARCHAR(50)
+);
+
+CREATE TABLE Sy (
+    S# INT PRIMARY KEY,
+    City NVARCHAR(30),
+    Status INT
+);
+
+-- INSERT داده
+INSERT INTO Sx(S#, SName)
+SELECT S#, SName
+FROM S;
+
+INSERT INTO Sy(S#, City, Status)
+SELECT S#, City, Status
+FROM S;
+
+-- ایجاد View S
+CREATE VIEW S AS
+SELECT Sx.S#, Sx.SName, Sy.City, Sy.Status
+FROM Sx JOIN Sy ON Sx.S# = Sy.S#;</code></pre></div>
+
+<p>
+<strong>مثال 3: Merge جداول (ادغام)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- قبل: دو جدول
+CREATE TABLE Current_Employee (...);
+CREATE TABLE Archive_Employee (...);
+
+-- بعد: یک جدول
+CREATE TABLE All_Employee (
+    ...,
+    IsArchived BIT
+);
+
+-- ایجاد View‌ها برای سازگاری
+CREATE VIEW Current_Employee AS
+SELECT * FROM All_Employee WHERE IsArchived = 0;
+
+CREATE VIEW Archive_Employee AS
+SELECT * FROM All_Employee WHERE IsArchived = 1;
+
+-- برنامه‌ها تغییر نمی‌کنن! ✅</code></pre></div>
+
+<h4>تکنیک تعریف View روی View</h4>
+
+<p>
+<strong>:</strong>  
+مفهوم دید و مکانیزم دید بر روی دید به این ترتیب که قبل از حذف جدول مبنای S همین جدول را (با همان نام و همان ستون‌ها) به صورت یک View تعریف می‌نماییم.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- مراحل:
+
+-- 1. جدول اصلی S داریم
+CREATE TABLE S (...);
+
+-- 2. برنامه‌ها با S کار می‌کنن
+SELECT * FROM S;
+
+-- 3. می‌خوایم S رو Split کنیم
+-- ابتدا S رو به View تبدیل می‌کنیم
+
+CREATE VIEW S AS
+SELECT Sx.S#, Sx.SName, Sy.City, Sy.Status
+FROM Sx JOIN Sy ON Sx.S# = Sy.S#;
+
+-- 4. حذف جدول اصلی S
+DROP TABLE S;
+
+-- 5. برنامه‌ها همچنان کار می‌کنن! ✅
+SELECT * FROM S;  -- حالا S یک View است!</code></pre></div>
+
+<p>
+<strong>نتیجه :</strong>  
+در سیستم، پس از حذف جدول مبنای S، کماکان جدولی با نام S وجود دارد. این جدول مجازی می‌باشد. در نتیجه View‌های تعریف شده روی S همچنان معتبر باقی می‌مانند.
+</p>
+
+<p>
+<strong>هزینه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>✅ مزیت:
+- LDI در عملیات بازیابی 100% تأمین است
+
+❌ معایب:
+- یک Overhead ناشی از Mapping E/E
+- نگاشت External → External</code></pre></div>
+
+<hr>
+<h3>🔴 پیامدهای حذف جدول مبنا</h3>
+
+<p>
+با حذف جدول مبنای S چه اتفاقاتی در سیستم می‌افتد:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[حذف جدول S<br/>DROP TABLE S]
+    
+    B[پیامد 1:<br/>View‌ها نامعتبر]
+    C[پیامد 2:<br/>Index‌ها نامعتبر]
+    D[پیامد 3:<br/>برنامه‌ها خراب]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[View‌های روی S<br/>کار نمی‌کنن ❌]
+    C1[Index‌های S<br/>حذف می‌شن ❌]
+    D1[برنامه‌های کاربردی<br/>اجرا نمی‌شن ❌]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<h4>پیامد 1: نامعتبر شدن View‌ها</h4>
+
+<p>
+نامعتبر شدن دیدهایی که قبلاً روی آن جدول تعریف شده‌اند و عدم اجرای برنامه‌هایی که از این دیدها استفاده می‌نمایند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جدول اصلی
+CREATE TABLE S (
+    S# INT,
+    SName NVARCHAR(50),
+    City NVARCHAR(30),
+    Status INT
+);
+
+-- View روی S
+CREATE VIEW ActiveSuppliers AS
+SELECT S#, SName, City
+FROM S
+WHERE Status &gt; 100;
+
+-- برنامه استفاده می‌کنه
+SELECT * FROM ActiveSuppliers;  -- ✅ کار می‌کنه
+
+-- حذف S
+DROP TABLE S;  -- ❌
+
+-- حالا View خراب شده!
+SELECT * FROM ActiveSuppliers;  -- ❌ ERROR!
+-- "Table 'S' doesn't exist"</code></pre></div>
+
+<h4>پیامد 2: نامعتبر شدن Index‌ها</h4>
+
+<p>
+Index‌هایی که برای این جدول تعریف شده‌اند، نامعتبر می‌شوند. مگر اینکه تدبیری برای این کار اندیشیده شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- Index روی S
+CREATE INDEX idx_city ON S(City);
+CREATE INDEX idx_status ON S(Status);
+
+-- حذف S
+DROP TABLE S;
+
+-- Index‌ها هم حذف می‌شن! ❌
+-- idx_city → GONE ❌
+-- idx_status → GONE ❌</code></pre></div>
+
+<h4>پیامد 3: شکستن برنامه‌ها</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برنامه‌های کاربردی:
+→ با جدول S کار می‌کنن ✅
+→ با View‌های روی S کار می‌کنن ✅
+
+حذف S:
+→ برنامه‌ها دیگه اجرا نمی‌شن! ❌
+→ خطا در زمان اجرا! ❌
+→ سیستم از کار می‌افته! ❌</code></pre></div>
+
+<hr>
+<h3>💡 راه‌حل: تکنیک View روی View</h3>
+
+<p>
+مفهوم دید و مکانیزم دید بر روی دید.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "قبل از تغییر"
+    A1[برنامه]
+    B1[View: ActiveSuppliers]
+    C1[Table: S]
+    
+    A1 --> B1
+    B1 --> C1
+    end
+    
+    subgraph "مرحله میانی - ایجاد View جدید"
+    A2[برنامه]
+    B2[View: ActiveSuppliers]
+    C2[View: S جدید!]
+    D2[Table: Sx + Sy]
+    
+    A2 --> B2
+    B2 --> C2
+    C2 --> D2
+    end
+    
+    subgraph "بعد از تغییر"
+    A3[برنامه<br/>تغییر نکرده! ✅]
+    B3[View: ActiveSuppliers<br/>کار می‌کنه! ✅]
+    C3[View: S<br/>جدول مجازی]
+    D3[Tables: Sx + Sy]
+    
+    A3 --> B3
+    B3 --> C3
+    C3 --> D3
+    end
+    
+    style A3 fill:#2ecc71,color:#fff
+    style B3 fill:#2ecc71,color:#fff
+    style C3 fill:#3498db,color:#fff
+</pre></div>
+
+<h4>مراحل دقیق (گام‌به‌گام)</h4>
+
+<p>
+<strong>مرحله 1: وضعیت اولیه</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جدول اصلی
+CREATE TABLE S (
+    S# INT PRIMARY KEY,
+    SName NVARCHAR(50),
+    City NVARCHAR(30),
+    Status INT
+);
+
+-- View برای کاربران
+CREATE VIEW ActiveSuppliers AS
+SELECT S#, SName, City
+FROM S
+WHERE Status &gt; 100;
+
+-- برنامه
+SELECT * FROM ActiveSuppliers;  -- ✅</code></pre></div>
+
+<p>
+<strong>مرحله 2: تصمیم به Split جدول</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دلیل: بهینه‌سازی
+→ SName کم استفاده می‌شه
+→ می‌خوایم S رو به Sx و Sy بشکنیم</code></pre></div>
+
+<p>
+<strong>مرحله 3: ایجاد جداول جدید (Sx, Sy)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Sx (
+    S# INT PRIMARY KEY,
+    SName NVARCHAR(50)
+);
+
+CREATE TABLE Sy (
+    S# INT PRIMARY KEY,
+    City NVARCHAR(30),
+    Status INT
+);</code></pre></div>
+
+<p>
+<strong>مرحله 4: انتقال داده</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- انتقال به Sx
+INSERT INTO Sx(S#, SName)
+SELECT S#, SName
+FROM S;
+
+-- انتقال به Sy
+INSERT INTO Sy(S#, City, Status)
+SELECT S#, City, Status
+FROM S;</code></pre></div>
+
+<p>
+<strong>مرحله 5: 🔑 کلید - ایجاد View با نام S (قبل از حذف!)</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- این مهم‌ترین مرحله است! ⭐
+CREATE VIEW S AS
+SELECT Sx.S#, Sx.SName, Sy.City, Sy.Status
+FROM Sx 
+JOIN Sy ON Sx.S# = Sy.S#;
+
+-- حالا S یک View است (نه Table!)</code></pre></div>
+
+<p>
+<strong>مرحله 6: حذف جدول اصلی S</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- حالا می‌تونیم بدون مشکل حذف کنیم
+DROP TABLE S;  -- ✅ ایمن!</code></pre></div>
+
+<p>
+<strong>مرحله 7: نتیجه - همه چیز کار می‌کنه!</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- View ActiveSuppliers همچنان کار می‌کنه!
+SELECT * FROM ActiveSuppliers;  -- ✅
+
+-- چون:
+-- ActiveSuppliers → S (View) → Sx + Sy (Tables)</code></pre></div>
+
+<hr>
+<h3>🎯 کاربردهای تکنیک View روی View</h3>
+
+<p>
+نکته: تکنیک تعریف روی دید چه کاربردهایی دارد:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((کاربردها))
+    1 استقلال LDI
+      سازماندهی مجدد
+      Split جدول
+      Merge جدول
+      برنامه ثابت
+    2 امنیت پیشرفته
+      کاربران Table نمی بینن
+      فقط View می بینن
+      لایه امنیتی اضافی
+</pre></div>
+
+<h4>کاربرد 1: تأمین استقلال منطقی</h4>
+
+<p>
+تأمین استقلال داده‌ای منطقی در قبال سازماندهی مجدد برای برنامه‌ها با عملیات بازیابی.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سناریو: سازماندهی مجدد
+
+قبل:
+→ Employee (20 ستون)
+→ خیلی بزرگ!
+→ Query‌ها کند!
+
+بعد:
+→ Emp_Personal (10 ستون)
+→ Emp_Professional (10 ستون)
+→ View: Employee (هر دو رو JOIN می‌کنه)
+
+نتیجه:
+→ برنامه‌ها تغییر نمی‌کنن! ✅
+→ LDI 100% برای بازیابی! ✅</code></pre></div>
+
+<h4>کاربرد 2: تقویت امنیت</h4>
+
+<p>
+تقویت امنیت پایگاه داده چون کاربران حتی Table‌ها را هم نمی‌بینند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل:
+→ کاربران Table‌ها رو می‌دیدن
+→ View فقط محدودکننده بود
+
+بعد (با تکنیک View روی View):
+→ Table‌ها حذف شدن!
+→ فقط View‌ها وجود دارن!
+→ کاربران اصلاً Table نمی‌بینن! ✅
+
+→ لایه امنیتی قوی‌تر! 🔒</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جداول واقعی (پنهان)
+CREATE TABLE Sensitive_Data (...);
+CREATE TABLE Audit_Log (...);
+
+-- View‌ها (قابل دسترس)
+CREATE VIEW Employee AS ...;
+CREATE VIEW Department AS ...;
+
+-- کاربران فقط View می‌بینن!
+GRANT SELECT ON Employee TO User1;  -- ✅
+-- User1 نمی‌تونه Sensitive_Data ببینه! ✅</code></pre></div>
+
+<hr>
+<h3>⚖️ تأمین LDI در ذخیره‌سازی</h3>
+
+<p>
+برای بازیابی، LDI همیشه تأمین نیست.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[LDI در عملیات مختلف]
+    
+    B[بازیابی<br/>SELECT]
+    C[ذخیره‌سازی<br/>INSERT/UPDATE/DELETE]
+    
+    A --> B
+    A --> C
+    
+    B1[100% تأمین ✅]
+    B2[همیشه کار می‌کنه]
+    B3[Overhead: نگاشت]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    
+    C1[شرطی ⚠️]
+    C2[بستگی به View داره]
+    C3[باید Updatable باشه]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    style B fill:#2ecc71,color:#fff
+    style C fill:#f39c12,color:#fff
+</pre></div>
+
+<h4>بازیابی (SELECT): 100% تأمین ✅</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تغییر: Split جدول S
+-- قبل: Table S
+-- بعد: View S (Sx + Sy)
+
+-- Query برنامه
+SELECT * FROM S WHERE City = 'Tehran';
+
+-- تبدیل اتوماتیک به:
+SELECT Sx.S#, Sx.SName, Sy.City, Sy.Status
+FROM Sx JOIN Sy ON Sx.S# = Sy.S#
+WHERE Sy.City = 'Tehran';
+
+-- ✅ کار می‌کنه!
+-- ✅ LDI 100%
+-- ⚠️ Overhead: JOIN اضافی</code></pre></div>
+
+<h4>ذخیره‌سازی: شرطی ⚠️</h4>
+
+<p>
+<strong>INSERT:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- View S (از Sx + Sy)
+CREATE VIEW S AS
+SELECT Sx.S#, Sx.SName, Sy.City, Sy.Status
+FROM Sx JOIN Sy ON Sx.S# = Sy.S#;
+
+-- تلاش برای INSERT
+INSERT INTO S VALUES (100, 'Ali', 'Tehran', 20);
+
+-- ❌ ممکنه کار نکنه!
+-- چون:
+-- - View از دو جدول است (JOIN)
+-- - Updatable نیست!</code></pre></div>
+
+<p>
+<strong>راه‌حل: Instead Of Trigger</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TRIGGER trg_insert_s
+INSTEAD OF INSERT ON S
+FOR EACH ROW
+BEGIN
+    INSERT INTO Sx(S#, SName) VALUES (NEW.S#, NEW.SName);
+    INSERT INTO Sy(S#, City, Status) VALUES (NEW.S#, NEW.City, NEW.Status);
+END;
+
+-- حالا INSERT کار می‌کنه! ✅
+INSERT INTO S VALUES (100, 'Ali', 'Tehran', 20);</code></pre></div>
+
+<p>
+<strong>UPDATE:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تلاش برای UPDATE
+UPDATE S SET SName = 'Reza' WHERE S# = 100;
+
+-- ممکنه کار کنه یا نکنه! ⚠️
+-- بستگی به View داره
+
+-- با Trigger:
+CREATE TRIGGER trg_update_s
+INSTEAD OF UPDATE ON S
+FOR EACH ROW
+BEGIN
+    UPDATE Sx SET SName = NEW.SName WHERE S# = NEW.S#;
+    UPDATE Sy SET City = NEW.City, Status = NEW.Status WHERE S# = NEW.S#;
+END;
+
+-- حالا UPDATE کار می‌کنه! ✅</code></pre></div>
+
+<p>
+<strong>DELETE:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تلاش برای DELETE
+DELETE FROM S WHERE S# = 100;
+
+-- با Trigger:
+CREATE TRIGGER trg_delete_s
+INSTEAD OF DELETE ON S
+FOR EACH ROW
+BEGIN
+    DELETE FROM Sx WHERE S# = OLD.S#;
+    DELETE FROM Sy WHERE S# = OLD.S#;
+END;
+
+-- حالا DELETE کار می‌کنه! ✅</code></pre></div>
+
+<hr>
+<h3>📊 خلاصه کامل LDI</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>عملیات</th><th>تأمین LDI</th><th>راه‌حل</th><th>Overhead</th></tr></thead>
+<tbody>
+<tr><td><strong>SELECT</strong></td><td>100% ✅</td><td>نگاشت اتوماتیک</td><td>متوسط</td></tr>
+<tr><td><strong>INSERT</strong></td><td>شرطی ⚠️</td><td>Instead Of Trigger</td><td>زیاد</td></tr>
+<tr><td><strong>UPDATE</strong></td><td>شرطی ⚠️</td><td>Instead Of Trigger</td><td>زیاد</td></tr>
+<tr><td><strong>DELETE</strong></td><td>شرطی ⚠️</td><td>Instead Of Trigger</td><td>زیاد</td></tr>
+</tbody></table></div><strong>نتیجه‌گیری:</strong>
+
+<p>
+✅ <strong>بازیابی:</strong>
+</p>
+<ul>
+<li>LDI 100% تأمین است</li>
+<li>فقط با Overhead نگاشت</li>
+</ul>
+
+<p>
+⚠️ <strong>ذخیره‌سازی:</strong>
+</p>
+<ul>
+<li>LDI شرطی است</li>
+<li>نیاز به Trigger دارد</li>
+<li>Overhead بالاتر</li>
+</ul>
+
+<p>
+🎯 <strong>توصیه:</strong>
+</p>
+<ul>
+<li>LDI عالی برای Query-heavy systems</li>
+<li>برای Transaction-heavy باید Trigger نوشت</li>
+</ul>
+
+
+<hr>
+<h3>📊 مقایسه PDI و LDI</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>PDI (فیزیکی)</th><th>LDI (منطقی)</th></tr></thead>
+<tbody>
+<tr><td><strong>سطح</strong></td><td>داخلی/فیزیکی</td><td>ادراکی</td></tr>
+<tr><td><strong>تغییرات</strong></td><td>فایل، ایندکس، دیسک</td><td>جدول، ستون، ساختار</td></tr>
+<tr><td><strong>محافظت</strong></td><td>برنامه ← View</td><td>برنامه ← View ← Table</td></tr>
+<tr><td><strong>تأمین</strong></td><td>آسان‌تر ✅</td><td>سخت‌تر ⚠️</td></tr>
+<tr><td><strong>مثال</strong></td><td>CREATE INDEX</td><td>ALTER TABLE ADD</td></tr>
+<tr><td><strong>Overhead</strong></td><td>کم</td><td>زیاد (Mapping)</td></tr>
+<tr><td><strong>بازیابی</strong></td><td>100% ✅</td><td>100% ✅</td></tr>
+<tr><td><strong>ذخیره</strong></td><td>100% ✅</td><td>شرطی ⚠️</td></tr>
+</tbody></table></div><hr>
+
+<h3>🎯 کاربردهای استقلال داده‌ای</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((کاربردها))
+    بهینه سازی
+      اضافه ایندکس
+      تغییر فایل
+      بدون تغییر برنامه
+    نگهداری
+      Split جدول
+      Merge جدول
+      View سازگار
+    رشد سیستم
+      ستون جدید
+      جدول جدید
+      برنامه ثابت
+    مهاجرت
+      تغییر دیسک
+      تغییر server
+      شفافیت کامل
+</pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۳.۴</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+کدام تغییرات PDI هستند و کدام LDI؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) اضافه کردن ایندکس به ستون Salary
+ب) اضافه کردن ستون Email به جدول Employee
+ج) تغییر ساختار فایل از Heap به B+Tree
+د) Split جدول Employee به Personal و Contact
+ه) انتقال فایل به دیسک دیگر
+و) حذف ستون غیرضروری</code></pre></div>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) PDI تغییرات فیزیکی را از برنامه مخفی می‌کند  
+ب) LDI برای ذخیره‌سازی همیشه 100% تأمین است  
+ج) View ابزار اصلی تأمین LDI است  
+د) PDI آسان‌تر از LDI است
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+جدول Student دارای 15 ستون است که 10 ستون اول کم استفاده می‌شه.
+</p>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>Split به دو جدول</li>
+<li>View برای سازگاری</li>
+<li>چطور LDI تأمین می‌شه؟</li>
+</ul>
+
+<h4>تمرین 4 (سناریو):</h4>
+<p>
+شرکت:
+</p>
+<ul>
+<li>جدول Employee (100,000 رکورد)</li>
+<li>Query‌ها روی Salary خیلی کنده</li>
+</ul>
+
+<p>
+<strong>راه‌حل:</strong>
+</p>
+<ul>
+<li>اضافه کردن ایندکس</li>
+<li>این PDI است یا LDI؟</li>
+<li>چرا برنامه تغییر نمی‌کنه؟</li>
+</ul>
+
+<h4>تمرین 5 (پیشرفته):</h4>
+<p>
+دانشگاه می‌خواد جدول Student رو به 3 جدول تقسیم کنه:
+</p>
+<ul>
+<li>Student_Academic (اطلاعات تحصیلی)</li>
+<li>Student_Personal (اطلاعات شخصی)</li>
+<li>Student_Financial (اطلاعات مالی)</li>
+</ul>
+
+<p>
+<strong>طراحی کامل:</strong>
+</p>
+<ul>
+<li>ساختار 3 جدول</li>
+<li>View Student برای سازگاری</li>
+<li>آیا برنامه‌های قدیمی کار می‌کنن؟</li>
+<li>Overhead چقدره؟</li>
+</ul>
+
+<h4>تمرین 6 (تحلیلی):</h4>
+<p>
+چرا LDI سخت‌تر از PDI است؟  
+5 دلیل بنویسید با مثال.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((استقلال<br/>داده ای))
+    تعریف
+      مصونیت برنامه
+      در قبال تغییرات
+      سطوح زیرین
+    PDI
+      فیزیکی
+      فایل ایندکس
+      دیسک ساختار
+      آسان
+    LDI
+      منطقی
+      جدول ستون
+      Split Merge
+      سخت تر
+    ابزار
+      View
+      Mapping
+      معماری 3 لایه
+    مزایا
+      بهینه سازی
+      نگهداری
+      رشد سیستم
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>استقلال داده‌ای:</strong> مصونیت برنامه در قبال تغییرات</li>
+<li>✅ <strong>PDI:</strong> تغییرات فیزیکی (فایل، ایندکس، دیسک) → برنامه ثابت</li>
+<li>✅ <strong>LDI:</strong> تغییرات منطقی (جدول، ستون، ساختار) → View ثابت</li>
+<li>✅ <strong>ابزار اصلی:</strong> View + معماری چندلایه</li>
+<li>✅ <strong>PDI:</strong> آسان‌تر، 100% برای همه عملیات</li>
+<li>⚠️ <strong>LDI:</strong> سخت‌تر، 100% فقط برای بازیابی</li>
+<li>✅ <strong>تکنیک:</strong> Split جدول → ایجاد View با همان نام</li>
+<li>✅ <strong>مزایا:</strong> بهینه‌سازی بدون تغییر برنامه، نگهداری آسان</li>
+</ul>
+
+<hr>
+<p>
+<strong>پایان فصل ۳: معماری پایگاه داده و دیدها</strong> ✅✅✅✅
+</p>
+
+<p>
+<strong>بخش‌های تکمیل شده:</strong>
+</p>
+<ul>
+<li>✅ بخش ۳.۱: ساختار سلسله‌مراتبی (HDS)</li>
+<li>✅ بخش ۳.۲: معماری ANSI/SPARC</li>
+<li>✅ بخش ۳.۳: دیدها (Views)</li>
+<li>✅ بخش ۳.۴: استقلال داده‌ای</li>
+</ul>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="3-3.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">دیدها (Views)</span></a><a href="../chapter-4/4-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">تعریف ریاضی رابطه</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

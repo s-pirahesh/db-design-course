@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="معماری پایگاه داده و دیدها - معماری ANSI-SPARC">
+    <meta name="keywords" content="پایگاه داده, Database Design, معماری ANSI-SPARC">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>معماری ANSI-SPARC | معماری پایگاه داده و دیدها | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">معماری پایگاه داده و دیدها</a>
+                <span class="separator">›</span>
+                <span class="current">معماری ANSI-SPARC</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">معماری ANSI-SPARC</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۳: معماری پایگاه داده و دیدها</h1>
+
+<h2>بخش ۳.۲: معماری ۳ لایه ANSI/SPARC</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا یکی از مهم‌ترین مفاهیم پایگاه داده رو یاد می‌گیریم! 🎯
+</p>
+
+<p>
+فرض کن یک سیستم پایگاه داده داریم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال: چند نفر با این پایگاه کار می‌کنن؟
+
+افراد مختلف:
+👤 کاربر 1 (حسابدار): فقط می‌خواد حقوق‌ها رو ببینه
+👤 کاربر 2 (مدیر): می‌خواد گزارش‌های کلی ببینه
+👤 کاربر 3 (برنامه‌نویس): می‌خواد با جداول کار کنه
+👨‍💻 DBA (مدیر پایگاه): می‌خواد فایل‌ها و ایندکس‌ها رو مدیریت کنه
+
+هر کدوم دید متفاوتی دارن! 🤔</code></pre></div>
+
+<p>
+<strong>راه‌حل: معماری چندسطحی ANSI/SPARC!</strong> ✨
+</p>
+
+<p>
+<strong>تعریف ساده:</strong>  
+سه سطح (لایه) مستقل از هم که هر کدوم یک دید خاص از داده رو نشون می‌دن!
+</p>
+
+<hr>
+<h3>📖 معماری ANSI/SPARC</h3>
+
+<p>
+<strong>تعریف :</strong>  
+معماری پایگاه داده ANSI <strong>سه لایه</strong> است: <strong>سطح خارجی</strong> - <strong>سطح منطقی</strong> - <strong>سطح فیزیکی</strong> (داده‌ها)
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "سطح خارجی External Level"
+    U1[کاربر 1<br/>Accountant]
+    U2[کاربر 2<br/>Manager]
+    U3[کاربر n<br/>Developer]
+    
+    V1[View 1<br/>ديد 1<br/>حقوق]
+    V2[View 2<br/>ديد 2<br/>گزارش]
+    V3[View n<br/>ديد n<br/>کامل]
+    
+    U1 --> V1
+    U2 --> V2
+    U3 --> V3
+    end
+    
+    subgraph "سطح ادراکی Conceptual Level"
+    C[Conceptual Schema<br/>شمای ادراکی<br/>جداول کامل]
+    
+    V1 --> C
+    V2 --> C
+    V3 --> C
+    end
+    
+    subgraph "سطح داخلی Internal Level"
+    I[Internal Schema<br/>شمای داخلی<br/>فایل‌ها + ایندکس‌ها]
+    
+    C --> I
+    end
+    
+    subgraph "سطح فیزیکی Physical Level"
+    P[Physical Storage<br/>ذخیره فیزیکی<br/>دیسک + بلاک‌ها]
+    
+    I --> P
+    end
+    
+    style U1 fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style I fill:#f39c12,color:#fff
+    style P fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>نکته کلیدی :</strong>  
+این معماری <strong>چندسطحی</strong> است که سطوح آن‌ها با هم <strong>مستقل</strong> هستند. فقط سطح پایین‌تر به سطح بالاتر سرویس می‌دهد.
+</p>
+
+<hr>
+<h3>🎯 چهار سطح معماری</h3>
+
+<h4>1️⃣ سطح خارجی (External Level / EDS)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>دید خارجی:</strong> دید کاربر خاص است نسبت به داده‌های ذخیره‌شده.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[External Level<br/>سطح خارجی<br/>EDS]
+    
+    B[کاربران مختلف]
+    C[دیدهای مختلف]
+    D[شماهای خارجی]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[Accountant<br/>حسابدار]
+    B2[Manager<br/>مدیر]
+    B3[Programmer<br/>برنامه‌نویس]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    
+    C1[View: Salary]
+    C2[View: Report]
+    C3[View: FullAccess]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    style A fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>ویژگی‌ها:</strong>
+</p>
+
+<p>
+✅ <strong>تعداد:</strong> N دید خارجی (هر کاربر یک دید)
+✅ <strong>محتوا:</strong> بخشی از داده‌های کلی
+✅ <strong>هدف:</strong> 
+</p>
+<ul>
+<li>ساده‌سازی (Simplification)</li>
+<li>امنیت (Security) - مخفی‌سازی داده</li>
+<li>اشتراک داده (Data Sharing)</li>
+</ul>
+<p>
+✅ <strong>زبان:</strong> HL (Host Language) + DSL (SQL)
+</p>
+
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- View برای حسابدار (فقط حقوق)
+CREATE VIEW SalaryView AS
+SELECT EmpID, Name, Salary
+FROM Employee;
+
+-- View برای مدیر (گزارش کلی)
+CREATE VIEW ManagerReport AS
+SELECT DeptID, COUNT(*) AS EmpCount, AVG(Salary) AS AvgSalary
+FROM Employee
+GROUP BY DeptID;</code></pre></div>
+
+<h4>2️⃣ سطح ادراکی (Conceptual Level / CDS)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>دید ادراکی (Conceptual):</strong> دید طراح است نسبت به داده‌های ذخیره‌شده (یعنی آن‌گونه که طراح داده‌ها را می‌بیند).
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Conceptual Level<br/>سطح ادراکی<br/>CDS]
+    
+    B[دید طراح]
+    C[شمای ادراکی]
+    D[کل ساختار منطقی]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[Logical Design]
+    C1[Conceptual Schema]
+    D1[تمام موجودیت‌ها<br/>تمام ارتباطات]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style A fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>:</strong>  
+این دید مبتنی است بر یک <strong>DS مشخص</strong> می‌تواند <strong>RDS</strong>, <strong>HDS</strong> یا <strong>NDS</strong> باشد.
+</p>
+
+<p>
+<strong>ویژگی‌ها:</strong>
+</p>
+
+<p>
+✅ <strong>تعداد:</strong> فقط 1 دید ادراکی
+✅ <strong>محتوا:</strong> تمام داده‌های سیستم
+✅ <strong>مستقل:</strong> از ذخیره‌سازی فیزیکی
+✅ <strong>توصیف:</strong> با DSL (Data Schema Language)
+</p>
+<ul>
+<li>DD (Data Definition)</li>
+<li>DM (Data Manipulation)</li>
+<li>DC (Data Control)</li>
+</ul>
+
+
+<p>
+<strong>مثال (SQL):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جداول کامل سیستم
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Salary DECIMAL(10,2),
+    DeptID INT,
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+);
+
+CREATE TABLE Department (
+    DeptID INT PRIMARY KEY,
+    DeptName VARCHAR(100),
+    ManagerID INT
+);
+
+-- همه موجودیت‌ها و ارتباطات ✅</code></pre></div>
+
+<p>
+<strong>نکته مهم :</strong>  
+این شما به سیستم داده می‌شود و سیستم آن را در <strong>کاتالوگ</strong> و بر اساس ساختار داده‌ای خود نگه‌داری می‌کند.
+</p>
+
+<h4>3️⃣ سطح داخلی (Internal Level / IDS)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>دید داخلی:</strong> دید DBMS و طراح آن است از داده‌های ذخیره‌شده. که در این دید مبتنی بر <strong>چند فایل</strong> است که داده‌ها به صورت داده‌های <strong>منطقی</strong> است.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Internal Level<br/>سطح داخلی<br/>IDS]
+    
+    B[دید DBMS]
+    C[شمای داخلی]
+    D[فایل‌ها + ایندکس‌ها]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[File Organization]
+    C1[Index Structures]
+    D1[Access Paths]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style A fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>ویژگی‌ها:</strong>
+</p>
+
+<p>
+✅ <strong>تعداد:</strong> فقط 1 دید داخلی
+✅ <strong>محتوا:</strong> 
+</p>
+<ul>
+<li>فرمت رکوردها</li>
+<li>ساختار فایل‌ها (Heap, Index, ...)</li>
+<li>استراتژی دستیابی</li>
+<li>ایندکس‌ها</li>
+</ul>
+<p>
+✅ <strong>نگاشت:</strong> جداول → فایل‌های منطقی
+</p>
+
+
+<p>
+<strong> - چه چیزهایی DBMS می‌داند:</strong>
+</p>
+
+<p>
+✅ می‌داند:
+</p>
+<ul>
+<li>فرمت رکوردهای فایل</li>
+<li>ساختار فایل (Indexed, Heap)</li>
+<li>استراتژی فایل</li>
+<li>حجم داده‌ای فایل</li>
+<li>کلید اصلی فایل</li>
+<li>اندازه گسترش فایل</li>
+<li>فیلدهای جستجو</li>
+</ul>
+
+<p>
+❌ نمی‌داند:
+</p>
+<ul>
+<li>طرز نشست فیزیکی فایل‌ها (روی شیارها)</li>
+<li>محل دو رکورد همجوار (Locality)</li>
+<li>اندازه فیزیکی بلاک‌ها (NTFS, FAT32)</li>
+<li>تعداد بافرهای I/O</li>
+</ul>
+
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ایجاد ایندکس برای جستجوی سریع
+CREATE INDEX idx_emp_dept ON Employee(DeptID);
+CREATE INDEX idx_emp_salary ON Employee(Salary);
+
+-- تعریف فضای ذخیره‌سازی
+CREATE TABLESPACE emp_data
+DATAFILE '/path/to/emp_data.dbf' SIZE 100M;</code></pre></div>
+
+<p>
+<strong>نکته :</strong>  
+به ازای <strong>N تا Table</strong> می‌توان <strong>M تا فایل</strong> داشت: یا 1:1 یا 1:N. در SQL پیش‌فرض 1:N است.
+</p>
+
+<h4>4️⃣ سطح فیزیکی (Physical Level / PDS)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>PDS (Physical Data Structure):</strong> ساختار داده‌ها در سطح فیزیکی.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Physical Level<br/>سطح فیزیکی<br/>PDS]
+    
+    B[ذخیره واقعی]
+    C[دیسک]
+    D[بلاک‌ها و شیارها]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[Hard Drive]
+    C1[Sectors]
+    D1[Blocks]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style A fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>ویژگی‌ها:</strong>
+</p>
+
+<p>
+✅ <strong>محتوا:</strong>
+</p>
+<ul>
+<li>فایل‌های فیزیکی روی دیسک</li>
+<li>بلاک‌ها (Blocks)</li>
+<li>شیارها (Sectors)</li>
+<li>سیلندرها (Cylinders)</li>
+</ul>
+<p>
+✅ <strong>مدیریت:</strong> توسط OS (سیستم‌عامل)
+✅ <strong>نامرئی:</strong> برای DBMS و کاربر
+</p>
+
+
+<hr>
+<h3>🔗 نگاشت بین سطوح (Mapping)</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[View 1: Salary]
+    B[View 2: Report]
+    
+    C[Conceptual: Employee, Department]
+    
+    D[Internal: File1, File2, Index1]
+    
+    E[Physical: Disk Blocks]
+    
+    A -->|External/Conceptual<br/>Mapping| C
+    B -->|External/Conceptual<br/>Mapping| C
+    
+    C -->|Conceptual/Internal<br/>Mapping| D
+    
+    D -->|Internal/Physical<br/>Mapping| E
+    
+    style A fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>سه نوع نگاشت:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>نگاشت</th><th>از</th><th>به</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>External/Conceptual</strong></td><td>View</td><td>Table</td><td>SalaryView → Employee</td></tr>
+<tr><td><strong>Conceptual/Internal</strong></td><td>Table</td><td>File</td><td>Employee → emp_data.dbf</td></tr>
+<tr><td><strong>Internal/Physical</strong></td><td>File</td><td>Block</td><td>emp_data.dbf → Sector 1000</td></tr>
+</tbody></table></div><hr>
+
+<h3>🎯 مزایای معماری سه‌لایه</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مزایای<br/>معماری))
+    استقلال داده
+      فیزیکی
+      منطقی
+      تغییر آسان
+    امنیت
+      محدودسازی دسترسی
+      Views
+      مخفی سازی
+    ساده سازی
+      هر کاربر دید خودش
+      کاهش پیچیدگی
+      تمرکز بر نیاز
+    اشتراک
+      Data Sharing
+      Views مختلف
+      یک منبع
+</pre></div>
+
+<h4>1️⃣ استقلال داده‌ای (Data Independence)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>مفهوم استقلال داده‌ای:</strong> مصونیت برنامه‌های کاربردی (کاربران سطح خارجی) در قبال تغییراتی که در سطوح زیرین معماری پایگاه پدید می‌آید.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) استقلال فیزیکی:
+→ تغییر فایل‌ها، ایندکس‌ها
+→ برنامه‌های کاربر تحت تأثیر قرار نمی‌گیرن ✅
+
+مثال:
+- اضافه کردن ایندکس جدید
+- تغییر ساختار فایل (Heap → B+Tree)
+- انتقال به دیسک دیگر
+
+ب) استقلال منطقی:
+→ تغییر جداول (اضافه/حذف ستون)
+→ View‌ها تحت تأثیر قرار نمی‌گیرن ✅
+
+مثال:
+- اضافه کردن ستون جدید به جدول
+- تقسیم یک جدول به دو جدول</code></pre></div>
+
+<h4>2️⃣ امنیت (Security)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کاربر حسابدار:
+→ فقط View حقوق ✅
+→ نمی‌تونه جدول کامل ببینه ❌
+
+→ امنیت داده (Data Hiding) ✅</code></pre></div>
+
+<h4>3️⃣ ساده‌سازی (Simplification)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کاربر:
+→ با جدول 100 ستونی کار نمی‌کنه ❌
+→ با View ساده 5 ستونی کار می‌کنه ✅
+
+→ کاهش پیچیدگی ✅</code></pre></div>
+
+<h4>4️⃣ اشتراک داده (Data Sharing)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>10 کاربر مختلف:
+→ 10 View مختلف
+→ همه از یک منبع (Conceptual) ✅
+
+→ هماهنگی داده ✅</code></pre></div>
+
+<hr>
+<h3>📊 جدول مقایسه سطوح</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>سطح</th><th>تعداد</th><th>دید</th><th>محتوا</th><th>زبان</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>External</strong></td><td>N (چند)</td><td>کاربر</td><td>بخشی</td><td>HL+SQL</td><td>View</td></tr>
+<tr><td><strong>Conceptual</strong></td><td>1 (یک)</td><td>طراح</td><td>کل</td><td>DSL</td><td>Table</td></tr>
+<tr><td><strong>Internal</strong></td><td>1 (یک)</td><td>DBMS</td><td>فایل</td><td>DDL</td><td>File+Index</td></tr>
+<tr><td><strong>Physical</strong></td><td>1 (یک)</td><td>OS</td><td>دیسک</td><td>-</td><td>Block</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۳.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+شرکت:
+</p>
+<ul>
+<li>کاربر 1 (حسابدار): فقط حقوق کارمندان</li>
+<li>کاربر 2 (مدیر): گزارش‌های آماری</li>
+<li>کاربر 3 (منابع انسانی): اطلاعات کامل</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>سطح ادراکی (جداول)</li>
+<li>سطح خارجی (3 View)</li>
+<li>کدوم View چه ستون‌هایی داره؟</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) سطح ادراکی فقط یکی است  
+ب) سطح خارجی می‌تواند چند تا باشد  
+ج) تغییر سطح فیزیکی روی سطح خارجی تأثیر می‌گذارد  
+د) View بخشی از جدول را نشان می‌دهد
+</p>
+
+<h4>تمرین 3 (استقلال داده):</h4>
+<p>
+تغییرات زیر روی چه سطوحی تأثیر می‌ذارن؟
+</p>
+
+<p>
+الف) اضافه کردن ایندکس به جدول Employee  
+ب) اضافه کردن ستون "Email" به جدول Employee  
+ج) تغییر دیسک ذخیره‌سازی  
+د) تقسیم جدول Employee به دو جدول
+</p>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+دانشگاه:
+</p>
+<ul>
+<li>Conceptual: Student(ID, Name, Major, GPA, Phone)</li>
+</ul>
+
+<p>
+<strong>ایجاد کنید:</strong>
+</p>
+<ul>
+<li>View1 (دبیرخانه): ID, Name, Major</li>
+<li>View2 (استاد): ID, Name, GPA</li>
+<li>View3 (مخابرات): ID, Name, Phone</li>
+</ul>
+
+<p>
+چرا این View‌ها مفیدن؟
+</p>
+
+<h4>تمرین 5 (تحلیلی):</h4>
+<p>
+مزایای معماری سه‌لایه رو با مثال کامل توضیح بده:
+</p>
+<ul>
+<li>استقلال فیزیکی</li>
+<li>استقلال منطقی</li>
+<li>امنیت</li>
+<li>ساده‌سازی</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+اگر معماری سه‌لایه نداشتیم چه مشکلاتی پیش می‌اومد؟  
+هر کاربر مستقیم با فایل‌های فیزیکی کار می‌کرد.  
+5 مشکل اساسی رو بنویس.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((معماری<br/>ANSI SPARC))
+    4 سطح
+      External N تا
+      Conceptual 1 تا
+      Internal 1 تا
+      Physical 1 تا
+    External
+      View ها
+      کاربران
+      HL SQL
+    Conceptual
+      Tables
+      طراح
+      DSL
+    Internal
+      Files
+      DBMS
+      Indexes
+    Physical
+      Disk
+      OS
+      Blocks
+    مزایا
+      استقلال داده
+      امنیت
+      ساده سازی
+      اشتراک
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>چهار سطح:</strong> External (N), Conceptual (1), Internal (1), Physical (1)</li>
+<li>✅ <strong>External:</strong> View‌های کاربران، امنیت، ساده‌سازی</li>
+<li>✅ <strong>Conceptual:</strong> جداول کامل، دید طراح، یکتا</li>
+<li>✅ <strong>Internal:</strong> فایل‌ها + ایندکس‌ها، دید DBMS</li>
+<li>✅ <strong>Physical:</strong> دیسک + بلاک‌ها، دید OS</li>
+<li>✅ <strong>استقلال:</strong> فیزیکی (فایل‌ها) + منطقی (جداول)</li>
+<li>✅ <strong>مزایا:</strong> امنیت، ساده‌سازی، اشتراک، استقلال</li>
+<li>✅ <strong>نگاشت:</strong> External→Conceptual→Internal→Physical</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="3-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">ساختار سلسله مراتبی HDS</span></a><a href="3-3.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">دیدها (Views)</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

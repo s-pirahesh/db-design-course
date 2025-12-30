@@ -1,0 +1,487 @@
+/**
+ * طراحی پایگاه داده - Responsive Styles
+ * Mobile-first approach
+ */
+
+/* ==================== Tablet (768px and below) ==================== */
+@media screen and (max-width: 768px) {
+  /* Typography */
+  html {
+    font-size: 15px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+    padding-right: var(--spacing-sm);
+  }
+  
+  h3 {
+    font-size: 1.375rem;
+  }
+  
+  /* Spacing */
+  :root {
+    --spacing-xl: 2.5rem;
+    --spacing-2xl: 3rem;
+  }
+  
+  /* Header */
+  .header {
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .logo h1 {
+    font-size: 1.25rem;
+  }
+  
+  .theme-toggle,
+  .search-toggle {
+    width: 36px;
+    height: 36px;
+    font-size: 1.125rem;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100vh;
+    z-index: var(--z-modal);
+    box-shadow: var(--shadow-xl);
+  }
+  
+  .sidebar.active {
+    right: 0;
+  }
+  
+  .sidebar-close {
+    display: block;
+  }
+  
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mobile-only {
+    display: flex;
+  }
+  
+  /* Main Content */
+  .main-content {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
+  /* Article */
+  .article {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+  
+  .article-header {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+  }
+  
+  /* Breadcrumb */
+  .breadcrumb {
+    font-size: 0.8125rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  /* Code Blocks */
+  .code-block pre {
+    padding: var(--spacing-sm);
+  }
+  
+  .code-block code {
+    font-size: 0.8125rem;
+  }
+  
+  /* Diagrams */
+  .diagram {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+  
+  /* Tables */
+  .table-container {
+    margin: var(--spacing-md) -var(--spacing-sm);
+  }
+  
+  .styled-table {
+    font-size: 0.875rem;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+    padding: var(--spacing-sm);
+  }
+  
+  /* Notes */
+  .note {
+    padding: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .note-icon {
+    font-size: 1.25rem;
+  }
+  
+  /* Definition */
+  .definition {
+    padding: var(--spacing-md);
+  }
+  
+  .definition h3 {
+    font-size: 1rem;
+  }
+  
+  /* Exercises */
+  .exercise {
+    padding: var(--spacing-md);
+  }
+  
+  .exercise h3 {
+    font-size: 1.125rem;
+  }
+  
+  /* Page Navigation */
+  .page-navigation {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .nav-button {
+    padding: var(--spacing-sm);
+  }
+  
+  .nav-home {
+    order: -1;
+    min-width: auto;
+  }
+  
+  .nav-text small {
+    font-size: 0.6875rem;
+  }
+  
+  .nav-text strong {
+    font-size: 0.875rem;
+  }
+  
+  /* Article Footer */
+  .article-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  /* Back to Top */
+  .back-to-top {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ==================== Mobile (480px and below) ==================== */
+@media screen and (max-width: 480px) {
+  /* Typography */
+  html {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  /* Spacing */
+  :root {
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+  }
+  
+  /* Header */
+  .logo h1 {
+    font-size: 1.125rem;
+  }
+  
+  .theme-toggle,
+  .search-toggle {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .header-nav {
+    gap: var(--spacing-xs);
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 90%;
+    padding: var(--spacing-md);
+  }
+  
+  .sidebar-toggle {
+    bottom: var(--spacing-md);
+    left: var(--spacing-md);
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+  
+  /* Main Content */
+  .main-content {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+  
+  /* Article */
+  .article {
+    padding: var(--spacing-md);
+  }
+  
+  .article-content {
+    font-size: 1rem;
+  }
+  
+  /* Breadcrumb */
+  .breadcrumb {
+    font-size: 0.75rem;
+    padding: var(--spacing-xs);
+  }
+  
+  /* Code Blocks */
+  .code-header {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .code-language {
+    font-size: 0.6875rem;
+  }
+  
+  .copy-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .code-block code {
+    font-size: 0.75rem;
+  }
+  
+  /* Tables */
+  .table-container {
+    margin: var(--spacing-sm) -var(--spacing-sm);
+  }
+  
+  .styled-table {
+    font-size: 0.8125rem;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+    padding: var(--spacing-xs);
+  }
+  
+  .styled-table th {
+    font-size: 0.75rem;
+  }
+  
+  /* Diagrams */
+  .diagram {
+    padding: var(--spacing-md) var(--spacing-xs);
+  }
+  
+  /* Page Navigation */
+  .nav-arrow {
+    font-size: 1.25rem;
+  }
+  
+  .nav-text strong {
+    font-size: 0.8125rem;
+  }
+  
+  /* Footer */
+  .footer {
+    padding: var(--spacing-lg) var(--spacing-md);
+    font-size: 0.875rem;
+  }
+  
+  /* Back to Top */
+  .back-to-top {
+    bottom: calc(var(--spacing-md) + 64px);
+    right: var(--spacing-sm);
+    width: 40px;
+    height: 40px;
+    font-size: 1.125rem;
+  }
+}
+
+/* ==================== Sidebar Overlay ==================== */
+@media screen and (max-width: 768px) {
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+    z-index: calc(var(--z-modal) - 1);
+    backdrop-filter: blur(4px);
+  }
+  
+  .sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* ==================== Landscape Mobile ==================== */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .sidebar {
+    width: 50%;
+    max-width: 400px;
+  }
+  
+  .main-content {
+    padding: var(--spacing-md);
+  }
+  
+  .article {
+    padding: var(--spacing-md);
+  }
+}
+
+/* ==================== High DPI Screens ==================== */
+@media screen and (-webkit-min-device-pixel-ratio: 2),
+       screen and (min-resolution: 192dpi) {
+  .article {
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .nav-button {
+    border-width: 1px;
+  }
+}
+
+/* ==================== Reduced Motion ==================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .sidebar {
+    transition: none;
+  }
+  
+  .progress-fill::after {
+    animation: none;
+  }
+}
+
+/* ==================== Dark Mode Specific Adjustments ==================== */
+@media screen and (max-width: 768px) {
+  [data-theme="dark"] .sidebar {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  [data-theme="dark"] .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* ==================== Touch Device Optimizations ==================== */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .chapter-toggle {
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 48px;
+  }
+  
+  .chapter-sections a {
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-button {
+    min-height: 56px;
+  }
+  
+  .theme-toggle,
+  .search-toggle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .nav-button:hover,
+  .chapter-sections a:hover,
+  .tag:hover {
+    transform: none;
+  }
+  
+  /* Improve tap highlight */
+  * {
+    -webkit-tap-highlight-color: rgba(0, 102, 204, 0.2);
+  }
+}
+
+/* ==================== Wide Screens (1200px and above) ==================== */
+@media screen and (min-width: 1200px) {
+  .sidebar {
+    width: 360px;
+  }
+  
+  .main-content {
+    max-width: 1000px;
+  }
+  
+  .article {
+    padding: var(--spacing-2xl) calc(var(--spacing-2xl) * 1.5);
+  }
+}
+
+/* ==================== Extra Wide Screens (1600px and above) ==================== */
+@media screen and (min-width: 1600px) {
+  html {
+    font-size: 18px;
+  }
+  
+  .sidebar {
+    width: 400px;
+  }
+  
+  .main-content {
+    max-width: 1100px;
+  }
+}

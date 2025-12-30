@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - وراثت Is-A">
+    <meta name="keywords" content="پایگاه داده, Database Design, وراثت Is-A">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>وراثت Is-A | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">وراثت Is-A</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">وراثت Is-A</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۳.۱: وراثت (Is-A Relationship) و مفهوم عام/خاص</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، تا اینجا با <strong>Basic ER</strong> آشنا شدیم. حالا وارد <strong>Extended ER (EER)</strong> می‌شیم که قدرتمندتره! 💪
+</p>
+
+<p>
+فرض کن می‌خوای سیستم یک شرکت رو طراحی کنی:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند:
+- همه کارمندها: نام، کد، حقوق دارن ✅
+- ولی:
+  - برنامه‌نویس: زبان‌های برنامه‌نویسی می‌دونه (Java, Python)
+  - مدیر: سابقه مدیریت داره
+  - طراح: مهارت طراحی داره (Photoshop, Figma)
+
+چطور این رو مدل کنیم؟ 🤔</code></pre></div>
+
+<p>
+<strong>راه حل: وراثت (Inheritance) با ارتباط Is-A!</strong> ✨
+</p>
+
+<hr>
+<h3>📖 تعریف ارتباط Is-A</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>ارتباط Is-A:</strong> برای نمایش دادن مفهوم وراثت به کار می‌رود. <strong>E Is-A F</strong>
+</p>
+
+<p>
+ارتباط یک <strong>نوع موجودیت عام</strong> با <strong>انواع خاص</strong> آن نوع موجودیت که بر اساس <strong>ضابطه مشخصی</strong> رده‌بندی و بازشناسی شده‌اند. به این ضابطه مشخص <strong>صفت معرف</strong> یا <strong>Defining Attribute</strong> گفته می‌شود.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند<br/>موجودیت عام]
+    
+    B[Is-A<br/>وراثت]
+    
+    C[Programmer<br/>برنامه‌نویس<br/>نوع خاص]
+    D[Manager<br/>مدیر<br/>نوع خاص]
+    E[Designer<br/>طراح<br/>نوع خاص]
+    
+    A --> B
+    B --> C
+    B --> D
+    B --> E
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#2ecc71,color:#fff
+    style E fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نماد:</strong> خط با مثلث یا دایره "d" (که نشان‌دهنده Defining Attribute است)
+</p>
+
+<hr>
+<h3>🎯 مفاهیم کلیدی</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((Is-A<br/>وراثت))
+    موجودیت عام
+      SuperType
+      زیرنوع
+      صفات مشترک
+    موجودیت خاص
+      SubType
+      ساب تایپ
+      صفات اختصاصی
+    صفت معرف
+      Defining Attribute
+      ضابطه رده بندی
+      مثال جنسیت نوع
+    وراثت
+      Inheritance
+      ارث بری
+      صفات عام
+</pre></div>
+
+<hr>
+<h3>📝 اصطلاحات ()</h3>
+
+<p>
+<strong>:</strong>  
+به موجودیت عام <strong>زیرنوع</strong> یا <strong>سوپرتایپ (SuperType)</strong> هم گفته می‌شود.  
+به انواع خاص آن <strong>زیرنوع</strong> یا <strong>ساب‌تایپ (SubType)</strong> هم گفته می‌شود.
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>اصطلاح فارسی</th><th>اصطلاح انگلیسی</th><th>معنا</th></tr></thead>
+<tbody>
+<tr><td><strong>موجودیت عام</strong></td><td>SuperType</td><td>موجودیت والد، کلی‌تر</td></tr>
+<tr><td><strong>موجودیت خاص</strong></td><td>SubType</td><td>موجودیت فرزند، جزئی‌تر</td></tr>
+<tr><td><strong>زیرنوع</strong></td><td>SuperType</td><td>-</td></tr>
+<tr><td><strong>ساب‌تایپ</strong></td><td>SubType</td><td>-</td></tr>
+</tbody></table></div><strong>نکته:</strong> اصطلاحات "زیرنوع" و "ساب‌تایپ" در جزوه ممکن است گیج‌کننده باشه! بهتره از SuperType و SubType استفاده کنیم.
+
+<hr>
+<h3>🎨 مثال 1: کارمند (بر اساس جنسیت)</h3>
+
+<p>
+<strong>سناریو :</strong>  
+کارمندها بر اساس <strong>ضابطه جنسیت</strong> به <strong>مذکر</strong> و <strong>مونث</strong> تقسیم می‌شوند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    A1((EmpID))
+    A2((Name))
+    A3((Salary))
+    
+    A --- A1
+    A --- A2
+    A --- A3
+    
+    B{d<br/>Gender<br/>جنسیت}
+    
+    A --> B
+    
+    C[Male<br/>مذکر]
+    D[Female<br/>مونث]
+    
+    B --> C
+    B --> D
+    
+    C1((MilitaryService<br/>خدمت سربازی))
+    D1((MaternityLeave<br/>مرخصی زایمان))
+    
+    C --- C1
+    D --- D1
+    
+    A1 -.->|PK| A1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>توضیحات:</strong>
+</p>
+
+<p>
+<strong>موجودیت عام (SuperType):</strong>
+</p>
+<ul>
+<li><strong>Employee</strong> (کارمند)</li>
+<li>صفات مشترک: EmpID، Name، Salary</li>
+</ul>
+
+<p>
+<strong>صفت معرف (Defining Attribute):</strong>
+</p>
+<ul>
+<li><strong>Gender</strong> (جنسیت) - ضابطه رده‌بندی</li>
+</ul>
+
+<p>
+<strong>موجودیت‌های خاص (SubTypes):</strong>
+</p>
+<ul>
+<li><strong>Male</strong> (مذکر): صفت اختصاصی → MilitaryService</li>
+<li><strong>Female</strong> (مونث): صفت اختصاصی → MaternityLeave</li>
+</ul>
+
+<h4>داده‌ها</h4>
+
+<p>
+<strong>Employee (عام):</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>Salary</th><th>Gender</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>5,000,000</td><td>Male</td></tr>
+<tr><td>110</td><td>مریم</td><td>6,000,000</td><td>Female</td></tr>
+<tr><td>120</td><td>رضا</td><td>5,500,000</td><td>Male</td></tr>
+</tbody></table></div><strong>Male (خاص):</strong>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>MilitaryService</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>Done</td></tr>
+<tr><td>120</td><td>Exempted</td></tr>
+</tbody></table></div><strong>Female (خاص):</strong>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>MaternityLeave</th></tr></thead>
+<tbody>
+<tr><td>110</td><td>90 days</td></tr>
+</tbody></table></div>#### وراثت (Inheritance)
+
+<p>
+<strong>:</strong>  
+زیرنوع‌ها تمامی صفات زیرنوع را <strong>به ارث می‌برند</strong> و خود می‌توانند صفات منحصر به فردی داشته باشند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند مذکر (Male):
+- به ارث می‌بره: EmpID, Name, Salary (از Employee)
+- خودش داره: MilitaryService
+
+کارمند مونث (Female):
+- به ارث می‌بره: EmpID, Name, Salary (از Employee)
+- خودش داره: MaternityLeave</code></pre></div>
+
+<p>
+<strong>یک نمونه موجودیت کارمند مذکر:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>EmpID: 100
+Name: علی
+Salary: 5,000,000
+MilitaryService: Done
+
+→ علاوه بر abc را دارد (از Employee)
+→ صفات d, e را هم دارد (خودش)</code></pre></div>
+
+<hr>
+<h3>🎨 مثال 2: کارمند (بر اساس نوع)</h3>
+
+<p>
+<strong>سناریو:</strong>  
+کارمندها بر اساس <strong>نوع شغل</strong> به <strong>برنامه‌نویس</strong>، <strong>مدیر</strong>، و <strong>طراح</strong> تقسیم می‌شوند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    
+    A1((EmpID))
+    A2((Name))
+    A3((Salary))
+    
+    A --- A1
+    A --- A2
+    A --- A3
+    
+    B{d<br/>JobType<br/>نوع شغل}
+    
+    A --> B
+    
+    C[Programmer<br/>برنامه‌نویس]
+    D[Manager<br/>مدیر]
+    E[Designer<br/>طراح]
+    
+    B --> C
+    B --> D
+    B --> E
+    
+    C1((ProgrammingLanguages<br/>زبان‌های برنامه‌نویسی))
+    D1((ManagementExperience<br/>سابقه مدیریت))
+    E1((DesignTools<br/>ابزارهای طراحی))
+    
+    C --- C1
+    D --- D1
+    E --- E1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#16a085,color:#fff
+    style E fill:#9b59b6,color:#fff
+</pre></div>
+
+<p>
+<strong>:</strong>  
+یک نمونه از G (برنامه‌نویس سیستمی):
+</p>
+<ul>
+<li>داراي صفات E است (کارمند عام)</li>
+<li>داراي صفات F است (برنامه‌نویس)</li>
+<li>داراي صفات G است (سیستمی)</li>
+</ul>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نمونه: علی - برنامه‌نویس سیستمی
+- از Employee: EmpID=100, Name="علی", Salary=7,000,000
+- از Programmer: ProgrammingLanguages=["C++", "Assembly"]
+- از SystemProgrammer: KernelExperience=5 years</code></pre></div>
+
+<hr>
+<h3>🔄 تخصیص (Specialization) vs تعمیم (Generalization)</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[تخصیص<br/>Specialization]
+    B[تعمیم<br/>Generalization]
+    
+    A -->|از عام به خاص| C[Employee → Programmer]
+    B -->|از خاص به عام| D[Programmer → Employee]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+</pre></div>
+
+<h4>تخصیص (Specialization)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+به <strong>بازشناسی انواع خاص</strong> یک موجودیت عام عمل <strong>تخصیص</strong> می‌گویند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>شروع: Employee (عام)
+↓
+بر اساس JobType:
+→ Programmer (خاص)
+→ Manager (خاص)
+→ Designer (خاص)
+
+این فرآیند = تخصیص ✅</code></pre></div>
+
+<p>
+<strong>جهت:</strong> از بالا (عام) به پایین (خاص) ⬇️
+</p>
+
+<h4>تعمیم (Generalization)</h4>
+
+<p>
+<strong>تعریف :</strong>  
+به برعکس آن اگر از چند موجودیت خاص یک موجودیت عام شناسایی کنیم <strong>تعمیم</strong> یا <strong>Generalization</strong> می‌گویند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>شروع: Programmer, Manager, Designer (خاص)
+↓
+ویژگی‌های مشترک:
+- همه EmpID دارن
+- همه Name دارن
+- همه Salary دارن
+↓
+ایجاد: Employee (عام)
+
+این فرآیند = تعمیم ✅</code></pre></div>
+
+<p>
+<strong>جهت:</strong> از پایین (خاص) به بالا (عام) ⬆️
+</p>
+
+<hr>
+<h3>📊 جدول مقایسه تخصیص و تعمیم</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>تخصیص (Specialization)</th><th>تعمیم (Generalization)</th></tr></thead>
+<tbody>
+<tr><td><strong>جهت</strong></td><td>بالا → پایین ⬇️</td><td>پایین → بالا ⬆️</td></tr>
+<tr><td><strong>شروع</strong></td><td>موجودیت عام</td><td>موجودیت‌های خاص</td></tr>
+<tr><td><strong>نتیجه</strong></td><td>موجودیت‌های خاص</td><td>موجودیت عام</td></tr>
+<tr><td><strong>فرآیند</strong></td><td>رده‌بندی، تقسیم‌بندی</td><td>یکپارچه‌سازی، خلاصه‌سازی</td></tr>
+<tr><td><strong>مثال</strong></td><td>Employee → Programmer</td><td>Programmer, Manager → Employee</td></tr>
+<tr><td><strong>کاربرد</strong></td><td>طراحی Top-Down</td><td>طراحی Bottom-Up</td></tr>
+</tbody></table></div><strong>نکته:</strong> در عمل نتیجه یکیه! فقط جهت طراحی متفاوته.
+
+<hr>
+<h3>🔑 صفت معرف (Defining Attribute)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+صفتی که بر اساس آن رده‌بندی و بازشناسی انواع خاص انجام می‌شود.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[صفت معرف<br/>Defining Attribute]
+    
+    A --> B[ضابطه رده‌بندی]
+    A --> C[مبنای تقسیم‌بندی]
+    A --> D[فیلتر تخصیص]
+    
+    B --> B1[مثال: Gender]
+    C --> C1[مثال: JobType]
+    D --> D1[مثال: EmploymentType]
+    
+    style A fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال‌ها:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>صفت معرف</th><th>مقادیر ممکن</th><th>SubTypes</th></tr></thead>
+<tbody>
+<tr><td><strong>Gender</strong></td><td>Male, Female</td><td>Male Employee, Female Employee</td></tr>
+<tr><td><strong>JobType</strong></td><td>Programmer, Manager, Designer</td><td>Programmer, Manager, Designer</td></tr>
+<tr><td><strong>EmploymentType</strong></td><td>FullTime, PartTime, Contract</td><td>FullTime Emp, PartTime Emp, Contract Emp</td></tr>
+<tr><td><strong>StudentType</strong></td><td>Undergraduate, Graduate, PhD</td><td>Undergraduate, Graduate, PhD Student</td></tr>
+</tbody></table></div><strong>نمادگذاری:</strong>  
+<p>
+در نمودار ER، صفت معرف با حرف <strong>"d"</strong> یا نام صفت کنار ارتباط Is-A نشان داده می‌شه.
+</p>
+
+<hr>
+<h3>🎯 وراثت چندسطحی (Multi-Level Inheritance)</h3>
+
+<p>
+<strong>:</strong>  
+یک نمونه از G (که خودش SubType است) علاوه بر صفات خودش، صفات F و E را هم <strong>به ارث می‌برد</strong>.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    
+    A1((EmpID))
+    A2((Name))
+    
+    A --- A1
+    A --- A2
+    
+    B{d<br/>JobType}
+    A --> B
+    
+    C[Programmer<br/>برنامه‌نویس]
+    D[Designer<br/>طراح]
+    
+    B --> C
+    B --> D
+    
+    C1((Languages))
+    C --- C1
+    
+    E{d<br/>ProgrammerType}
+    C --> E
+    
+    F[ApplicationProgrammer<br/>کاربردی]
+    G[SystemProgrammer<br/>سیستمی]
+    
+    E --> F
+    E --> G
+    
+    F1((Frameworks))
+    G1((KernelExp))
+    
+    F --- F1
+    G --- G1
+    
+    style A fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style G fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>وراثت:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>SystemProgrammer (G):
+← از Employee (E): EmpID, Name
+← از Programmer (F): Languages
+← خودش (G): KernelExp
+
+→ مجموعاً دارد: EmpID, Name, Languages, KernelExp ✅</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۲.۳.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+برای سیستم دانشگاه:
+</p>
+<ul>
+<li>Person (عام): Name, NationalID, BirthDate</li>
+<li>Student (خاص): StudentID, Major, EnrollmentYear</li>
+<li>Teacher (خاص): TeacherID, Department, Rank</li>
+<li>Staff (خاص): StaffID, Position, Office</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER با Is-A</li>
+<li>صفت معرف چیست؟</li>
+<li>هر SubType چه صفاتی به ارث می‌بره؟</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>درست</strong> است؟
+</p>
+
+<p>
+الف) SubType تمام صفات SuperType را به ارث می‌برد  
+ب) تخصیص از خاص به عام است  
+ج) صفت معرف همیشه باید شناسه باشد  
+د) یک SuperType فقط می‌تواند دو SubType داشته باشد
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+محیط بانک:
+</p>
+<ul>
+<li>Account (حساب)</li>
+<li>Checking (جاری): MinBalance</li>
+<li>Savings (پس‌انداز): InterestRate</li>
+<li>Certificate (گواهی سپرده): MaturityDate</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER کامل</li>
+<li>صفت معرف</li>
+<li>مثال داده برای هر نوع</li>
+<li>کدام صفات به ارث می‌رسن؟</li>
+</ul>
+
+<h4>تمرین 4 (تحلیلی):</h4>
+<p>
+تفاوت <strong>تخصیص</strong> و <strong>تعمیم</strong> را با مثال کامل توضیح دهید.  
+کدام یک در طراحی Top-Down و کدام در Bottom-Up استفاده می‌شود؟
+</p>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+شرکت حمل و نقل:
+</p>
+<ul>
+<li>Vehicle (وسیله نقلیه): VehicleID, Brand, Year</li>
+<li>Truck (کامیون): Capacity, AxleCount</li>
+<li>Car (خودرو): PassengerCount, FuelType</li>
+<li>Sedan (سدان): TrunkSize</li>
+<li>SUV: OffRoadCapability</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>نمودار ER با وراثت چندسطحی</li>
+<li>صفات معرف در هر سطح</li>
+<li>یک SUV چه صفاتی دارد؟ (به ارث برده + خودش)</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+آیا می‌توان یک موجودیت را همزمان در دو سلسله وراثت قرار داد؟  
+مثال: Student که هم از Person و هم از OnlineUser ارث‌بری کند؟  
+این موضوع رو چطور مدل می‌کنیم؟
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((Is-A<br/>وراثت))
+    مفهوم
+      عام به خاص
+      SuperType SubType
+      Inheritance
+    صفت معرف
+      Defining Attribute
+      ضابطه رده بندی
+      مثال Gender JobType
+    تخصیص
+      Specialization
+      بالا به پایین
+      Top Down
+    تعمیم
+      Generalization
+      پایین به بالا
+      Bottom Up
+    وراثت
+      به ارث بردن صفات
+      SubType دارد صفات SuperType
+      چندسطحی ممکن
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>Is-A:</strong> رابطه وراثت - عام به خاص</li>
+<li>✅ <strong>SuperType:</strong> موجودیت عام (والد)</li>
+<li>✅ <strong>SubType:</strong> موجودیت خاص (فرزند)</li>
+<li>✅ <strong>صفت معرف:</strong> ضابطه رده‌بندی (Gender, JobType)</li>
+<li>✅ <strong>تخصیص:</strong> عام → خاص (Top-Down)</li>
+<li>✅ <strong>تعمیم:</strong> خاص → عام (Bottom-Up)</li>
+<li>✅ <strong>وراثت:</strong> SubType همه صفات SuperType رو داره + صفات خودش</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="2-2-3.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">مشارکت (Participation)</span></a><a href="2-3-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">محدودیت‌های تخصیص</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

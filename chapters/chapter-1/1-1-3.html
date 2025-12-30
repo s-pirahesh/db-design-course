@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - داده مانا و عملیاتی">
+    <meta name="keywords" content="پایگاه داده, Database Design, داده مانا و عملیاتی">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>داده مانا و عملیاتی | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">داده مانا و عملیاتی</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">داده مانا و عملیاتی</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۱.۳: داده مانا و داده عملیاتی</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا که با سلسله مراتب ذخیره‌سازی آشنا شدیم، یه سوال مهم پیش میاد:
+</p>
+
+<p>
+<strong>"وقتی برق می‌ره یا کامپیوتر خاموش می‌شه، داده‌های من چی می‌شن؟ 🤔"</strong>
+</p>
+
+<p>
+این سوال ما رو به دو مفهوم بسیار مهم می‌رسونه:
+</p>
+<ol>
+<li><strong>داده مانا (Persistent Data)</strong> - داده‌هایی که باقی می‌مونن</li>
+<li><strong>داده عملیاتی (Operational Data)</strong> - داده‌هایی که روزانه باهاشون کار می‌کنیم</li>
+</ol>
+
+<p>
+بیا با یک سناریو شروع کنیم:
+</p>
+
+<p>
+فرض کن داری یک فرم ثبت‌نام دانشجو رو پر می‌کنی. نیمه‌ی راه یهو برق می‌ره! وقتی برق برمی‌گرده:
+</p>
+<ul>
+<li>اگر اطلاعات فقط در <strong>RAM</strong> (حافظه موقت) بود → <strong>همه چیز از دست رفت</strong> ❌</li>
+<li>اگر اطلاعات در <strong>دیسک</strong> (حافظه دائمی) ذخیره شده بود → <strong>همه چیز سالمه</strong> ✅</li>
+</ul>
+
+<p>
+این تفاوت بین <strong>داده موقت</strong> و <strong>داده مانا</strong> است!
+</p>
+
+<hr>
+<h3>📖 تعریف دقیق داده مانا (Persistent Data)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>داده مانا</strong>: با قطع جریان برق یا بروز خرابی یا پایان برنامه از بین نمی‌رود. در واقع فایل ساختاری است برای ذخیره نمودن داده‌های مانا استفاده می‌شود.
+</p>
+
+<h4>چرخه عمر داده مانا</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[ایجاد داده] -->|ذخیره در دیسک| B[داده مانا]
+    B -->|برق می‌رود| B
+    B -->|برنامه بسته می‌شود| B
+    B -->|سیستم خاموش می‌شود| B
+    B -->|سیستم روشن می‌شود| C[داده همچنان موجود است ✅]
+    C -->|حذف توسط کاربر| D[از بین می‌رود]
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#27ae60,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<h4>ویژگی‌های داده مانا</h4>
+
+<ol>
+<li><strong>ماندگاری</strong>: بعد از قطع برق باقی می‌ماند</li>
+<li><strong>استقلال از برنامه</strong>: بعد از بسته شدن برنامه همچنان وجود دارد</li>
+<li><strong>دسترسی مجدد</strong>: می‌توان دوباره به آن دسترسی پیدا کرد</li>
+<li><strong>عمر طولانی</strong>: تا زمانی که کاربر حذفش نکنه، باقی می‌مونه</li>
+</ol>
+
+<h4>مثال عملی از محیط دانشگاه</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>مرحله</th><th>وضعیت</th><th>موقعیت ذخیره</th></tr></thead>
+<tbody>
+<tr><td>1. ثبت‌نام دانشجو</td><td>در حال ورود اطلاعات</td><td>RAM (موقت)</td></tr>
+<tr><td>2. کلیک دکمه "ذخیره"</td><td>اطلاعات ثبت شد</td><td>دیسک (مانا) ✅</td></tr>
+<tr><td>3. بستن برنامه</td><td>-</td><td>دیسک (مانا) ✅</td></tr>
+<tr><td>4. خاموش کردن سیستم</td><td>-</td><td>دیسک (مانا) ✅</td></tr>
+<tr><td>5. روشن کردن بعد از 1 سال</td><td>-</td><td>دیسک (مانا) ✅</td></tr>
+</tbody></table></div>اطلاعات دانشجو همچنان سالم و قابل دسترس است! 🎉
+
+<hr>
+<h3>💾 انواع حافظه: موقت vs مانا</h3>
+
+<p>
+بیا انواع حافظه‌ها رو با هم بررسی کنیم:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[انواع حافظه] --> B[حافظه درون‌ماشینی<br/>Internal Memory]
+    A --> C[حافظه برون‌ماشینی<br/>External Memory]
+    
+    B --> B1[RAM<br/>موقت ❌]
+    B --> B2[Cache<br/>موقت ❌]
+    B --> B3[Registers<br/>موقت ❌]
+    
+    C --> C1[Hard Disk<br/>مانا ✅]
+    C --> C2[SSD<br/>مانا ✅]
+    C --> C3[Flash Drive<br/>مانا ✅]
+    C --> C4[CD/DVD<br/>مانا ✅]
+    C --> C5[Cloud Storage<br/>مانا ✅]
+    
+    style B1 fill:#e74c3c,color:#fff
+    style B2 fill:#e74c3c,color:#fff
+    style B3 fill:#e74c3c,color:#fff
+    style C1 fill:#2ecc71,color:#fff
+    style C2 fill:#2ecc71,color:#fff
+    style C3 fill:#2ecc71,color:#fff
+    style C4 fill:#2ecc71,color:#fff
+    style C5 fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>جدول مقایسه دقیق</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>نوع حافظه</th><th>سرعت</th><th>ظرفیت</th><th>مانا؟</th><th>قیمت</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td>RAM</td><td>بسیار سریع</td><td>8-64 GB</td><td>❌ خیر</td><td>متوسط</td><td>حافظه اصلی</td></tr>
+<tr><td>Cache</td><td>فوق‌العاده سریع</td><td>1-16 MB</td><td>❌ خیر</td><td>گران</td><td>L1, L2, L3</td></tr>
+<tr><td>Hard Disk (HDD)</td><td>کند</td><td>500 GB - 10 TB</td><td>✅ بله</td><td>ارزان</td><td>دیسک سخت</td></tr>
+<tr><td>SSD</td><td>سریع</td><td>128 GB - 4 TB</td><td>✅ بله</td><td>گران</td><td>حالت جامد</td></tr>
+<tr><td>Flash Drive</td><td>متوسط</td><td>4 GB - 1 TB</td><td>✅ بله</td><td>متوسط</td><td>فلش مموری</td></tr>
+</tbody></table></div><hr>
+
+<h3>📊 تعریف دقیق داده عملیاتی (Operational Data)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>داده‌های عملیاتی</strong>: داده‌هایی که به‌طور روزمره (در یک سازمان) استفاده می‌شوند.
+</p>
+
+<h4>چرا "عملیاتی"؟</h4>
+
+<p>
+داده عملیاتی یعنی داده‌ای که:
+</p>
+<ol>
+<li><strong>روزانه</strong> باهاش کار می‌کنیم</li>
+<li>برای <strong>عملیات جاری</strong> سازمان لازمه</li>
+<li><strong>به‌روز</strong> و <strong>فعال</strong> است</li>
+<li><strong>تراکنش‌های</strong> روزمره روش انجام می‌شه</li>
+</ol>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[داده عملیاتی] --> B[استفاده روزانه]
+    A --> C[به‌روزرسانی مداوم]
+    A --> D[دسترسی مکرر]
+    A --> E[حیاتی برای سازمان]
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12
+    style C fill:#f39c12
+    style D fill:#f39c12
+    style E fill:#f39c12
+</pre></div>
+
+<h4>مثال‌های داده عملیاتی در دانشگاه</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>نوع داده</th><th>مثال</th><th>چرا عملیاتی؟</th></tr></thead>
+<tbody>
+<tr><td>ثبت‌نام دانشجو</td><td>اطلاعات دانشجویان فعلی</td><td>هر روز برای کلاس‌ها لازمه</td></tr>
+<tr><td>حضور و غیاب</td><td>وضعیت حضور امروز</td><td>هر روز چک می‌شه</td></tr>
+<tr><td>نمرات</td><td>نمرات ترم جاری</td><td>برای محاسبه معدل لازمه</td></tr>
+<tr><td>مالی</td><td>شهریه پرداختی</td><td>برای بررسی وضعیت مالی</td></tr>
+<tr><td>جدول کلاسی</td><td>برنامه این هفته</td><td>برای برگزاری کلاس‌ها</td></tr>
+</tbody></table></div>همه این‌ها <strong>داده عملیاتی</strong> هستن چون:
+<ul>
+<li>روزانه استفاده می‌شن ✅</li>
+<li>برای عملیات جاری سازمان ضروری هستن ✅</li>
+<li>مرتباً تغییر می‌کنن ✅</li>
+</ul>
+
+<hr>
+<h3>🔄 رابطه بین داده مانا و داده عملیاتی</h3>
+
+<p>
+حالا سوال مهم:
+</p>
+
+<p>
+<strong>"آیا داده عملیاتی باید مانا باشه؟"</strong>
+</p>
+
+<p>
+جواب: <strong>بله حتماً!</strong> ✅
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[داده عملیاتی<br/>روزانه استفاده می‌شود] --> B{باید ذخیره شود؟}
+    B -->|بله| C[داده مانا<br/>در دیسک ذخیره می‌شود]
+    B -->|خیر| D[از دست می‌رود ❌]
+    
+    C --> E[همیشه در دسترس ✅]
+    
+    style A fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#e74c3c,color:#fff
+    style E fill:#27ae60,color:#fff
+</pre></div>
+
+<h4>چرا داده عملیاتی باید مانا باشه؟</h4>
+
+<ol>
+<li><strong>جلوگیری از از دست رفتن اطلاعات</strong>: اگر برق بره، اطلاعات از دست نره</li>
+<li><strong>دسترسی بعدی</strong>: فردا هم بتونیم به اطلاعات دسترسی داشته باشیم</li>
+<li><strong>گزارش‌گیری</strong>: برای تهیه گزارش نیاز به اطلاعات قبلی داریم</li>
+<li><strong>پشتیبان‌گیری</strong>: می‌تونیم از اطلاعات backup بگیریم</li>
+</ol>
+
+<h4>نمودار Venn</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TD
+    A["همه داده‌های پایگاه داده<br/>(Database)"]
+    
+    B["داده مانا<br/>(Persistent)<br/>ذخیره دائمی"]
+    
+    C["داده عملیاتی<br/>(Operational)<br/>استفاده روزمره"]
+    
+    D["تلاقی:<br/>داده‌های پایگاه داده<br/>هم مانا هستند<br/>هم عملیاتی"]
+    
+    A --> D
+    B --> D
+    C --> D
+    
+    style A fill:#9b59b6,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#e67e22,color:#fff
+</pre></div>
+
+<hr>
+<h3>🗄️ ذخیره و بازیابی اطلاعات</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>ذخیره‌سازی اطلاعات</strong>: حفظ و نگهداری داده‌ها در رسانه ذخیره‌سازی به‌طور مانا  
+<strong>بازیابی اطلاعات</strong>: دسترسی به این اطلاعات برای هدف خاص یا هدف مورد نظر
+</p>
+
+<h4>چرخه عمر داده در پایگاه داده</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant U as کاربر
+    participant A as برنامه
+    participant R as RAM<br/>(موقت)
+    participant D as دیسک<br/>(مانا)
+    
+    U->>A: ورود اطلاعات دانشجو
+    A->>R: ذخیره موقت در RAM
+    Note over R: داده موقت است<br/>با قطع برق از بین می‌رود ❌
+    
+    U->>A: کلیک دکمه "ذخیره"
+    A->>D: ذخیره در دیسک
+    Note over D: داده مانا شد<br/>با قطع برق باقی می‌ماند ✅
+    
+    Note over U,D: ... گذشت زمان ...
+    
+    U->>A: جستجوی دانشجو
+    A->>D: بازیابی از دیسک
+    D->>R: بارگذاری در RAM
+    R->>A: نمایش به کاربر
+    A->>U: نمایش اطلاعات
+</pre></div>
+
+<hr>
+<h3>💡 مثال جامع: سیستم ثبت‌نام دانشگاه</h3>
+
+<p>
+بیا یک سناریوی کامل رو بررسی کنیم:
+</p>
+
+<h4>مرحله 1: ثبت‌نام دانشجو (ذخیره‌سازی)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>زمان: ساعت 10:00 صبح
+کاربر: کارمند حوزه آموزش</code></pre></div>
+
+<p>
+<strong>عملیات:</strong>
+</p>
+<ol>
+<li>کارمند فرم رو باز می‌کنه → <strong>برنامه در RAM اجرا می‌شه</strong> (موقت)</li>
+<li>اطلاعات دانشجو رو وارد می‌کنه → <strong>داده‌ها در RAM هستن</strong> (موقت)</li>
+<li>دکمه "ذخیره" رو می‌زنه → <strong>داده‌ها به دیسک منتقل می‌شن</strong> (مانا) ✅</li>
+</ol>
+
+<div class="table-container"><table>
+<thead><tr><th>قبل از ذخیره</th><th>بعد از ذخیره</th></tr></thead>
+<tbody>
+<tr><td>RAM: [علی، 123، ...]</td><td>RAM: [علی، 123، ...]</td></tr>
+<tr><td>دیسک: [ ]</td><td>دیسک: [علی، 123، ...] ✅</td></tr>
+</tbody></table></div>#### مرحله 2: قطع برق!
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>زمان: ساعت 10:05 صبح
+اتفاق: برق می‌رود! ⚡❌</code></pre></div>
+
+<p>
+<strong>نتیجه:</strong>
+</p>
+<ul>
+<li>RAM پاک می‌شه (همه چیز از بین می‌ره)</li>
+<li>دیسک سالم می‌مونه (داده‌های ذخیره شده محفوظ هستن) ✅</li>
+</ul>
+
+<h4>مرحله 3: بازیابی اطلاعات (بعد از برگشت برق)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>زمان: ساعت 10:30 صبح
+کاربر: استاد درس</code></pre></div>
+
+<p>
+<strong>عملیات:</strong>
+</p>
+<ol>
+<li>سیستم روشن می‌شه</li>
+<li>استاد لیست دانشجویان رو می‌خواد</li>
+<li>برنامه از <strong>دیسک</strong> اطلاعات رو می‌خونه → <strong>بازیابی</strong></li>
+<li>اطلاعات به RAM منتقل می‌شه → <strong>نمایش</strong></li>
+<li>استاد لیست کامل دانشجویان رو می‌بینه ✅</li>
+</ol>
+
+<hr>
+<h3>📈 تفاوت داده موقت و مانا در عمل</h3>
+
+<h4>سناریوی 1: برنامه نویسی بدون ذخیره مانا</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-python"># کد بدون ذخیره مانا (فقط RAM)
+students = []  # لیست در حافظه RAM
+
+def add_student(name, id):
+    students.append({'name': name, 'id': id})
+    print(f"دانشجو {name} اضافه شد")
+
+# استفاده
+add_student("علی", "123")
+add_student("حسن", "456")
+
+# اگر برنامه بسته شود → همه چیز از بین می‌رود! ❌</code></pre></div>
+
+<p>
+<strong>مشکل</strong>: با بستن برنامه، تمام اطلاعات از بین می‌رود!
+</p>
+
+<h4>سناریوی 2: برنامه نویسی با ذخیره مانا</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-python">import json
+
+# کد با ذخیره مانا (دیسک)
+def add_student(name, id):
+    # 1. خواندن داده‌های قبلی از فایل (بازیابی)
+    with open('students.json', 'r') as f:
+        students = json.load(f)
+    
+    # 2. اضافه کردن دانشجوی جدید
+    students.append({'name': name, 'id': id})
+    
+    # 3. ذخیره در فایل (ذخیره مانا)
+    with open('students.json', 'w') as f:
+        json.dump(students, f)
+    
+    print(f"دانشجو {name} به‌طور دائم ذخیره شد ✅")
+
+# استفاده
+add_student("علی", "123")
+add_student("حسن", "456")
+
+# حتی با بستن برنامه، اطلاعات در فایل students.json باقی می‌ماند ✅</code></pre></div>
+
+<p>
+<strong>مزیت</strong>: اطلاعات به‌طور دائم در فایل ذخیره می‌شن!
+</p>
+
+<hr>
+<h3>🎯 اهمیت داده مانا در پایگاه داده</h3>
+
+<h4>چرا پایگاه داده باید مانا باشه؟</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((چرا داده مانا<br/>ضروری است؟))
+    امنیت اطلاعات
+      جلوگیری از از دست رفتن
+      قابلیت بازیابی
+    قابلیت اطمینان
+      عملیات بدون نگرانی
+      ثبات سیستم
+    تداوم کسب‌وکار
+      عملیات 24/7
+      در دسترس بودن همیشگی
+    مسئولیت قانونی
+      نگهداری اسناد
+      حسابرسی
+</pre></div>
+
+<h4>مثال عملی: سیستم بانکی</h4>
+
+<p>
+تصور کن:
+</p>
+<ol>
+<li>شما 1,000,000 تومان به حساب دوستتون واریز می‌کنید</li>
+<li>تراکنش انجام می‌شه</li>
+<li><strong>اگر داده مانا نباشه</strong>: با رفتن برق، تراکنش از بین می‌ره! ❌</li>
+<li><strong>با داده مانا</strong>: تراکنش به‌طور دائم ثبت می‌شه ✅</li>
+</ol>
+
+<div class="table-container"><table>
+<thead><tr><th>زمان</th><th>عملیات</th><th>RAM</th><th>دیسک (مانا)</th></tr></thead>
+<tbody>
+<tr><td>10:00</td><td>واریز 1M</td><td>موجودی شما: 9M<br/>موجودی دوست: 1M</td><td>-</td></tr>
+<tr><td>10:01</td><td>ذخیره</td><td>موجودی شما: 9M<br/>موجودی دوست: 1M</td><td>موجودی شما: 9M ✅<br/>موجودی دوست: 1M ✅</td></tr>
+<tr><td>10:02</td><td>قطع برق! ⚡</td><td>پاک شد ❌</td><td>موجودی شما: 9M ✅<br/>موجودی دوست: 1M ✅</td></tr>
+</tbody></table></div>بدون داده مانا، سیستم بانکی قابل اعتماد نیست!
+
+<hr>
+<h3>🔍 تفاوت با مفاهیم مشابه</h3>
+
+<h4>داده مانا vs داده موقت</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>داده مانا (Persistent)</th><th>داده موقت (Temporary)</th></tr></thead>
+<tbody>
+<tr><td>محل ذخیره</td><td>دیسک، SSD</td><td>RAM، Cache</td></tr>
+<tr><td>عمر</td><td>تا حذف توسط کاربر</td><td>تا بستن برنامه یا قطع برق</td></tr>
+<tr><td>سرعت</td><td>کندتر</td><td>بسیار سریع</td></tr>
+<tr><td>هزینه</td><td>ارزان‌تر</td><td>گران‌تر</td></tr>
+<tr><td>ظرفیت</td><td>بیشتر (TB)</td><td>کمتر (GB)</td></tr>
+<tr><td>مثال</td><td>فایل پایگاه داده</td><td>متغیرهای برنامه</td></tr>
+</tbody></table></div>#### داده عملیاتی vs داده آرشیو
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>داده عملیاتی</th><th>داده آرشیو</th></tr></thead>
+<tbody>
+<tr><td>استفاده</td><td>روزانه</td><td>گاه به گاه</td></tr>
+<tr><td>دسترسی</td><td>سریع</td><td>کند</td></tr>
+<tr><td>محل ذخیره</td><td>دیسک سریع (SSD)</td><td>دیسک کند (HDD) یا Cloud</td></tr>
+<tr><td>مثال دانشگاه</td><td>دانشجویان فعلی</td><td>دانشجویان 10 سال پیش</td></tr>
+<tr><td>اهمیت</td><td>حیاتی</td><td>مرجع</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۱.۱.۳</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+با یک مثال از زندگی واقعی (غیر از دانشگاه و بانک)، تفاوت بین داده مانا و داده موقت را توضیح دهید. چه اتفاقی می‌افتد اگر داده مانا نباشد؟
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) داده مانا با قطع برق از بین می‌رود  
+ب) داده عملیاتی به‌طور روزمره استفاده می‌شود  
+ج) فایل یک ساختار برای ذخیره داده مانا است  
+د) حافظه RAM برای ذخیره داده موقت استفاده می‌شود
+</p>
+
+<h4>تمرین 3 (سناریو):</h4>
+<p>
+یک کافی‌شاپ سیستم سفارش‌گیری دارد. هر روز 200 سفارش ثبت می‌شود. 
+</p>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>کدام داده‌ها باید عملیاتی باشند؟</li>
+<li>کدام داده‌ها باید مانا باشند؟</li>
+<li>اگر سیستم تنها از RAM استفاده کند، چه مشکلاتی پیش می‌آید؟</li>
+</ul>
+
+<h4>تمرین 4 (تحلیلی):</h4>
+<p>
+در جدول زیر، مشخص کنید هر نوع حافظه برای چه نوع داده‌ای مناسب است:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>نوع حافظه</th><th>سرعت</th><th>مانا؟</th><th>مناسب برای</th></tr></thead>
+<tbody>
+<tr><td>RAM</td><td>بسیار سریع</td><td>خیر</td><td>؟</td></tr>
+<tr><td>SSD</td><td>سریع</td><td>بله</td><td>؟</td></tr>
+<tr><td>HDD</td><td>متوسط</td><td>بله</td><td>؟</td></tr>
+<tr><td>Cache</td><td>فوق‌العاده سریع</td><td>خیر</td><td>؟</td></tr>
+</tbody></table></div>#### تمرین 5 (محاسباتی):
+<p>
+یک پایگاه داده دانشگاه دارای اطلاعات زیر است:
+</p>
+<ul>
+<li>10,000 دانشجوی فعال (داده عملیاتی)</li>
+<li>50,000 دانشجوی فارغ‌التحصیل (داده آرشیو)</li>
+<li>هر رکورد دانشجو: 500 بایت</li>
+</ul>
+
+<p>
+<strong>محاسبه کنید:</strong>
+</p>
+<ol>
+<li>فضای لازم برای داده‌های عملیاتی</li>
+<li>فضای لازم برای داده‌های آرشیو</li>
+<li>اگر همه در SSD (گران) ذخیره شوند چقدر هزینه دارد؟ (فرض: SSD = 100 تومان/GB)</li>
+<li>آیا می‌توانیم برای بهینه‌سازی هزینه، داده‌های آرشیو را در HDD (ارزان) ذخیره کنیم؟</li>
+</ol>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+یک برنامه بازی آنلاین طراحی کنید که:
+</p>
+<ul>
+<li>وضعیت فعلی بازی را در RAM نگه دارد (سریع)</li>
+<li>هر 5 دقیقه وضعیت را در دیسک ذخیره کند (مانا)</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چرا نمی‌توانیم همه چیز را فقط در RAM نگه داریم؟</li>
+<li>چرا نمی‌توانیم همه چیز را مستقیماً در دیسک ذخیره کنیم؟</li>
+<li>اگر بازی در دقیقه سوم crash کند، چه داده‌هایی از دست می‌رود؟</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[مفاهیم کلیدی] --> B[داده مانا]
+    A --> C[داده عملیاتی]
+    A --> D[ذخیره و بازیابی]
+    
+    B --> B1[با قطع برق باقی می‌ماند]
+    B --> B2[در دیسک ذخیره می‌شود]
+    B --> B3[فایل = ساختار ذخیره]
+    
+    C --> C1[استفاده روزمره]
+    C --> C2[برای عملیات جاری]
+    C --> C3[به‌روزرسانی مداوم]
+    
+    D --> D1[ذخیره = حفظ مانا]
+    D --> D2[بازیابی = دسترسی مجدد]
+    
+    style A fill:#9b59b6,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#e67e22,color:#fff
+</pre></div>
+
+<h4>نکات طلایی:</h4>
+
+<p>
+✅ <strong>داده مانا</strong> = داده‌ای که با قطع برق از بین نمی‌رود  
+✅ <strong>داده عملیاتی</strong> = داده‌ای که روزانه باهاش کار می‌کنیم  
+✅ <strong>فایل</strong> = ساختار برای ذخیره داده مانا  
+✅ <strong>داده‌های پایگاه داده</strong> = هم مانا هستند هم عملیاتی  
+✅ <strong>RAM</strong> = موقت و سریع (برای پردازش)  
+✅ <strong>دیسک</strong> = مانا و کندتر (برای ذخیره)
+</p>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="1-1-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">سلسله مراتب ذخیره‌سازی داده</span></a><a href="1-2-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">نسل‌های ذخیره‌سازی</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

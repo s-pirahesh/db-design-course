@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="معماری پایگاه داده و دیدها - ساختار سلسله مراتبی HDS">
+    <meta name="keywords" content="پایگاه داده, Database Design, ساختار سلسله مراتبی HDS">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>ساختار سلسله مراتبی HDS | معماری پایگاه داده و دیدها | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">معماری پایگاه داده و دیدها</a>
+                <span class="separator">›</span>
+                <span class="current">ساختار سلسله مراتبی HDS</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">ساختار سلسله مراتبی HDS</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۳: معماری پایگاه داده و دیدها</h1>
+
+<h2>بخش ۳.۱: ساختار سلسله‌مراتبی (HDS) و مشکلات آن</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا وارد <strong>معماری پایگاه داده</strong> می‌شیم! 🏗️
+</p>
+
+<p>
+تا الان با <strong>مدل‌سازی</strong> (ER) کار کردیم. حالا می‌خوایم ببینیم داده‌ها چطور <strong>ذخیره</strong> و <strong>سازماندهی</strong> می‌شن!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال: چند راه برای ساختاردهی داده‌ها داریم؟
+
+تاریخچه ساختارهای داده:
+1️⃣ HDS (Hierarchical) - سلسله‌مراتبی درختی 🌳
+2️⃣ NDS (Network) - شبکه‌ای 🕸️
+3️⃣ RDS (Relational) - رابطه‌ای جدولی 📊 ← رایج‌ترین!
+4️⃣ OODS (Object-Oriented) - شیءگرا 🎯
+
+امروز: HDS (قدیمی‌ترین!) ✨</code></pre></div>
+
+<p>
+<strong>چرا HDS مهمه؟</strong>
+</p>
+<ul>
+<li>اولین ساختار داده برای DBMS ✅</li>
+<li>مشکلاتش منجر به ابداع RDS شد ✅</li>
+<li>درک مشکلات = درک مزایای جداول! ✅</li>
+</ul>
+
+<hr>
+<h3>📖 تعریف ساختار داده (Data Structure)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+ساختار داده‌ای بخشی از مفهوم عمومی‌تر به نام <strong>Data Model</strong> می‌باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Data Model<br/>مدل داده]
+    
+    B[S: Structure<br/>ساختار]
+    C[M: Manipulation<br/>عملیات]
+    D[I: Integrity<br/>کنترل صحت]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[امکانات ساختاری<br/>نحوه سازماندهی]
+    C1[عملیات روی داده<br/>Insert, Delete, Update]
+    D1[کنترل صحت<br/>فیزیکی و منطقی]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>توضیحات:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>جزء</th><th>نام</th><th>کاربرد</th></tr></thead>
+<tbody>
+<tr><td><strong>S</strong></td><td>Structure</td><td>نحوه نمایش و ارتباط بین داده‌ها</td></tr>
+<tr><td><strong>M</strong></td><td>Manipulation</td><td>عملیات روی داده (CRUD)</td></tr>
+<tr><td><strong>I</strong></td><td>Integrity</td><td>محدودیت‌ها و قواعد صحت</td></tr>
+</tbody></table></div><hr>
+
+<h3>🌳 ساختار سلسله‌مراتبی (HDS)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>HDS (Hierarchical Data Structure):</strong> یک ساختاری است که هر نوع موجودیت یا نمونه موجودیت ارتباط داشته باشد نمودار می‌کشیم در قالب یک سلسله‌مراتب.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Root<br/>ریشه<br/>دانشگاه]
+    
+    B[Student<br/>دانشجو]
+    C[Teacher<br/>استاد]
+    D[Department<br/>بخش]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[Course<br/>درس 1]
+    B2[Course<br/>درس 2]
+    
+    B --> B1
+    B --> B2
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<h4>عناصر ساختاری اساسی HDS</h4>
+
+<p>
+<strong>:</strong>
+</p>
+
+<ol>
+<li><strong>گره‌ها (Nodes):</strong> برای نشان دادن نوع موجودیت</li>
+<li><strong>ارتباط پدر-فرزندی (PCL - Parent-Child Link):</strong> بیانگر نوع ارتباط</li>
+</ol>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ویژگی‌ها:
+- هر گره می‌تونه چند فرزند داشته باشه ✅
+- هر گره فقط یک پدر داره ✅ (کلیدی!)
+- یک ریشه (Root) داریم بدون پدر ✅
+- همه به صورت درخت (Tree) ✅</code></pre></div>
+
+<hr>
+<h3>🎨 مثال 1: دانشجو-درس ()</h3>
+
+<p>
+<strong>سناریو:</strong>  
+دانشجو درس‌هایی رو انتخاب می‌کنه.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student<br/>دانشجو]
+    A1[100, علی, نرم‌افزار]
+    
+    B1[Course: DB<br/>درس: پایگاه داده]
+    B2[Course: DS<br/>درس: ساختمان داده]
+    
+    A1 --> B1
+    A1 --> B2
+    
+    style A fill:#3498db,color:#fff
+    style A1 fill:#2ecc71,color:#fff
+    style B1 fill:#e74c3c,color:#fff
+    style B2 fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>نمایش داده:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشجو (100, علی, نرم‌افزار)
+  ├─ درس (DB، پایگاه داده، 3 واحد)
+  └─ درس (DS، ساختمان داده، 3 واحد)
+
+دانشجو (110، مریم، سخت‌افزار)
+  ├─ درس (DB، پایگاه داده، 3 واحد)
+  └─ درس (OS، سیستم‌عامل، 3 واحد)</code></pre></div>
+
+<p>
+<strong>مشکل: افزونگی!</strong> ❌
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اطلاعات درس DB تکرار شده:
+- زیر دانشجوی 100 ✅
+- زیر دانشجوی 110 ✅
+
+→ افزونگی داده (Redundancy) ❌</code></pre></div>
+
+<hr>
+<h3>⚠️ مشکلات HDS</h3>
+
+<h4>1️⃣ مناسب برای 1:N، نامناسب برای M:N</h4>
+
+<p>
+<strong>:</strong>  
+HDS برای نمایش چندی <strong>1:N</strong> مناسب است. برای نمایش ارتباط <strong>M:N</strong> دشواری وجود دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "1:N - مناسب ✅"
+    A1[Department<br/>بخش]
+    B1[Employee 1]
+    B2[Employee 2]
+    B3[Employee 3]
+    
+    A1 --> B1
+    A1 --> B2
+    A1 --> B3
+    end
+    
+    subgraph "M:N - نامناسب ❌"
+    C1[Student 1]
+    C2[Student 2]
+    D1[Course A]
+    D2[Course B]
+    
+    C1 -.-> D1
+    C1 -.-> D2
+    C2 -.-> D1
+    C2 -.-> D2
+    end
+    
+    style A1 fill:#2ecc71,color:#fff
+    style C1 fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>راه‌حل‌های M:N در HDS:</strong>
+</p>
+
+<p>
+<strong> - 3 روش:</strong>
+</p>
+
+<ol>
+<li><strong>افزونگی (Redundancy):</strong></li>
+</ol>
+<ul>
+<li>درس رو زیر هر دانشجو تکرار کن</li>
+<li>مشکل: افزونگی شدید ❌</li>
+</ul>
+
+<ol>
+<li><strong>لینک مجازی (Virtual Pointer):</strong></li>
+</ol>
+<ul>
+<li>فقط یک کپی از درس</li>
+<li>با لینک‌های مجازی به دانشجوها</li>
+<li>پیچیده! ❌</li>
+</ul>
+
+<ol>
+<li><strong>تبدیل به 1:N:</strong></li>
+</ol>
+<ul>
+<li>M:N را بشکن به دو تا 1:N</li>
+<li>ایجاد موجودیت میانی</li>
+<li>پیچیده‌تر! ❌</li>
+</ul>
+
+
+<h4>2️⃣ آنومالی‌های ذخیره‌سازی</h4>
+
+<p>
+<strong>:</strong>  
+ما در ذخیره‌سازی <strong>Anomaly</strong> داریم که در سه بخش است:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[آنومالی‌های HDS]
+    
+    B[1. عدم توانایی<br/>Insertion Anomaly]
+    C[2. کارهای اضافی<br/>Update Anomaly]
+    D[3. پیامد جانبی<br/>Deletion Anomaly]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[نمی‌تونیم درس بدون دانشجو اضافه کنیم]
+    C1[برای تغییر درس باید همه جا رو عوض کنیم]
+    D1[حذف دانشجو = حذف درس!]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#9b59b6,color:#fff
+</pre></div>
+
+<h5>الف) Insertion Anomaly (عدم توانایی درج)</h5>
+
+<p>
+<strong>:</strong>  
+حتماً دانشجو باید درسی داشته باشد که ما می‌توانیم دانشجو را اضافه کنیم.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل:
+→ می‌خوایم درس جدید "Operating System" اضافه کنیم
+→ ولی هیچ دانشجویی هنوز ثبت‌نام نکرده ❌
+
+→ نمی‌تونیم فقط درس اضافه کنیم! ❌
+→ باید زیر یک دانشجو باشه!
+
+راه‌حل موقت:
+→ یک "دانشجوی ساختگی" بسازیم ❌ (بد!)</code></pre></div>
+
+<h5>ب) Update Anomaly (کارهای اضافی)</h5>
+
+<p>
+<strong>:</strong>  
+اگر مشخصات درس را تغییر دهیم باید کل DB را جستجو کنیم که کار اضافی است.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل:
+→ می‌خوایم نام درس DB رو به "Database Systems" تغییر بدیم
+
+→ باید پیدا کنیم:
+  - زیر دانشجوی 100 ✅
+  - زیر دانشجوی 110 ✅
+  - زیر دانشجوی 120 ✅
+  - ...
+
+→ در همه جا تغییر بدیم! ❌
+
+→ اگر یکی رو فراموش کنیم: **ناسازگاری!** ❌</code></pre></div>
+
+<h5>ج) Deletion Anomaly (پیامد جانبی)</h5>
+
+<p>
+<strong>:</strong>  
+برای حذف یک درس کلیه دانشجویانی که این درس را انتخاب کرده‌اند آن‌ها نیز حذف می‌شود.
+</p>
+
+<p>
+<strong>قاعده ذاتی HDS:</strong>  
+اگر پدر حذف شود، فرزند نیز حذف می‌شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل:
+→ می‌خوایم دانشجوی 100 رو حذف کنیم
+
+→ چی اتفاق می‌افته؟
+  - دانشجوی 100 حذف می‌شه ✅
+  - درس DB (زیر او) حذف می‌شه ❌
+  - درس DS (زیر او) حذف می‌شه ❌
+
+→ اگر فقط همین دانشجو این درس رو داشت:
+→ اطلاعات درس برای همیشه از دست رفت! ❌❌</code></pre></div>
+
+<h4>3️⃣ افزونگی داده (Redundancy)</h4>
+
+<p>
+<strong>:</strong>  
+اگر یک دانشجو یک درس انتخاب کند و یک درس دیگر هم انتخاب کند ما در اینجا افزونگی خواهیم داشت چون مشخصات دوباره ذخیره می‌شود.
+</p>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<p>
+درس DB:
+</p>
+<ul>
+<li>زیر دانشجوی 100: (DB, پایگاه داده، 3 واحد، دکتر احمدی)</li>
+<li>زیر دانشجوی 110: (DB, پایگاه داده، 3 واحد، دکتر احمدی)</li>
+<li>زیر دانشجوی 120: (DB, پایگاه داده، 3 واحد، دکتر احمدی)</li>
+</ul>
+
+<p>
+→ سه بار تکرار! ❌
+</p>
+
+<p>
+<strong>مشکلات:</strong>
+</p>
+<ul>
+<li>هدر رفت فضای ذخیره‌سازی ❌</li>
+<li>خطر ناسازگاری (یکی رو عوض کنیم، بقیه رو فراموش کنیم) ❌</li>
+</ul>
+
+
+<h4>4️⃣ عدم تقارن در جستجو</h4>
+
+<p>
+<strong>:</strong>  
+HDS برای عمل جستجو <strong>تقارن ندارد</strong>.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>تقارن (Symmetry) یعنی چی?
+
+تقارن ✅:
+→ پیدا کردن "دانشجوهای درس DB" = آسان
+→ پیدا کردن "درس‌های دانشجوی 100" = آسان
+
+عدم تقارن ❌ در HDS:
+→ پیدا کردن "درس‌های دانشجوی 100" = آسان ✅
+   (از بالا به پایین)
+
+→ پیدا کردن "دانشجوهای درس DB" = سخت ❌
+   (باید کل درخت رو پیمایش کنیم!)</code></pre></div>
+
+<hr>
+<h3>📊 جدول مقایسه مشکلات HDS</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>مشکل</th><th>توضیح</th><th>مثال</th><th>شدت</th></tr></thead>
+<tbody>
+<tr><td><strong>M:N</strong></td><td>نمایش سخت</td><td>دانشجو-درس</td><td>🔴🔴🔴</td></tr>
+<tr><td><strong>Insertion Anomaly</strong></td><td>نمی‌شه بدون پدر اضافه کرد</td><td>درس بدون دانشجو</td><td>🔴🔴</td></tr>
+<tr><td><strong>Update Anomaly</strong></td><td>باید همه جا عوض کرد</td><td>تغییر نام درس</td><td>🔴🔴🔴</td></tr>
+<tr><td><strong>Deletion Anomaly</strong></td><td>حذف پدر = حذف فرزند</td><td>حذف دانشجو</td><td>🔴🔴🔴</td></tr>
+<tr><td><strong>Redundancy</strong></td><td>تکرار داده</td><td>اطلاعات درس</td><td>🔴🔴</td></tr>
+<tr><td><strong>No Symmetry</strong></td><td>جستجو یک‌طرفه</td><td>پایین→بالا سخت</td><td>🔴</td></tr>
+</tbody></table></div><hr>
+
+<h3>🔄 مقایسه HDS با RDS (Relational)</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>HDS (سلسله‌مراتبی)</th><th>RDS (جدولی)</th></tr></thead>
+<tbody>
+<tr><td><strong>ساختار</strong></td><td>درختی (Tree)</td><td>جدولی (Table)</td></tr>
+<tr><td><strong>1:N</strong></td><td>عالی ✅</td><td>عالی ✅</td></tr>
+<tr><td><strong>M:N</strong></td><td>سخت ❌</td><td>آسان ✅</td></tr>
+<tr><td><strong>افزونگی</strong></td><td>زیاد ❌</td><td>کم ✅</td></tr>
+<tr><td><strong>آنومالی</strong></td><td>دارد ❌</td><td>کم ✅</td></tr>
+<tr><td><strong>تقارن</strong></td><td>خیر ❌</td><td>بله ✅</td></tr>
+<tr><td><strong>انعطاف</strong></td><td>کم ❌</td><td>زیاد ✅</td></tr>
+<tr><td><strong>استفاده</strong></td><td>قدیمی</td><td>رایج ✅</td></tr>
+</tbody></table></div><strong>چرا RDS بهتره؟</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>HDS:
+→ سلسله‌مراتب سخت ← تغییر ساختار سخت ❌
+→ وابستگی پدر-فرزند ← آنومالی ❌
+→ افزونگی ← هدر فضا ❌
+
+RDS:
+→ جداول مستقل ← انعطاف ✅
+→ کلیدهای خارجی ← کنترل ✅
+→ نرمال‌سازی ← حذف افزونگی ✅</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۳.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+کتابخانه با HDS:
+</p>
+<ul>
+<li>Library (ریشه)</li>
+<li>Member (عضو)</li>
+<li>Book (کتاب قرض‌گرفته)</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چطور کتاب‌های موجود (قرض نگرفته‌شده) رو ذخیره می‌کنیم؟</li>
+<li>اگر عضو حذف بشه چی می‌شه؟</li>
+<li>آنومالی‌ها رو توضیح بده.</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه درباره HDS <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) برای ارتباط 1:N مناسب است  
+ب) افزونگی داده ندارد  
+ج) جستجو تقارن ندارد  
+د) حذف پدر باعث حذف فرزند می‌شود
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+بیمارستان:
+</p>
+<ul>
+<li>Doctor (پزشک)</li>
+<li>Patient (بیمار)</li>
+<li>Visit (ویزیت)</li>
+</ul>
+
+<p>
+<strong>آنومالی‌ها:</strong>
+</p>
+<ul>
+<li>چطور بیمار جدید (بدون ویزیت) اضافه می‌شه؟</li>
+<li>اگر پزشک حذف بشه چی می‌شه؟</li>
+<li>تغییر اطلاعات بیمار چطور؟</li>
+</ul>
+
+<h4>تمرین 4 (تحلیلی):</h4>
+<p>
+چرا HDS برای M:N مناسب نیست؟  
+3 روش ارائه شده برای حل این مشکل رو توضیح بده.  
+کدوم بهتره؟ چرا؟
+</p>
+
+<h4>تمرین 5 (مقایسه):</h4>
+<p>
+شرکت:
+</p>
+<ul>
+<li>Department → Employee → Project</li>
+</ul>
+
+<p>
+این رو هم با HDS و هم با RDS (جداول) طراحی کن.  
+آنومالی‌های هر کدوم رو توضیح بده.
+</p>
+
+<h4>تمرین 6 (سناریو):</h4>
+<p>
+دانشگاه:
+</p>
+<ul>
+<li>Student (100, علی)</li>
+<li>Course (DB)</li>
+<li>Course (DS)</li>
+<li>Student (110, مریم)</li>
+<li>Course (DB)</li>
+<li>Course (OS)</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چطور "دانشجوهای درس DB" رو پیدا می‌کنیم؟ (جستجوی معکوس)</li>
+<li>اگر علی رو حذف کنیم چی می‌شه؟</li>
+<li>چطور نام درس DB رو عوض کنیم؟</li>
+<li>چرا افزونگی داریم؟</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((HDS<br/>سلسله مراتبی))
+    ساختار
+      درختی Tree
+      پدر فرزند
+      هر گره یک پدر
+    مناسب
+      1 N عالی
+      ساده
+      سریع پایین بالا
+    نامناسب
+      M N سخت
+      افزونگی
+      آنومالی ها
+    مشکلات
+      Insertion Anomaly
+      Update Anomaly
+      Deletion Anomaly
+      Redundancy
+      No Symmetry
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>HDS:</strong> اولین ساختار DBMS، درختی</li>
+<li>✅ <strong>مناسب:</strong> ارتباط 1:N</li>
+<li>❌ <strong>نامناسب:</strong> ارتباط M:N</li>
+<li>❌ <strong>آنومالی‌ها:</strong> Insertion, Update, Deletion</li>
+<li>❌ <strong>افزونگی:</strong> تکرار شدید داده</li>
+<li>❌ <strong>عدم تقارن:</strong> جستجوی معکوس سخت</li>
+<li>✅ <strong>درس:</strong> مشکلات HDS → ایجاد RDS</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="../chapter-2/2-4-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">Aggregation (تجمع)</span></a><a href="3-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">معماری ANSI-SPARC</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

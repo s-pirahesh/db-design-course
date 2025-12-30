@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - معماری متمرکز و کلاینت/سرور">
+    <meta name="keywords" content="پایگاه داده, Database Design, معماری متمرکز و کلاینت/سرور">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>معماری متمرکز و کلاینت/سرور | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">معماری متمرکز و کلاینت/سرور</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">معماری متمرکز و کلاینت/سرور</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۳.۱: معماری متمرکز و کلاینت/سرور (C/S)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، تا اینجا یاد گرفتیم که DBMS چیه و چه مشکلاتی رو حل می‌کنه. حالا می‌خوایم ببینیم <strong>چطور یک سیستم پایگاه داده رو پیاده‌سازی کنیم؟</strong>
+</p>
+
+<p>
+فرض کن می‌خوای سیستم دانشگاه رو بسازی. چند سوال مهم پیش میاد:
+</p>
+<ul>
+<li>پایگاه داده رو کجا بذاریم؟ 🤔</li>
+<li>کاربران چطور دسترسی پیدا می‌کنن؟</li>
+<li>چند سرور لازم داریم؟</li>
+<li>وظایف رو چطور تقسیم کنیم؟</li>
+</ul>
+
+<p>
+جواب این سوالات به <strong>معماری سیستم</strong> بستگی داره!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[معماری‌های سیستم پایگاه داده] --> B[متمرکز<br/>Centralized]
+    A --> C[نامتمرکز<br/>Decentralized]
+    
+    C --> C1[کلاینت/سرور<br/>Client/Server]
+    C --> C2[توزیع‌شده<br/>Distributed]
+    C --> C3[متحرک<br/>Mobile]
+    C --> C4[چندگانه<br/>Multi]
+    C --> C5[موازی<br/>Parallel]
+    
+    style B fill:#e74c3c,color:#fff
+    style C1 fill:#3498db,color:#fff
+    style C2 fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+در این بخش روی <strong>متمرکز</strong> و <strong>کلاینت/سرور</strong> تمرکز می‌کنیم.
+</p>
+
+<hr>
+<h3>📖 تعریف معماری سیستم ()</h3>
+
+<p>
+<strong>معماری سیستم‌های پایگاهی:</strong> چندی و چگونگی اجزای تشکیل دهنده یک سیستم و چگونگی ترکیب و تعامل آنها با یکدیگر تا سیستم به هدفش نائل شود.
+</p>
+
+<h4>عناصر کلیدی معماری</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((معماری سیستم))
+    اجزا
+      سخت‌افزار
+      نرم‌افزار
+      شبکه
+    ترکیب
+      چطور با هم کار می‌کنن
+      ارتباطات
+    هدف
+      کارایی
+      مقیاس‌پذیری
+      قابلیت اطمینان
+</pre></div>
+
+<hr>
+<h3>🏢 معماری متمرکز (Centralized Architecture)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+اجزای معماری متمرکز:
+</p>
+<ol>
+<li>پیکر بندی نرم‌افزاری - سخت‌افزاری: رایانه‌ای که در آن OS (سیستم عامل) نصب شده باشد</li>
+<li>یک نرم افزار DBMS</li>
+<li>مجموعه‌ای از برنامه‌های کاربردی</li>
+<li>حداقل یک کاربر</li>
+</ol>
+
+<h4>ساختار معماری متمرکز</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "یک سرور مرکزی"
+    A[سیستم عامل<br/>OS]
+    B[DBMS]
+    C[برنامه‌های کاربردی<br/>Applications]
+    D[پایگاه داده<br/>Database]
+    
+    A --> B
+    B --> C
+    C --> D
+    end
+    
+    E[کاربران محلی<br/>Local Users] --> C
+    F[کاربران راه دور<br/>Remote Users] --> C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#e74c3c,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>ویژگی‌های کلیدی</h4>
+
+<p>
+<strong>1. همه چیز در یک مکان</strong> ✅
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌─────────────────────┐
+│   یک سرور مرکزی    │
+│                     │
+│  • OS               │
+│  • DBMS             │
+│  • Applications     │
+│  • Database         │
+└─────────────────────┘</code></pre></div>
+
+<p>
+<strong>2. کاربران دو نوع:</strong>
+</p>
+<ul>
+<li><strong>محلی (Local):</strong> مستقیماً روی سرور کار می‌کنن</li>
+<li><strong>راه دور (Remote):</strong> از طریق شبکه دسترسی دارن</li>
+</ul>
+
+<h4>مثال عملی: سیستم دانشگاه (متمرکز)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "سرور مرکزی دانشگاه"
+    A[Windows Server]
+    B[SQL Server]
+    C[برنامه ثبت‌نام]
+    D[DB دانشگاه]
+    
+    A --> B
+    B --> C
+    C --> D
+    end
+    
+    E[کارمند آموزش<br/>در دانشگاه] -->|محلی| C
+    F[دانشجو<br/>از خانه] -->|راه دور<br/>اینترنت| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#e74c3c,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>جریان کار:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1. کارمند در دانشگاه:
+   کارمند → سرور (مستقیم) → DBMS → Database
+   
+2. دانشجو از خانه:
+   دانشجو → اینترنت → سرور → DBMS → Database</code></pre></div>
+
+<hr>
+<h3>✅ مزایای معماری متمرکز</h3>
+
+<h4>1. سادگی مدیریت</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>توضیح</th></tr></thead>
+<tbody>
+<tr><td><strong>نصب</strong></td><td>فقط روی یک سرور</td></tr>
+<tr><td><strong>به‌روزرسانی</strong></td><td>فقط یک جا</td></tr>
+<tr><td><strong>پشتیبان‌گیری</strong></td><td>از یک مکان</td></tr>
+<tr><td><strong>نگهداری</strong></td><td>تیم کوچک کافیه</td></tr>
+</tbody></table></div><strong>مثال:</strong>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>به‌روزرسانی DBMS:
+متمرکز: 1 سرور → 1 ساعت کار ✅
+توزیع‌شده: 10 سرور → 10 ساعت کار ❌</code></pre></div>
+
+<h4>2. امنیت بالاتر</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[کاربر] -->|درخواست| B[سرور مرکزی]
+    B -->|بررسی امنیت| C{مجاز؟}
+    C -->|بله| D[دسترسی ✅]
+    C -->|خیر| E[رد ❌]
+    
+    style B fill:#e74c3c,color:#fff
+    style C fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>چرا امن‌تر؟</strong>
+</p>
+<ul>
+<li>همه دسترسی‌ها از یک نقطه کنترل می‌شن</li>
+<li>راحت‌تر می‌شه Log نگه داشت</li>
+<li>Firewall راحت‌تر پیکربندی می‌شه</li>
+</ul>
+
+<h4>3. یکپارچگی داده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>همه داده‌ها در یک جا:
+→ بدون تناقض ✅
+→ بدون افزونگی ✅
+→ به‌روزرسانی فوری ✅</code></pre></div>
+
+<h4>4. هزینه کمتر (برای سازمان‌های کوچک)</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>هزینه</th><th>متمرکز</th><th>توزیع‌شده</th></tr></thead>
+<tbody>
+<tr><td>سخت‌افزار</td><td>1 سرور قوی</td><td>چند سرور</td></tr>
+<tr><td>شبکه</td><td>ساده</td><td>پیچیده</td></tr>
+<tr><td>نیروی انسانی</td><td>1-2 نفر</td><td>5+ نفر</td></tr>
+</tbody></table></div><hr>
+
+<h3>❌ معایب معماری متمرکز</h3>
+
+<h4>1. نقطه شکست واحد (Single Point of Failure)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[سرور مرکزی] --> B{سرور کار می‌کنه؟}
+    B -->|بله| C[سیستم کار می‌کنه ✅]
+    B -->|خیر| D[کل سیستم از کار افتاده ❌]
+    
+    style A fill:#e74c3c,color:#fff
+    style D fill:#c0392b,color:#fff
+</pre></div>
+
+<p>
+<strong>سناریو:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ساعت 10:00 صبح: سرور مرکزی خراب می‌شه
+↓
+1000 کاربر نمی‌تونن کار کنن! 😱
+↓
+تا تعمیر سرور: سیستم کاملاً از کار افتاده</code></pre></div>
+
+<h4>2. محدودیت مقیاس‌پذیری (Scalability)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کاربران بیشتر می‌شن:
+100 کاربر → سرور 1: OK ✅
+1,000 کاربر → سرور 1: کند شد 🐌
+10,000 کاربر → سرور 1: خیلی کند 🐢
+100,000 کاربر → سرور 1: از کار افتاد ❌
+
+راه حل؟ باید سرور بزرگ‌تر بخری! (گران!)</code></pre></div>
+
+<h4>3. عملکرد شبکه</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant U as کاربر راه دور
+    participant N as شبکه
+    participant S as سرور مرکزی
+    
+    U->>N: درخواست (از 1000 کیلومتری!)
+    Note over N: تاخیر شبکه 😰
+    N->>S: درخواست رسید
+    S->>N: پاسخ
+    Note over N: تاخیر شبکه 😰
+    N->>U: پاسخ رسید (بعد از 2 ثانیه)
+</pre></div>
+
+<p>
+<strong>مشکل:</strong> کاربران دور از سرور مرکزی، تاخیر زیاد دارن!
+</p>
+
+<h4>4. هزینه بالا (برای سازمان‌های بزرگ)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای 100,000 کاربر:
+→ نیاز به سرور بسیار قوی (خیلی گران!)
+→ DB Machine خاص $$$
+→ RAM زیاد
+→ CPU قدرتمند</code></pre></div>
+
+<hr>
+<h3>🔄 معماری کلاینت/سرور (Client/Server - C/S)</h3>
+
+<p>
+<strong>ایده اصلی:</strong> تقسیم وظایف!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[کلاینت<br/>Client] -->|درخواست| B[سرور<br/>Server]
+    B -->|پاسخ| A
+    
+    A1[واسط کاربری<br/>UI] -.-> A
+    A2[منطق برنامه<br/>Business Logic] -.-> A
+    
+    B1[DBMS] -.-> B
+    B2[پایگاه داده<br/>Database] -.-> B
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#e74c3c,color:#fff
+</pre></div>
+
+<h4>تفاوت با متمرکز</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>متمرکز</th><th>کلاینت/سرور</th></tr></thead>
+<tbody>
+<tr><td><strong>پردازش</strong></td><td>فقط روی سرور</td><td>کلاینت + سرور</td></tr>
+<tr><td><strong>UI</strong></td><td>روی سرور</td><td>روی کلاینت</td></tr>
+<tr><td><strong>منطق</strong></td><td>روی سرور</td><td>توزیع شده</td></tr>
+<tr><td><strong>شبکه</strong></td><td>ساده</td><td>ضروری</td></tr>
+</tbody></table></div><hr>
+
+<h3>🔢 انواع معماری کلاینت/سرور</h3>
+
+<h4>1. ساده (Single Client / Single Server)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[کلاینت 1] --> B[سرور]
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال:</strong> یک دانشجو دسترسی به سرور دانشگاه
+</p>
+
+<p>
+<strong>محدودیت:</strong> فقط برای آزمایش!
+</p>
+
+<h4>2. چند کلاینت / یک سرور (Multi Client / Single Server)</h4>
+
+<p>
+<strong>این رایج‌ترین نوع است!</strong> ⭐
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[کلاینت 1<br/>دانشجو 1] --> D[سرور<br/>پایگاه داده دانشگاه]
+    B[کلاینت 2<br/>دانشجو 2] --> D
+    C[کلاینت 3<br/>کارمند] --> D
+    E[...] --> D
+    F[کلاینت N<br/>استاد] --> D
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#3498db,color:#fff
+    style F fill:#3498db,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال سیستم دانشگاه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سرور مرکزی: SQL Server با DB دانشگاه
+
+کلاینت‌ها:
+- 10,000 دانشجو → از خانه
+- 100 کارمند → از دفتر
+- 500 استاد → از دفتر کار</code></pre></div>
+
+<p>
+<strong>ویژگی‌ها:</strong>
+</p>
+<ul>
+<li>همه کلاینت‌ها به یک سرور متصل می‌شن</li>
+<li>سرور باید قدرتمند باشه (CPU + RAM + Disk)</li>
+<li>شبکه خوب لازمه</li>
+</ul>
+
+<h4>3. یک کلاینت / چند سرور (Single Client / Multi Server)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[کلاینت] --> B[سرور 1<br/>DB دانشجویان]
+    A --> C[سرور 2<br/>DB اساتید]
+    A --> D[سرور 3<br/>DB مالی]
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#e74c3c,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال:</strong> یک برنامه مدیریتی که به چند DB دسترسی داره
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- کلاینت باید بدونه کدوم سرور چیه!
+SELECT * FROM Server1.DB_Students.dbo.Students;
+SELECT * FROM Server2.DB_Teachers.dbo.Teachers;
+SELECT * FROM Server3.DB_Finance.dbo.Payments;</code></pre></div>
+
+<p>
+<strong>محدودیت:</strong> کلاینت باید آدرس سرورها رو بدونه!
+</p>
+
+<h4>4. چند کلاینت / چند سرور (Multi Client / Multi Server)</h4>
+
+<p>
+<strong>پیچیده‌ترین نوع!</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[کلاینت 1] --> E[سرور 1]
+    A --> F[سرور 2]
+    B[کلاینت 2] --> E
+    B --> G[سرور 3]
+    C[کلاینت 3] --> F
+    C --> G
+    D[...] --> E
+    D --> F
+    D --> G
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#3498db,color:#fff
+    style E fill:#e74c3c,color:#fff
+    style F fill:#e74c3c,color:#fff
+    style G fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>شرط مهم : همگن بودن!</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>باید یکسان باشه</th></tr></thead>
+<tbody>
+<tr><td>OS سرورها</td><td>Windows Server (همه)</td></tr>
+<tr><td>DBMS</td><td>SQL Server (همه)</td></tr>
+<tr><td>سخت‌افزار</td><td>معماری x86-64 (همه)</td></tr>
+<tr><td>پروتکل شبکه</td><td>TCP/IP (همه)</td></tr>
+<tr><td>رسانه (Media)</td><td>SSD (همه)</td></tr>
+</tbody></table></div><strong>چرا باید همگن باشه؟</strong>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر ناهمگن باشه:
+Server1: SQL Server (SQL دیالکت Microsoft)
+Server2: Oracle (SQL دیالکت Oracle)
+Server3: MySQL (SQL دیالکت MySQL)
+
+→ Query‌ها سازگار نیستن! ❌
+→ پیچیدگی زیاد! ❌</code></pre></div>
+
+<p>
+<strong>نکته مهم :</strong>  
+"در معماری C/S مشتری خدمت‌گذار خود را می‌بیند یعنی باید مشتری بداند داده مورد نیازش در کدام سایت نزد کدام سرور قرار دارد و به درستی آدرس‌دهی نماید."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کلاینت باید بگه:
+"من می‌خوام از Server2 اطلاعات استاد رو بگیرم"</code></pre></div>
+
+<hr>
+<h3>🏗️ معماری 3 لایه (3-Tier Architecture)</h3>
+
+<p>
+<strong>محبوب‌ترین نوع کلاینت/سرور!</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "لایه 1: کلاینت (Front-end)"
+    A[واسط کاربری<br/>UI]
+    end
+    
+    subgraph "لایه 2: سرور برنامه (Application Server)"
+    B[منطق کسب و کار<br/>Business Logic]
+    C[Network]
+    end
+    
+    subgraph "لایه 3: سرور دیتابیس (Back-end)"
+    D[DBMS]
+    E[OS]
+    F[Database]
+    end
+    
+    A -->|درخواست UI| B
+    B -->|پردازش| D
+    D -->|داده| F
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style D fill:#e74c3c,color:#fff
+    style F fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>تقسیم وظایف</h4>
+
+<p>
+<strong>لایه 1: کلاینت (Front-end)</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>وظایف:
+✅ نمایش UI
+✅ دریافت ورودی کاربر
+✅ ارسال درخواست به سرور برنامه
+
+مثال:
+- مرورگر وب
+- برنامه Desktop
+- اپلیکیشن موبایل</code></pre></div>
+
+<p>
+<strong>لایه 2: سرور برنامه (Middle-tier)</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>وظایف:
+✅ پردازش منطق کسب و کار
+✅ اعتبارسنجی داده‌ها
+✅ ارتباط با DB
+✅ مدیریت Session
+
+مثال:
+- Web Server (Apache, IIS)
+- Application Server (Tomcat, Node.js)</code></pre></div>
+
+<p>
+<strong>لایه 3: سرور دیتابیس (Back-end)</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>وظایف:
+✅ ذخیره داده‌ها
+✅ اجرای Query
+✅ مدیریت Transaction
+✅ امنیت
+
+مثال:
+- SQL Server
+- Oracle
+- PostgreSQL</code></pre></div>
+
+<h4>مثال عملی: ثبت‌نام دانشگاه</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant C as کلاینت<br/>(مرورگر)
+    participant A as سرور برنامه<br/>(Web Server)
+    participant D as سرور DB<br/>(SQL Server)
+    
+    C->>A: ثبت‌نام درس "پایگاه داده"
+    Note over A: بررسی: ظرفیت باقی مونده؟
+    A->>D: SELECT COUNT(*) FROM Enrollment WHERE CourseID=101
+    D->>A: پاسخ: 45 نفر (ظرفیت: 50)
+    Note over A: OK! فضا هست ✅
+    A->>D: INSERT INTO Enrollment VALUES (...)
+    D->>A: ثبت شد ✅
+    A->>C: پیام: "ثبت‌نام موفق!"
+</pre></div>
+
+<hr>
+<h3>✅ مزایای معماری کلاینت/سرور</h3>
+
+<h4>1. صرفه‌جویی در سخت‌افزار</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قبل (متمرکز):
+- سرور بسیار قوی: $100,000
+- کلاینت‌های ساده (Terminal): $500 × 100 = $50,000
+جمع: $150,000
+
+بعد (C/S):
+- سرور متوسط: $30,000
+- کلاینت‌های متوسط (PC): $1,000 × 100 = $100,000
+جمع: $130,000
+
+صرفه‌جویی: $20,000 ✅</code></pre></div>
+
+<h4>2. امنیت بالاتر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کاربران به DB دسترسی مستقیم ندارن!
+→ فقط از طریق سرور برنامه ✅
+→ راحت‌تر کنترل می‌شه ✅</code></pre></div>
+
+<h4>3. انعطاف‌پذیری</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>می‌خوای کاربر اضافه کنی؟
+→ فقط یک PC جدید ✅
+
+می‌خوای سرور رو تغییر بدی؟
+→ کلاینت‌ها نیازی به تغییر ندارن ✅</code></pre></div>
+
+<h4>4. مقیاس‌پذیری</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کاربران زیاد شدن:
+→ سرور برنامه اضافه کن
+→ Load Balancer بذار وسط
+→ کاربران به چند سرور متصل می‌شن ✅</code></pre></div>
+
+<h4>5. اطمینان عملیاتی بیشتر</h4>
+
+<p>
+<strong>:</strong> "اطمینان عملیاتی بیشتر از نظر کنترل عملیات Application‌ها"
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>همه منطق کسب و کار در سرور:
+→ یک‌بار تغییر می‌دی
+→ برای همه کاربران اعمال می‌شه ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>قانون جدید: "حداکثر 20 واحد ثبت‌نام"
+
+C/S: فقط سرور برنامه رو تغییر بده ✅
+متمرکز: همه کلاینت‌ها رو باید Update کنی ❌</code></pre></div>
+
+<hr>
+<h3>❌ معایب معماری کلاینت/سرور</h3>
+
+<h4>1. پیچیدگی بیشتر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>باید مدیریت کنی:
+- کلاینت‌ها (صدها!)
+- سرور برنامه
+- سرور DB
+- شبکه
+
+→ نیاز به تیم بزرگ‌تر</code></pre></div>
+
+<h4>2. وابستگی به شبکه</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر شبکه قطع شه:
+→ کلاینت‌ها نمی‌تونن کار کنن ❌</code></pre></div>
+
+<h4>3. مشکل همگن بودن (Multi C/Multi S)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>باید همه سرورها یکسان باشن:
+→ محدودیت در انتخاب
+→ اگر یکی متفاوت باشه، مشکل! ❌</code></pre></div>
+
+<hr>
+<h3>📊 مقایسه جامع: متمرکز vs کلاینت/سرور</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>متمرکز</th><th>کلاینت/سرور</th></tr></thead>
+<tbody>
+<tr><td><strong>سادگی</strong></td><td>بسیار ساده ✅✅✅</td><td>متوسط ✅✅</td></tr>
+<tr><td><strong>هزینه اولیه</strong></td><td>کم (سازمان کوچک) ✅</td><td>متوسط ✅✅</td></tr>
+<tr><td><strong>مقیاس‌پذیری</strong></td><td>محدود ❌</td><td>عالی ✅✅✅</td></tr>
+<tr><td><strong>قابلیت اطمینان</strong></td><td>کم (SPOF) ❌</td><td>بالا ✅✅</td></tr>
+<tr><td><strong>عملکرد</strong></td><td>وابسته به سرور</td><td>توزیع شده ✅</td></tr>
+<tr><td><strong>امنیت</strong></td><td>متوسط ✅✅</td><td>بالا ✅✅✅</td></tr>
+<tr><td><strong>نگهداری</strong></td><td>آسان ✅✅✅</td><td>پیچیده ❌</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۱.۳.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+مزایا و معایب معماری متمرکز را با یک مثال واقعی از زندگی خودتان (غیر از دانشگاه) توضیح دهید.
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) در معماری متمرکز، SPOF یک مشکل جدی است  
+ب) در C/S، کلاینت مستقیماً به DB دسترسی دارد  
+ج) معماری 3-لایه محبوب‌ترین نوع C/S است  
+د) در Multi C/Multi S، سرورها باید همگن باشند
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+یک کتابخانه دارد که:
+</p>
+<ul>
+<li>5 کارمند</li>
+<li>50,000 کتاب</li>
+<li>10,000 عضو</li>
+</ul>
+
+<p>
+کدام معماری مناسب‌تر است؟ چرا؟
+</p>
+<ul>
+<li>متمرکز؟</li>
+<li>کلاینت/سرور (چند کلاینت / یک سرور)؟</li>
+</ul>
+
+<p>
+طراحی کامل ارائه دهید.
+</p>
+
+<h4>تمرین 4 (محاسباتی):</h4>
+<p>
+یک شرکت می‌خواهد سیستم CRM بسازد:
+</p>
+<ul>
+<li>500 کارمند</li>
+<li>100,000 مشتری</li>
+<li>1,000,000 تراکنش در روز</li>
+</ul>
+
+<p>
+<strong>هزینه‌ها:</strong>
+</p>
+<ul>
+<li>سرور قوی: $50,000</li>
+<li>سرور متوسط: $20,000</li>
+<li>PC: $1,000</li>
+</ul>
+
+<p>
+<strong>محاسبه کنید:</strong>
+</p>
+<ol>
+<li>هزینه معماری متمرکز</li>
+<li>هزینه معماری C/S (1 سرور DB + 1 سرور App)</li>
+<li>کدوم مقرون به صرفه‌تر است؟</li>
+</ol>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+شما مدیر IT یک بیمارستان هستید. سیستم فعلی متمرکز است و مشکلات زیر دارد:
+</p>
+<ul>
+<li>سرور گاهی down می‌شه → کل سیستم از کار می‌افته</li>
+<li>دکترها از کلینیک‌های دور نمی‌تونن سریع دسترسی داشته باشن</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چه معماری پیشنهاد می‌کنید؟</li>
+<li>چرا این معماری بهتر است؟</li>
+<li>چه چالش‌هایی در migration وجود دارد؟</li>
+</ul>
+
+<h4>تمرین 6 (تحلیلی):</h4>
+<p>
+چرا در Multi C/Multi S، سرورها باید همگن باشند؟  
+اگر ناهمگن باشند (مثلاً SQL Server + Oracle)، چه مشکلاتی پیش می‌آید؟  
+3 مشکل مهم بیاورید.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((معماری‌ها))
+    متمرکز
+      همه چیز در یک جا
+      ساده
+      SPOF
+      محدود
+    کلاینت/سرور
+      تقسیم وظایف
+      مقیاس پذیر
+      امن تر
+      پیچیده تر
+      انواع
+        Single C/S
+        Multi C/Single S
+        Single C/Multi S
+        Multi C/Multi S
+      3 لایه
+        Front end
+        Application
+        Back end
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>متمرکز</strong>: ساده ولی محدود</li>
+<li>✅ <strong>C/S</strong>: قدرتمند ولی پیچیده</li>
+<li>✅ <strong>3-Tier</strong>: محبوب‌ترین!</li>
+<li>✅ <strong>Multi C/Multi S</strong>: باید همگن باشه</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="1-2-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">مشکلات فایلینگ و مزایای DBMS</span></a><a href="1-3-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">معماری توزیع‌شده و شفافیت</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

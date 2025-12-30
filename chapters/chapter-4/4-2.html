@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل رابطه‌ای و نگاشت - تئوری کلیدها">
+    <meta name="keywords" content="پایگاه داده, Database Design, تئوری کلیدها">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>تئوری کلیدها | مدل رابطه‌ای و نگاشت | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل رابطه‌ای و نگاشت</a>
+                <span class="separator">›</span>
+                <span class="current">تئوری کلیدها</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">تئوری کلیدها</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۴: ساختار مدل رابطه‌ای (Relational Model)</h1>
+
+<h2>بخش ۴.۲: تئوری کلیدها (Keys Theory)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا یکی از مهم‌ترین بخش‌های مدل رابطه‌ای رو یاد می‌گیریم! 🔑
+</p>
+
+<p>
+فرض کن این جدول رو داریم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student:
++-----+--------+-----------+-------+
+|  ID | Name   | LastName  | Major |
++-----+--------+-----------+-------+
+| 100 | Ali    | Rezaei    | CS    |
+| 110 | Sara   | Ahmadi    | Math  |
+| 120 | Ali    | Karimi    | CS    |
+| 130 | Reza   | Rezaei    | Phys  |
++-----+--------+-----------+-------+
+
+سؤالات:
+❓ چطور یک دانشجو رو پیدا کنیم؟
+❓ کدوم ستون(ها) منحصربه‌فرد هستن؟
+❓ چطور دو جدول رو به هم وصل کنیم؟
+
+→ با **کلید (Key)**! 🔑</code></pre></div>
+
+<p>
+<strong>اصطلاح کلید در RM یک اصطلاح عام است که به خودی خود معنا ندارد.</strong>  
+باید نوع کلید رو مشخص کنیم!
+</p>
+
+<hr>
+<h3>📋 انواع کلید</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[انواع کلید<br/>Keys]
+    
+    B[1. Super Key SK<br/>کلید فوق]
+    C[2. Candidate Key CK<br/>کلید کاندید]
+    D[3. Primary Key PK<br/>کلید اصلی]
+    E[4. Alternative Key AK<br/>کلید بدیل]
+    F[5. Foreign Key FK<br/>کلید خارجی]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    
+    B --> |+ Irreducibility| C
+    C --> |انتخاب یکی| D
+    C --> |بقیه| E
+    
+    G[رابطه دیگر]
+    G --> |اشاره به CK| F
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+    style E fill:#9b59b6,color:#fff
+    style F fill:#e67e22,color:#fff
+</pre></div>
+
+<hr>
+<h3>1️⃣ کلید فوق (Super Key - SK)</h3>
+
+<h4>تعریف</h4>
+
+<p>
+<strong>کلید در RM تعریف ریاضی دارد.</strong>
+</p>
+
+<p>
+<code>H</code> = مجموعه هدینگ رابطه <code>R</code>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A₁, A₂, ..., Aₙ)
+H = {A₁, A₂, ..., Aₙ}</code></pre></div>
+
+<p>
+<strong>هر زیرمجموعه <code>S ⊆ H</code> که خاصیت یکتایی (Uniqueness) را داشته باشد، کلید SK است.</strong>
+</p>
+
+<h4>تعریف ریاضی SK</h4>
+
+<p>
+اگر <code>tᵢ</code> و <code>tⱼ</code> دو تاپل دلخواه از رابطه <code>R</code> باشند:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>(tᵢ ∈ R) ∧ (tⱼ ∈ R) ∧ (tᵢ ≠ tⱼ)  →  tᵢ[S] ≠ tⱼ[S]</code></pre></div>
+
+<p>
+<strong>به زبان ساده:</strong> اگر دو تاپل متفاوت باشن، مقادیرشون روی <code>S</code> هم متفاوت باشه!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[تاپل 1<br/>t₁]
+    B[تاپل 2<br/>t₂]
+    
+    C[مقادیر روی S<br/>t₁S]
+    D[مقادیر روی S<br/>t₂S]
+    
+    A --> C
+    B --> D
+    
+    C -.->|≠| D
+    
+    E[یکتایی ✅<br/>Uniqueness]
+    
+    C --> E
+    D --> E
+    
+    style E fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h4>مثال - Super Key</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Student(StudentID, Name, LastName, Major, BirthYear)
+
+داده نمونه:
++-----+------+----------+------+-----------+
+|  ID | Name | LastName | Major| BirthYear |
++-----+------+----------+------+-----------+
+| 100 | Ali  | Rezaei   | CS   | 1380      |
+| 110 | Sara | Ahmadi   | Math | 1381      |
+| 120 | Ali  | Karimi   | CS   | 1380      |
++-----+------+----------+------+-----------+</code></pre></div>
+
+<p>
+<strong>کدوم زیرمجموعه‌ها SK هستن؟</strong>
+</p>
+
+<p>
+✅ SK ها:
+</p>
+
+<ol>
+<li>{StudentID}  ← یکتاست! ✅</li>
+<li>{StudentID, Name}  ← یکتاست (ID کافیه!) ✅</li>
+<li>{StudentID, Name, LastName}  ← یکتاست ✅</li>
+<li>{Name, LastName, BirthYear}  ← یکتاست؟ بررسی کنیم!</li>
+<li>{StudentID, Major}  ← یکتاست ✅</li>
+<li>... (همه ترکیبات که شامل StudentID)</li>
+</ol>
+
+<p>
+❌ Non-SK ها:
+</p>
+
+<ol>
+<li>{Name}  ← تکراری! (دو Ali داریم) ❌</li>
+<li>{Major}  ← تکراری! (دو CS داریم) ❌</li>
+<li>{Name, Major}  ← تکراری! (Ali + CS تکراریه) ❌</li>
+</ol>
+
+
+<p>
+<strong>چک کردن:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>{Name, LastName, BirthYear} SK است؟
+
+تاپل 1: (Ali, Rezaei, 1380)
+تاپل 2: (Sara, Ahmadi, 1381)  → متفاوت ✅
+تاپل 3: (Ali, Karimi, 1380)  → متفاوت ✅
+
+هیچ دو تاپل یکسانی نداریم → SK است! ✅</code></pre></div>
+
+<hr>
+<h4>سؤال مهم: حداقل و حداکثر SK</h4>
+
+<p>
+<strong>سؤال:</strong> هر رابطه حداقل و حداکثر چند تا می‌تواند کلید SK داشته باشد؟
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[تعداد SK]
+    
+    B[حداقل]
+    C[حداکثر]
+    
+    A --> B
+    A --> C
+    
+    B --> D[1 کلید<br/>در بدترین حالت]
+    C --> E[2ⁿ - 1 کلید<br/>در بهترین حالت]
+    
+    D --> F[رابطه تمام‌کلید<br/>SK = H]
+    E --> G[همه زیرمجموعه‌ها<br/>SK هستند]
+    
+    style B fill:#e74c3c,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>توضیح:</strong>
+</p>
+
+<p>
+<strong>حداقل SK = 1</strong>
+</p>
+
+<p>
+بدترین حالت:
+→ هیچ ترکیبی از صفت‌ها منحصربه‌فرد نباشه
+→ فقط <strong>همه صفت‌ها با هم</strong> یکتایی دارن
+→ SK = H (خود مجموعه هدینگ)
+</p>
+
+<p>
+مثال:
+R(Name, Age, City)
+→ Name تکراری
+→ Age تکراری
+→ City تکراری
+→ (Name, Age) تکراری
+→ (Name, City) تکراری
+→ فقط (Name, Age, City) یکتاست!
+</p>
+
+<p>
+→ SK = {Name, Age, City} = H
+</p>
+
+<p>
+به رابطه‌ای که فقط یک کلید دارد، <strong>رابطه تمام‌کلید</strong> می‌گویند.
+</p>
+
+<p>
+<strong>حداکثر SK = 2ⁿ - 1</strong>
+</p>
+
+<p>
+بهترین حالت:
+→ همه زیرمجموعه‌ها (به جز ∅) یکتایی دارن!
+→ تعداد زیرمجموعه‌های H = 2ⁿ
+→ حذف ∅ → 2ⁿ - 1
+</p>
+
+<p>
+مثال:
+R(A, B, C)  (n=3)
+→ 2³ - 1 = 7 زیرمجموعه
+</p>
+
+<p>
+همه SK هستن:
+</p>
+<ol>
+<li>{A}</li>
+<li>{B}</li>
+<li>{C}</li>
+<li>{A, B}</li>
+<li>{A, C}</li>
+<li>{B, C}</li>
+<li>{A, B, C}</li>
+</ol>
+
+
+<hr>
+<h3>2️⃣ کلید کاندید (Candidate Key - CK)</h3>
+
+<h4>تعریف</h4>
+
+<p>
+هر زیرمجموعه <code>C ⊆ H</code> که <strong>دو خاصیت</strong> زیر را داشته باشد، کلید CK است:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((Candidate Key<br/>CK))
+    1 Uniqueness
+      یکتایی مقدار
+      SK باشد
+      دو تاپل یکسان نداشته باشیم
+    2 Irreducibility
+      کاهش ناپذیری
+      Minimal
+      حذف هر صفت یکتایی بره
+</pre></div>
+
+<p>
+<strong>1. یکتایی مقدار (Uniqueness):</strong>  
+→ یعنی SK باشد!
+</p>
+
+<p>
+<strong>2. کاهش‌ناپذیری (Irreducibility):</strong>  
+صفت <code>C</code> را کاهش‌ناپذیر گوییم هرگاه <strong>هیچ زیرمجموعه‌ای از آن</strong> یکتایی مقدار نداشته باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>به زبان ساده:
+CK = SK + Minimal (کمینه)
+
+اگر از CK یک صفت کم کنیم:
+→ یکتایی از دست می‌ره! ❌</code></pre></div>
+
+<hr>
+<h4>مثال - کاهش‌ناپذیری</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Student(StudentID, Name, LastName)
+
+SK ها:
+1. {StudentID}  ✅
+2. {StudentID, Name}  ✅
+3. {StudentID, LastName}  ✅
+4. {StudentID, Name, LastName}  ✅
+5. {Name, LastName}  ✅ (فرض: یکتاست)
+
+کدوم CK هستن؟
+
+بررسی 1: {StudentID}
+→ کاهش‌پذیر؟ نه! (تک‌صفتی است)
+→ CK ✅
+
+بررسی 2: {StudentID, Name}
+→ کاهش‌پذیر؟ بله! چون:
+  - حذف Name → {StudentID} که SK است!
+→ CK ❌ (کاهش‌پذیر!)
+
+بررسی 3: {Name, LastName}
+→ کاهش‌پذیر؟ بررسی:
+  - حذف Name → {LastName} که SK نیست! ✅
+  - حذف LastName → {Name} که SK نیست! ✅
+→ CK ✅ (کاهش‌ناپذیر!)
+
+نتیجه:
+CK ها: {StudentID}, {Name, LastName}</code></pre></div>
+
+<hr>
+<h4>مثال پیچیده‌تر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student(StudentID, Name, LastName, BirthYear, BirthCity, NationalID)
+
+SK ها:
+1. {StudentID}
+2. {NationalID}
+3. {Name, LastName, BirthYear, BirthCity}
+4. {StudentID, Name}
+5. {StudentID, NationalID}
+6. ... (خیلی زیاد!)
+
+کدوم CK هستن؟
+
+✅ CK1 = {StudentID}
+→ تک‌صفتی → کاهش‌ناپذیر ✅
+
+✅ CK2 = {NationalID}
+→ تک‌صفتی → کاهش‌ناپذیر ✅
+
+✅ CK3 = {Name, LastName, BirthYear, BirthCity}
+→ بررسی:
+  - حذف Name → باقی SK نیست ✅
+  - حذف LastName → باقی SK نیست ✅
+  - حذف BirthYear → باقی SK نیست ✅
+  - حذف BirthCity → باقی SK نیست ✅
+→ کاهش‌ناپذیر → CK ✅
+
+❌ {StudentID, Name} → CK نیست!
+→ چون StudentID به تنهایی SK است!</code></pre></div>
+
+<p>
+<strong>نکته:</strong> هر کدام را حذف نموديم، بايد بقيه منحصربه‌فرد نباشند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال:
+تركيب (سال تولد، محل تولد، شماره شناسنامه)
+
+بررسی کاهش‌ناپذیری:
+→ حذف سال تولد → (محل تولد، شماره شناسنامه) یکتا نیست ✅
+→ حذف محل تولد → (سال تولد، شماره شناسنامه) یکتا نیست ✅
+→ حذف شماره شناسنامه → (سال تولد، محل تولد) یکتا نیست ✅
+
+→ تجزیه‌ناپذیر است → CK است! ✅</code></pre></div>
+
+<hr>
+<h4>سؤال: حداقل و حداکثر CK</h4>
+
+<p>
+<strong>سؤال:</strong> هر رابطه حداقل و حداکثر چند تا کلید CK دارد؟
+</p>
+
+<p>
+<strong>حداقل CK = 1</strong>
+→ خود H (رابطه تمام‌کلید)
+</p>
+
+<p>
+مثال:
+Enrollment(StudentID, CourseID, Semester, Grade)
+→ فقط CK = {StudentID, CourseID, Semester}
+→ تعداد CK = 1
+</p>
+
+<p>
+<strong>حداکثر CK = n</strong>
+→ اگر n صفت داشته باشیم
+→ هر صفت به تنهایی CK باشد
+</p>
+
+<p>
+مثال:
+R(NationalID, PassportID, StudentID)
+→ هر کدام تک‌صفتی و یکتا
+→ CK1 = {NationalID}
+→ CK2 = {PassportID}
+→ CK3 = {StudentID}
+→ تعداد CK = 3 = n
+</p>
+
+
+<hr>
+<h4>رابطه تمام‌کلید</h4>
+
+<p>
+<strong>تعریف:</strong> رابطه‌ای که CK آن برابر مجموعه عنوانش (H) باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- مثال رابطه تمام‌کلید
+Enrollment(StudentID, CourseID, Semester, Grade)
+
+-- CK = {StudentID, CourseID, Semester}
+-- CK = H (همه صفات!)
+
+-- چون:
+→ StudentID به تنهایی یکتا نیست (یک دانشجو چند درس)
+→ CourseID به تنهایی یکتا نیست (یک درس چند دانشجو)
+→ Semester به تنهایی یکتا نیست (یک ترم چند ثبت‌نام)
+→ فقط (StudentID, CourseID, Semester) یکتاست! ✅</code></pre></div>
+
+<p>
+<strong>ویژگی مهم:</strong> چنین رابطه‌ای حداقل در <strong>BCNF</strong> می‌باشد.
+</p>
+
+<hr>
+<h3>🎯 نقش CK در مدل رابطه‌ای</h3>
+
+<p>
+<strong>امکان Addressing (ارجاع) یا Referring به یک تاپل در رابطه.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>معنا:
+اگر در عملیاتی (مثل بازیابی) بر حسب یک مقدار CK جستجو کنیم:
+→ پاسخ در صورت وجود، یک تک‌تاپل است! ✅</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Student(StudentID, Name, Major, GPA)
+-- CK = {StudentID}
+
+-- جستجو با CK:
+SELECT * FROM Student WHERE StudentID = 100;
+→ حداکثر 1 تاپل! ✅
+
+-- جستجو بدون CK:
+SELECT * FROM Student WHERE Major = 'CS';
+→ ممکنه N تاپل! ⚠️</code></pre></div>
+
+<p>
+<strong>بنابراین کلید CK تضمین‌کننده عمل تک‌تاپلی است.</strong>
+</p>
+
+<hr>
+<h4>رابطه SK و CK</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نکته مهم:
+→ هر CK یک SK است ✅
+→ ولی هر SK یک CK نیست! ❌</code></pre></div>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[همه کلیدها]
+    
+    B[Super Keys SK]
+    C[Candidate Keys CK]
+    
+    A --> B
+    B --> C
+    
+    D[SK که کاهش‌پذیرند]
+    
+    B --> D
+    B --> C
+    
+    E[مثال:<br/>StudentID Name]
+    F[مثال:<br/>StudentID]
+    
+    D --> E
+    C --> F
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student(StudentID, Name, LastName)
+
+SK ها:
+- {StudentID}  → CK ✅
+- {StudentID, Name}  → SK ولی CK نیست! ❌
+- {StudentID, LastName}  → SK ولی CK نیست! ❌
+- {Name, LastName}  → CK ✅
+
+CK ها فقط:
+- {StudentID}
+- {Name, LastName}</code></pre></div>
+
+<hr>
+<h3>3️⃣ کلید اصلی (Primary Key - PK)</h3>
+
+<h4>تعریف</h4>
+
+<p>
+<strong>کلید اصلی یکی از کلیدهای کاندید است.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>PK ∈ {CK₁, CK₂, ..., CKₙ}</code></pre></div>
+
+<p>
+<strong>یعنی:</strong> از بین همه CK‌ها، یکی رو انتخاب می‌کنیم و بهش می‌گیم PK!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[همه CK ها]
+    
+    B[CK1]
+    C[CK2]
+    D[CK3]
+    E[CKn]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    
+    F[انتخاب یکی]
+    
+    A --> F
+    
+    G[Primary Key PK]
+    
+    F --> G
+    
+    H[Alternative Keys AK]
+    
+    B -.-> H
+    C -.-> H
+    D -.-> H
+    
+    style G fill:#f39c12,color:#fff
+    style H fill:#9b59b6,color:#fff
+</pre></div>
+
+<hr>
+<h4>ضابطه انتخاب PK</h4>
+
+<p>
+چطور از بین CK‌ها، PK رو انتخاب کنیم؟
+</p>
+
+<p>
+<strong>2 معیار اصلی:</strong>
+</p>
+
+<ol>
+<li><strong>از لحاظ طول، کمتر باشد</strong></li>
+</ol>
+<p>
+   → ترجیحاً تک‌صفتی
+   → یا حداقل تعداد صفت
+</p>
+
+<ol>
+<li><strong>در محیط، شناخته‌شده‌تر باشد</strong></li>
+</ol>
+<p>
+   → مثلاً: StudentID بهتر از (Name, BirthYear)
+   → چون همه با ID دانشجو آشنایی دارن!
+</p>
+
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Student(StudentID, Name, LastName, NationalID, BirthYear)
+
+CK ها:
+1. {StudentID}  → طول = 1 ✅
+2. {NationalID}  → طول = 1 ✅
+3. {Name, LastName, BirthYear}  → طول = 3 ❌
+
+کدوم رو انتخاب کنیم؟
+
+{StudentID} یا {NationalID}؟
+
+در محیط دانشگاه:
+→ StudentID شناخته‌شده‌تر است! ✅
+
+انتخاب:
+PK = {StudentID}  ✅
+AK = {NationalID}, {Name, LastName, BirthYear}</code></pre></div>
+
+<hr>
+<h4>دلایل انتخاب کلید PK</h4>
+
+<p>
+چرا اصلاً باید یکی از CK‌ها رو PK کنیم؟
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((دلایل<br/>انتخاب PK))
+    1 تاریخی
+      دهه 70
+      مفهوم سنتی
+    2 پشتیبانی DBMS
+      تعریف در همه DBMS
+      Index اتوماتیک
+      بهینه سازی Query
+    3 محدودیت Null
+      CK می تونه Null
+      PK نمی تونه Null
+      تضمین وجود مقدار
+</pre></div>
+
+<p>
+<strong>1. دلیل تاریخی:</strong>  
+در دهه ۷۰ استفاده می‌شد و مفهوم PK رایج بود.
+</p>
+
+<p>
+<strong>2. در تمامی DBMS‌ها تعریف شده است:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,  -- Index اتوماتیک! ✅
+    Name VARCHAR(50),
+    ...
+);
+
+-- DBMS اتوماتیک:
+-- 1. Index روی StudentID می‌سازه
+-- 2. یکتایی چک می‌کنه
+-- 3. Null نمی‌ذاره</code></pre></div>
+
+<p>
+<strong>3. کلید کاندید می‌تواند Null باشد، ولی کلید اصلی نمی‌تواند Null باشد:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- CK می‌تونه Null باشه:
+CREATE TABLE Student (
+    StudentID INT UNIQUE,  -- CK, می‌تونه Null باشه
+    Name VARCHAR(50)
+);
+
+INSERT INTO Student VALUES (NULL, 'Ali');  -- ✅ مجاز!
+
+-- PK نمی‌تونه Null باشه:
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,  -- PK, نمی‌تونه Null باشه
+    Name VARCHAR(50)
+);
+
+INSERT INTO Student VALUES (NULL, 'Ali');  -- ❌ خطا!</code></pre></div>
+
+<hr>
+<h4>نماد PK در رابطه‌ها</h4>
+
+<p>
+<strong>در رابطه‌ها، زیر کلید اصلی PK، خط می‌کشیم.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student(&lt;u&gt;StudentID&lt;/u&gt;, Name, Major, GPA)
+                ↑
+            کلید اصلی
+
+یا در نماد متنی:
+Student(StudentID, Name, Major, GPA)
+        --------</code></pre></div>
+
+<p>
+<strong>در نمودار جداول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌─────────────────────────────┐
+│ Student                     │
+├─────────────────────────────┤
+│ *StudentID (PK)             │  ← ستاره یا خط زیر
+│  Name                       │
+│  Major                      │
+│  GPA                        │
+└─────────────────────────────┘</code></pre></div>
+
+<hr>
+<h3>🆚 تفاوت PK و UNIQUE</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>PRIMARY KEY</th><th>UNIQUE</th></tr></thead>
+<tbody>
+<tr><td><strong>تعداد</strong></td><td>فقط 1</td><td>چند تا</td></tr>
+<tr><td><strong>Null</strong></td><td>مجاز نیست ❌</td><td>مجاز است ✅</td></tr>
+<tr><td><strong>Index</strong></td><td>اتوماتیک ✅</td><td>دستی</td></tr>
+<tr><td><strong>کاربرد</strong></td><td>شناسه اصلی</td><td>محدودیت اضافی</td></tr>
+<tr><td><strong>Constraint</strong></td><td>NOT NULL + UNIQUE</td><td>فقط UNIQUE</td></tr>
+</tbody></table></div><strong>مثال:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,        -- فقط 1 تا ✅
+    NationalID VARCHAR(10) UNIQUE,    -- می‌تونه چند تا باشه ✅
+    Email VARCHAR(100) UNIQUE,        -- یکی دیگه ✅
+    Name VARCHAR(50)
+);
+
+-- INSERT:
+INSERT INTO Student VALUES (100, '1234567890', 'ali@gmail.com', 'Ali');  -- ✅
+INSERT INTO Student VALUES (NULL, '0987654321', 'sara@gmail.com', 'Sara');  -- ❌ StudentID نمی‌تونه Null باشه
+INSERT INTO Student VALUES (110, NULL, 'reza@gmail.com', 'Reza');  -- ✅ NationalID می‌تونه Null باشه</code></pre></div>
+
+<p>
+<strong>تفاوت کنترل:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>PRIMARY KEY: 2 مورد کنترل می‌شود
+1. یکتایی مقدار ✅
+2. NOT NULL ✅
+
+UNIQUE: فقط 1 مورد کنترل می‌شود
+1. یکتایی مقدار ✅</code></pre></div>
+
+<hr>
+<h3>4️⃣ کلید بدیل (Alternative Key - AK)</h3>
+
+<h4>تعریف</h4>
+
+<p>
+<strong>به کلیدهای کاندید غیر از PK، کلید بدیل می‌گویند.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>AK = CK - {PK}</code></pre></div>
+
+<p>
+<strong>یعنی:</strong> همه CK‌ها به جز اون یکی که PK شد!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[همه CK ها]
+    
+    B[CK1<br/>StudentID]
+    C[CK2<br/>NationalID]
+    D[CK3<br/>Email]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    E[انتخاب PK]
+    
+    B --> E
+    
+    F[PK<br/>StudentID]
+    
+    E --> F
+    
+    G[Alternative Keys<br/>AK]
+    
+    C --> G
+    D --> G
+    
+    style F fill:#f39c12,color:#fff
+    style G fill:#9b59b6,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Student(StudentID, NationalID, Email, Name)
+
+CK ها:
+1. {StudentID}
+2. {NationalID}
+3. {Email}
+
+انتخاب PK:
+PK = {StudentID}  ✅
+
+پس:
+AK1 = {NationalID}
+AK2 = {Email}</code></pre></div>
+
+<p>
+<strong>در SQL:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,         -- PK ✅
+    NationalID VARCHAR(10) UNIQUE,     -- AK1 ✅
+    Email VARCHAR(100) UNIQUE,         -- AK2 ✅
+    Name VARCHAR(50)
+);</code></pre></div>
+
+<hr>
+<h3>5️⃣ کلید خارجی (Foreign Key - FK)</h3>
+
+<h4>تعریف نادقیق</h4>
+
+<p>
+<strong>ستون <code>C₁</code> در جدول <code>T₂</code> کلید خارجی است اگر در جدول <code>T₁</code> کلید اصلی باشد.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>خیلی ساده:
+→ ستونی که به جدول دیگه اشاره می‌کنه!</code></pre></div>
+
+<p>
+<strong>مثال ساده:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Department:
+┌─────┬────────────┐
+│ D#  │ DeptName   │  ← PK
+├─────┼────────────┤
+│ 10  │ CS         │
+│ 20  │ Math       │
+└─────┴────────────┘
+
+Employee:
+┌─────┬────────┬─────┐
+│ E#  │ Name   │ D#  │  ← FK (اشاره به Department.D#)
+├─────┼────────┼─────┤
+│ 100 │ Ali    │ 10  │
+│ 110 │ Sara   │ 20  │
+│ 120 │ Reza   │ 10  │
+└─────┴────────┴─────┘</code></pre></div>
+
+<hr>
+<h4>تعریف دقیق</h4>
+
+<p>
+صفت <code>A₁</code> از رابطه <code>R₂</code>، در رابطه <code>R₂</code> کلید خارجی است اگر:
+</p>
+<ul>
+<li>در رابطه <code>R₁</code> (می‌تواند متناظر با <code>R₂</code> باشد) کلید کاندید باشد</li>
+</ul>
+
+<p>
+<strong>زیر صفت خارجی نقطه‌چین می‌کشیم.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R₁(A, B, C)  ← PK or CK
+R₂(X, Y, A)  ← FK (اشاره به R₁.A)
+        ----</code></pre></div>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>FK در R₂ → CK در R₁</code></pre></div>
+
+<hr>
+<h4>نقش FK</h4>
+
+<p>
+<strong>نقش کلید خارجی امکانی است برای نمایش ارتباط بین موجودیت‌ها.</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Department]
+    B[Employee]
+    
+    C[D#: 10<br/>DeptName: CS]
+    D[E#: 100<br/>Name: Ali<br/>D#: 10]
+    
+    A --> C
+    B --> D
+    
+    D -.->|FK| C
+    
+    E[ارتباط<br/>کار می‌کنه در]
+    
+    D --> E
+    C --> E
+    
+    style E fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>هر صفت هم‌نام، هم‌دامنه و هم‌معنا می‌توانند عامل ارتباطی بین دو رابطه باشند.</strong>
+</p>
+
+<hr>
+<h4>مثال کامل FK</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه 1: Department (موجودیت قوی)
+CREATE TABLE Department (
+    DeptID INT PRIMARY KEY,
+    DeptName VARCHAR(50)
+);
+
+-- رابطه 2: Employee (موجودیت قوی)
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    DeptID INT,  -- کلید خارجی!
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+);
+
+-- نماد:
+Department(DeptID, DeptName)
+           ------
+
+Employee(EmpID, EmpName, DeptID)
+         -----           ......
+                           ↑
+                      کلید خارجی (FK)</code></pre></div>
+
+<hr>
+<h4>حالت خاص: FK به خودش</h4>
+
+<p>
+<strong>یک رابطه می‌تونه به خودش FK داشته باشه!</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- Employee با Boss (مدیر)
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    BossID INT,  -- FK به خودش!
+    FOREIGN KEY (BossID) REFERENCES Employee(EmpID)
+);
+
+-- نماد:
+Employee(EmpID, EmpName, BossID)
+         -----           ......
+                           ↑
+                  FK به خودش!</code></pre></div>
+
+<p>
+<strong>نمودار:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee]
+    
+    B[EmpID: 100<br/>Name: رضا<br/>BossID: NULL]
+    C[EmpID: 110<br/>Name: علی<br/>BossID: 100]
+    D[EmpID: 120<br/>Name: سارا<br/>BossID: 100]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    C -.->|Boss| B
+    D -.->|Boss| B
+    
+    E[مدیر]
+    
+    B --> E
+    
+    style B fill:#f39c12,color:#fff
+    style E fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نکات مهم:</strong>
+</p>
+
+<ol>
+<li><strong>R₁ و R₂ متمایز نیستند</strong> (هر دو یکی هستند)</li>
+</ol>
+
+<ol>
+<li><strong>لزوم Rename کلید خارجی:</strong></li>
+</ol>
+<p>
+   → چون Head مجموعه است
+   → نمی‌توان عضو تکراری داشت
+   → مجبوریم EmpID رو به BossID تغییر نام بدیم
+</p>
+
+<ol>
+<li><strong>درجه رابطه:</strong></li>
+</ol>
+<p>
+   → اگر n درجه داشته باشیم
+   → تعداد دامنه‌ها برابر حداکثر n-1 است
+   → چون یکی تکراری است (EmpID و BossID همان دامنه)
+</p>
+
+<ol>
+<li><strong>حلقه یا دور (Cycle) ارجاع داریم</strong></li>
+</ol>
+<p>
+   → Employee به خودش اشاره می‌کنه!
+</p>
+
+
+<hr>
+<h4>گراف ارجاعات (Reference Graph)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نمونه موجودیتی، کلید خارجی داشته باشد که به یک موجودیت دیگر اشاره نماید با فلشی به آن وصل می‌نماییم.</code></pre></div>
+
+<p>
+<strong>مثال 1: ساده</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>City ← S ← SP
+       ↑   ↑
+       │   │
+       P───┘
+
+S: FK به City
+SP: FK به S و P</code></pre></div>
+
+<p>
+<strong>مثال 2: چرخه ارجاع</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌──────┐
+      │      ↓
+Emp → Dept
+ ↑      │
+ └──────┘
+
+→ امکان دارد در این مسیر ارجاع، چرخه به وجود بیاید</code></pre></div>
+
+<p>
+<strong>مثال 3: خود-ارجاعی</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee ─┐
+   ↑      │
+   └──────┘
+
+→ حلقه یا دور (چرخه ارجاع)</code></pre></div>
+
+<hr>
+<h3>📊 خلاصه انواع کلید</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>نوع کلید</th><th>نماد</th><th>تعداد</th><th>ویژگی</th><th>کاربرد</th></tr></thead>
+<tbody>
+<tr><td><strong>Super Key</strong></td><td>SK</td><td>1 تا 2ⁿ-1</td><td>Uniqueness</td><td>شناسایی تاپل</td></tr>
+<tr><td><strong>Candidate Key</strong></td><td>CK</td><td>1 تا n</td><td>Uniqueness + Irreducibility</td><td>کاندید PK</td></tr>
+<tr><td><strong>Primary Key</strong></td><td>PK</td><td>فقط 1</td><td>CK + NOT NULL</td><td>شناسه اصلی</td></tr>
+<tr><td><strong>Alternative Key</strong></td><td>AK</td><td>0 تا n-1</td><td>CK غیر از PK</td><td>کلیدهای جایگزین</td></tr>
+<tr><td><strong>Foreign Key</strong></td><td>FK</td><td>0 تا ∞</td><td>اشاره به CK رابطه دیگر</td><td>ارتباط جداول</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۴.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+رابطه Employee:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Employee(EmpID, SSN, Name, Email, Phone, DeptID)</code></pre></div>
+
+<p>
+<strong>فرض:</strong>
+</p>
+<ul>
+<li>EmpID: یکتا</li>
+<li>SSN (شماره ملی): یکتا</li>
+<li>Email: یکتا</li>
+<li>Name: تکراری</li>
+<li>Phone: تکراری</li>
+<li>DeptID: FK به Department</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>الف) همه SK‌ها را بنویسید (حداقل 10 تا).</li>
+<li>ب) همه CK‌ها را پیدا کنید.</li>
+<li>ج) کدام را PK انتخاب می‌کنید؟ چرا؟</li>
+<li>د) AK‌ها چه هستند؟</li>
+<li>ه) FK کدام است؟</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) هر CK یک SK است.
+ب) هر SK یک CK است.
+ج) PK نمی‌تواند Null باشد.
+د) FK باید به CK یا PK اشاره کند.</code></pre></div>
+
+<h4>تمرین 3 (تحلیلی):</h4>
+<p>
+رابطه Enrollment:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">Enrollment(StudentID, CourseID, Semester, Grade)</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+-----+-----+----------+-------+
+| SID | CID | Semester | Grade |
++-----+-----+----------+-------+
+| 100 | 201 | Fall2024 | 18.0  |
+| 100 | 202 | Fall2024 | 17.0  |
+| 110 | 201 | Fall2024 | 19.5  |
+| 100 | 201 | Spring25 | 16.0  |
++-----+-----+----------+-------+</code></pre></div>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>الف) آیا {StudentID, CourseID} CK است؟ چرا؟</li>
+<li>ب) CK این رابطه چیست؟</li>
+<li>ج) این رابطه تمام‌کلید است؟</li>
+<li>د) چند FK دارد؟ به کجا اشاره می‌کنند؟</li>
+</ul>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+سیستم فروشگاه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>موجودیت‌ها:
+- Customer (CustomerID, Name, Phone, Email)
+- Product (ProductID, Name, Price, CategoryID)
+- Category (CategoryID, CategoryName)
+- Order (OrderID, CustomerID, OrderDate, TotalAmount)
+- OrderItem (OrderID, ProductID, Quantity, UnitPrice)</code></pre></div>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>الف) هر رابطه را با PK و FK مشخص کنید.</li>
+<li>ب) گراف ارجاعات را رسم کنید.</li>
+<li>ج) آیا چرخه ارجاعی وجود دارد؟</li>
+</ul>
+
+<h4>تمرین 5 (مفهومی):</h4>
+<p>
+<strong>سؤال 1:</strong> چرا می‌گوییم "هر CK یک SK است ولی هر SK یک CK نیست"؟  
+با مثال کامل توضیح دهید.
+</p>
+
+<p>
+<strong>سؤال 2:</strong> تفاوت کاهش‌پذیری و کاهش‌ناپذیری را با 3 مثال توضیح دهید.
+</p>
+
+<p>
+<strong>سؤال 3:</strong> چرا رابطه تمام‌کلید حداقل در BCNF است؟
+</p>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+رابطه پیچیده:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT,
+    NationalID VARCHAR(10),
+    Name VARCHAR(50),
+    FatherName VARCHAR(50),
+    BirthYear INT,
+    BirthCity VARCHAR(30),
+    PRIMARY KEY (StudentID)
+);</code></pre></div>
+
+<p>
+<strong>فرض:</strong>
+</p>
+<ul>
+<li>StudentID: یکتا</li>
+<li>NationalID: یکتا</li>
+<li>(Name, FatherName, BirthYear, BirthCity): یکتا</li>
+<li>(NationalID, BirthYear): یکتا</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>الف) همه CK‌ها را پیدا کنید و اثبات کنید.</li>
+<li>ب) آیا {NationalID, BirthYear} CK است؟ چرا؟</li>
+<li>ج) اگر بخواهیم FK اضافه کنیم (مثلاً CityID)، چه تغییراتی لازم است؟</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((کلیدها<br/>Keys))
+    SK
+      Uniqueness
+      1 تا 2ⁿ 1
+      شامل همه CK
+    CK
+      SK Irreducibility
+      1 تا n
+      Minimal
+      تمام کلید
+    PK
+      یکی از CK
+      NOT NULL
+      Index اتوماتیک
+      شناسه اصلی
+    AK
+      CK PK
+      UNIQUE
+      کلید جایگزین
+    FK
+      اشاره به CK
+      ارتباط جداول
+      خود ارجاعی
+      گراف ارجاعات
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>SK:</strong> Uniqueness، 1 تا 2ⁿ-1</li>
+<li>✅ <strong>CK:</strong> SK + Irreducibility، 1 تا n</li>
+<li>✅ <strong>PK:</strong> یکی از CK، NOT NULL، Index اتوماتیک</li>
+<li>✅ <strong>AK:</strong> CK - PK، UNIQUE</li>
+<li>✅ <strong>FK:</strong> اشاره به CK یا PK، ارتباط جداول</li>
+<li>✅ <strong>تمام‌کلید:</strong> CK = H، حداقل BCNF</li>
+<li>✅ <strong>PK vs UNIQUE:</strong> PK فقط 1، UNIQUE چند تا</li>
+<li>✅ <strong>هر CK یک SK، ولی هر SK یک CK نیست</strong></li>
+</ul>
+
+<hr>
+<p>
+<em>این فایل بخشی از درس‌نامه جامع طراحی پایگاه داده است.</em>  
+<em>بخش بعدی: ۴.۳ - قواعد نگاشت (Mapping Rules)</em>
+</p>
+
+                </div>
+
+                <div class="page-navigation"><a href="4-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">تعریف ریاضی رابطه</span></a><a href="4-3-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">قواعد نگاشت ER به رابطه‌ای - بخش ۱</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

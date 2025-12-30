@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="نرمال‌سازی - فرم‌های نرمال پیشرفته">
+    <meta name="keywords" content="پایگاه داده, Database Design, فرم‌های نرمال پیشرفته">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>فرم‌های نرمال پیشرفته | نرمال‌سازی | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">نرمال‌سازی</a>
+                <span class="separator">›</span>
+                <span class="current">فرم‌های نرمال پیشرفته</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">فرم‌های نرمال پیشرفته</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۷: نرمال‌سازی - فرم‌های پیشرفته</h1>
+
+<h2>🔷 Third Normal Form (3NF)</h2>
+
+<h3>وابستگی تابعی انتقالی (Transitive FD)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+A → C انتقالی است اگر A → B و B → C و B → A نباشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A → B → C
+  ↑
+انتقالی (A → C از طریق B)
+
+شرط: B → A نباشه (غیرقابل برگشت)</code></pre></div>
+
+<hr>
+<h4>مثال 1: وابستگی انتقالی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A, B, C)
+F = {A → B, B → C}
+
+A → B ✅
+B → C ✅
+B → A ❌ (نیست)
+
+→ A → C انتقالی است! ✅
+
+نمودار:
+A ──→ B ──→ C
+  └─────────→
+    (انتقالی)</code></pre></div>
+
+<hr>
+<h4>مثال 2: Second</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Second(S#, City, Status):
+PK = S#
+F = {S# → City, S# → Status}
+
+آیا FD انتقالی داریم؟
+
+فرض: City → Status (آیا برقرار است؟)
+
+بررسی:
++----+--------+--------+
+| S# | City   | Status |
++----+--------+--------+
+| 10 | Tehran | 100    |
+| 30 | Tehran | 150    |  ← Tehran → دو Status مختلف!
+| 40 | Yazd   | 100    |
++----+--------+--------+
+
+City → Status برقرار نیست! ✅
+→ پس FD انتقالی نداریم
+
+Second در 3NF است! ✅</code></pre></div>
+
+<hr>
+<h3>تعریف 3NF</h3>
+
+<p>
+<strong>3NF:</strong>  
+رابطه R در فرم 3NF است اگر و تنها اگر:
+</p>
+<ol>
+<li>در 2NF باشد</li>
+<li><strong>هیچ صفت ناکلید به صورت انتقالی به کلید اصلی وابسته نباشد</strong></li>
+</ol>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>به عبارت دیگر:
+هر FD غیر‌نامهم X → A باید:
+- یا X سوپرکلید باشه
+- یا A صفت عمده باشه (جزو کلید کاندید)</code></pre></div>
+
+<hr>
+<h3>مثال: نقض 3NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee(EmpID, DeptID, DeptName, Salary):
+PK = EmpID
+
+FD ها:
+1. EmpID → DeptID     ✅
+2. EmpID → DeptName   ← این انتقالی است!
+3. EmpID → Salary     ✅
+4. DeptID → DeptName  ✅
+
+نمودار:
+EmpID ──→ DeptID ──→ DeptName
+      └──────────────→
+         (انتقالی!)
+
+EmpID → DeptName از طریق DeptID
+→ وابستگی انتقالی! ❌
+→ نه در 3NF</code></pre></div>
+
+<hr>
+<h4>آنومالی‌ها</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+-----------+--------+
+| EID | DID    | DName     | Salary |
++-----+--------+-----------+--------+
+| 100 | 10     | CS        | 5000   |
+| 110 | 10     | CS        | 6000   |  ← افزونگی DName!
+| 120 | 20     | Math      | 5500   |
+| 130 | 20     | Math      | 7000   |  ← افزونگی DName!
++-----+--------+-----------+--------+
+
+❌ INSERT: نمی‌تونیم دپارتمان جدید بدون کارمند اضافه کنیم
+❌ DELETE: اگر همه کارمندای CS رو حذف کنیم، اطلاعات CS از بین می‌ره
+❌ UPDATE: اگر CS رو به "Computer Science" تغییر بدیم، باید چند رکورد رو بروزرسانی کنیم</code></pre></div>
+
+<hr>
+<h4>حل: تبدیل به 3NF</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee (نه در 3NF)
+     ↓
+  تقسیم به:
+
+Employee(EmpID, DeptID, Salary):
+PK = EmpID
+FD = {EmpID → DeptID, EmpID → Salary}
+✅ در 3NF (هیچ FD انتقالی نداریم)
+
+Department(DeptID, DeptName):
+PK = DeptID
+FD = {DeptID → DeptName}
+✅ در 3NF
+
+بازیابی:
+Employee_Original = Employee ⋈ Department ✅</code></pre></div>
+
+<hr>
+<h3>مثال 2: Student-Course</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>❌ نقض 3NF:
+
+Enrollment(StudentID, CourseID, InstructorID, InstructorName, Grade):
+PK = (StudentID, CourseID)
+
+FD ها:
+1. (SID, CID) → InstructorID    ✅
+2. (SID, CID) → InstructorName  ← انتقالی!
+3. (SID, CID) → Grade           ✅
+4. InstructorID → InstructorName ✅
+
+نمودار:
+(SID, CID) ──→ InstructorID ──→ InstructorName
+           └────────────────────→
+                (انتقالی!)
+
+✅ حل با تقسیم:
+
+Enrollment(StudentID, CourseID, InstructorID, Grade):
+PK = (StudentID, CourseID)
+
+Instructor(InstructorID, InstructorName):
+PK = InstructorID</code></pre></div>
+
+<hr>
+<h2>🔷 Boyce-Codd Normal Form (BCNF)</h2>
+
+<h3>تعریف</h3>
+
+<p>
+<strong>BCNF:</strong>  
+رابطه R در فرم BCNF است اگر برای هر FD غیرنامهم X → Y:
+<strong>X باید سوپرکلید باشد</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>به عبارت ساده:
+فقط سوپرکلیدها می‌تونن تعیین‌کننده باشن!
+
+BCNF ⊂ 3NF (BCNF سخت‌تر از 3NF)</code></pre></div>
+
+<hr>
+<h3>تفاوت 3NF و BCNF</h3>
+
+<p>
+<strong>3NF:</strong>
+X → A غیرنامهم باید:
+</p>
+<ul>
+<li>X سوپرکلید باشه</li>
+<li><strong>یا</strong> A صفت عمده باشه</li>
+</ul>
+
+<p>
+<strong>BCNF:</strong>
+X → A غیرنامهم باید:
+</p>
+<ul>
+<li>X سوپرکلید باشه</li>
+<li>(شرط دوم نداریم!)</li>
+</ul>
+
+<p>
+نتیجه: BCNF سخت‌گیرتره! 💪
+</p>
+
+
+<hr>
+<h3>مثال: SP (در BCNF)</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>SP(S#, P#, Qty):
+PK = (S#, P#)
+
+FD ها:
+1. (S#, P#) → Qty
+
+بررسی BCNF:
+- (S#, P#) سوپرکلید است؟ بله! ✅
+- تمام FD ها از سوپرکلید شروع می‌شن
+
+SP در BCNF است! ✅</code></pre></div>
+
+<hr>
+<h3>مثال: نقض BCNF (ولی در 3NF)</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(S#, P#, SName, Qty):
+PK = (S#, P#)
+
+FD ها:
+1. (S#, P#) → Qty
+2. (S#, P#) → SName
+3. S# → SName        ← این از سوپرکلید نیست!
+
+بررسی 3NF:
+- S# → SName: سمت چپ سوپرکلید نیست ❌
+  ولی SName ناکلید است و S# بخشی از PK (صفت عمده)
+  خطا! بررسی دوباره...
+  
+- S# → SName: SName ناکلید است
+- آیا انتقالی است؟ نه، S# بخشی از PK است
+- در 3NF است ✅
+
+بررسی BCNF:
+- S# → SName: S# سوپرکلید نیست! ❌
+- در BCNF نیست! ❌
+
+نتیجه: در 3NF ولی نه در BCNF</code></pre></div>
+
+<hr>
+<h4>آنومالی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R:
++----+----+--------+-----+
+| S# | P# | SName  | Qty |
++----+----+--------+-----+
+| 10 | 1  | Smith  | 300 |
+| 10 | 2  | Smith  | 200 |  ← افزونگی SName!
+| 20 | 1  | Jones  | 400 |
++----+----+--------+-----+
+
+❌ UPDATE: تغییر SName باید در چند رکورد انجام بشه</code></pre></div>
+
+<hr>
+<h4>حل: تبدیل به BCNF</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R
+  ↓
+تقسیم:
+
+SP(S#, P#, Qty):
+PK = (S#, P#)
+FD = {(S#, P#) → Qty}
+✅ در BCNF
+
+S(S#, SName):
+PK = S#
+FD = {S# → SName}
+✅ در BCNF</code></pre></div>
+
+<hr>
+<h3>رابطه تمام‌کلید (All-Key Relation)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+رابطه‌ای که کلید کاندیدش برابر مجموعه عنوانش باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A, B, C, D)
+CK = {A, B, C, D} (همه صفات!)
+
+چنین رابطه‌ای حداقل در BCNF است! ✅
+
+چرا؟
+→ هر FD باید از همه صفات شروع بشه
+→ پس حتماً از سوپرکلید شروع می‌شه</code></pre></div>
+
+<hr>
+<h3>مثال: رابطه تمام‌کلید</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Enrollment(StudentID, CourseID, Semester):
+CK = (StudentID, CourseID, Semester)
+→ همه صفات جزو کلید!
+
+FD ها:
+فقط: (SID, CID, Semester) → ... (نامهم)
+
+✅ در BCNF
+✅ آنومالی نداره (برای این ساختار)</code></pre></div>
+
+<hr>
+<h2>🔷 Fourth Normal Form (4NF)</h2>
+
+<h3>وابستگی چندمقداری (MVD)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+A →→ B (خواندن: A چندمقداری B)
+</p>
+
+<p>
+اگر برای هر مقدار A، مجموعه مقادیر B مستقل از بقیه صفات باشد.
+</p>
+
+<hr>
+<h3>مثال: MVD</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(Professor, Course, Book):
+
++------+---------+--------+
+| Prof | Course  | Book   |
++------+---------+--------+
+| Ali  | DB      | Book1  |
+| Ali  | DB      | Book2  |  ← Ali → DB با دو کتاب
+| Ali  | OS      | Book1  |
+| Ali  | OS      | Book2  |  ← Ali → OS با دو کتاب
++------+---------+--------+
+
+MVD:
+- Professor →→ Course
+- Professor →→ Book
+
+مشکل:
+→ افزونگی شدید!
+→ هر استاد N درس و M کتاب → N×M رکورد!</code></pre></div>
+
+<hr>
+<h3>تعریف 4NF</h3>
+
+<p>
+<strong>4NF:</strong>  
+رابطه R در فرم 4NF است اگر برای هر MVD غیرنامهم X →→ Y:
+<strong>X باید سوپرکلید باشد</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>4NF ⊂ BCNF
+
+حل MVD با تقسیم:
+
+Professor_Course(Professor, Course)
+Professor_Book(Professor, Book)
+
+✅ در 4NF</code></pre></div>
+
+<hr>
+<h2>🔷 Fifth Normal Form (5NF)</h2>
+
+<h3>وابستگی پیوندی (JD)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+رابطه R وابستگی پیوندی دارد اگر:
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R = R1 ⋈ R2 ⋈ ... ⋈ Rn</code></pre></div>
+<p>
+و این تقسیم بدون اتلاف باشد.
+</p>
+
+<hr>
+<h3>تعریف 5NF</h3>
+
+<p>
+<strong>5NF (PJNF - Project-Join Normal Form):</strong>  
+رابطه R در 5NF است اگر هر JD در R از کلیدهای کاندید باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>5NF ⊂ 4NF
+
+5NF نرمال‌ترین فرم عملی است!</code></pre></div>
+
+<hr>
+<h3>مثال: نیاز به 5NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Supply(Supplier, Part, Project):
+"فروشنده S قطعه P را برای پروژه J تولید می‌کنه"
+
+ممکنه نیاز به تقسیم به 3 جدول باشه:
+- SP(Supplier, Part)
+- SJ(Supplier, Project)
+- PJ(Part, Project)
+
+اگر: Supply = SP ⋈ SJ ⋈ PJ
+
+→ نیاز به 5NF داریم</code></pre></div>
+
+<hr>
+<h2>خلاصه فرم‌های نرمال</h2>
+
+<div class="table-container"><table>
+<thead><tr><th>فرم</th><th>شرط اصلی</th><th>مثال نقض</th></tr></thead>
+<tbody>
+<tr><td><strong>1NF</strong></td><td>صفات تک‌مقداری</td><td>Phone = {091, 092}</td></tr>
+<tr><td><strong>2NF</strong></td><td>1NF + FD کامل</td><td>(S#,P#)→City: جزئی</td></tr>
+<tr><td><strong>3NF</strong></td><td>2NF + بدون FD انتقالی</td><td>EmpID→DeptID→DeptName</td></tr>
+<tr><td><strong>BCNF</strong></td><td>هر FD از سوپرکلید</td><td>S#→SName (S# نه SK)</td></tr>
+<tr><td><strong>4NF</strong></td><td>هر MVD از سوپرکلید</td><td>Prof →→ Course</td></tr>
+<tr><td><strong>5NF</strong></td><td>هر JD از CK</td><td>Supply ثلاثی</td></tr>
+</tbody></table></div><hr>
+
+<h2>نمودار کامل نرمال‌سازی</h2>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[First S#,P#,Qty,City,Status]
+    
+    B[SP S#,P#,Qty]
+    C[Second S#,City,Status]
+    
+    D[تقسیم بیشتر?]
+    
+    E[3NF ✅]
+    F[BCNF ✅]
+    G[4NF ✅]
+    H[5NF ✅]
+    
+    A -->|حذف FD جزئی| B
+    A -->|حذف FD جزئی| C
+    
+    C -->|آیا FD انتقالی داره?| D
+    D -->|خیر| E
+    D -->|بله| C
+    
+    E -->|آیا همه FD از SK?| F
+    F -->|MVD داره?| G
+    G -->|JD داره?| H
+    
+    style A fill:#e74c3c,color:#fff
+    style E fill:#2ecc71,color:#fff
+    style F fill:#3498db,color:#fff
+    style G fill:#9b59b6,color:#fff
+    style H fill:#1abc9c,color:#fff
+</pre></div>
+
+<hr>
+<h2>الگوریتم نرمال‌سازی</h2>
+
+<h3>گام‌های عمومی</h3>
+
+<p>
+<strong>گام 1:</strong> شناسایی FD ها
+<strong>گام 2:</strong> تعیین کلیدهای کاندید
+<strong>گام 3:</strong> بررسی فرم نرمال فعلی
+<strong>گام 4:</strong> تقسیم رابطه بر اساس:
+</p>
+<ul>
+<li>FD های جزئی (برای 2NF)</li>
+<li>FD های انتقالی (برای 3NF)</li>
+<li>FD هایی که از غیر سوپرکلید (برای BCNF)</li>
+</ul>
+<p>
+<strong>گام 5:</strong> تکرار تا رسیدن به فرم نرمال مورد نظر
+</p>
+
+
+<hr>
+<h2>مثال جامع: نرمال‌سازی کامل</h2>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مسئله:
+R(StudentID, CourseID, InstructorID, InstructorName, 
+  Department, DeptBuilding, Grade)
+
+FD ها:
+1. (StudentID, CourseID) → Grade
+2. (StudentID, CourseID) → InstructorID
+3. InstructorID → InstructorName
+4. InstructorID → Department
+5. Department → DeptBuilding
+6. CourseID → InstructorID</code></pre></div>
+
+<hr>
+<h3>گام 1: کلیدهای کاندید</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>محاسبه (StudentID, CourseID)⁺:
+→ {StudentID, CourseID, Grade, InstructorID, InstructorName, 
+   Department, DeptBuilding}
+→ همه صفات! ✅
+
+PK = (StudentID, CourseID)</code></pre></div>
+
+<hr>
+<h3>گام 2: بررسی 2NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>FD های جزئی:
+- CourseID → InstructorID
+  → CourseID ⊂ PK و InstructorID ناکلید
+  → جزئی! ❌
+
+نه در 2NF!</code></pre></div>
+
+<hr>
+<h3>گام 3: تبدیل به 2NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>تقسیم:
+
+Enrollment(StudentID, CourseID, Grade):
+- (StudentID, CourseID) → Grade ✅
+
+Course_Instructor(CourseID, InstructorID):
+- CourseID → InstructorID ✅
+
+Instructor(InstructorID, InstructorName, Department):
+- InstructorID → InstructorName
+- InstructorID → Department
+
+Department(Department, DeptBuilding):
+- Department → DeptBuilding</code></pre></div>
+
+<hr>
+<h3>گام 4: بررسی 3NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Instructor(InstructorID, InstructorName, Department):
+
+FD انتقالی:
+- InstructorID → Department → DeptBuilding
+  ولی DeptBuilding اینجا نیست، پس OK
+
+ولی:
+- InstructorID → InstructorName ✅
+- InstructorID → Department ✅
+
+✅ در 3NF
+
+Department(Department, DeptBuilding):
+- Department → DeptBuilding ✅
+
+✅ در 3NF</code></pre></div>
+
+<hr>
+<h3>گام 5: بررسی BCNF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>همه جداول:
+- تمام FD ها از کلید کاندید شروع می‌شن ✅
+
+✅ در BCNF</code></pre></div>
+
+<hr>
+<h3>نتیجه نهایی</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>جداول نهایی (در BCNF):
+
+1. Enrollment(StudentID, CourseID, Grade)
+   PK: (StudentID, CourseID)
+
+2. Course_Instructor(CourseID, InstructorID)
+   PK: CourseID
+
+3. Instructor(InstructorID, InstructorName, Department)
+   PK: InstructorID
+
+4. Department(Department, DeptBuilding)
+   PK: Department
+
+✅ همه در BCNF
+✅ بدون افزونگی
+✅ بدون آنومالی</code></pre></div>
+
+<hr>
+<h2>✍️ تمرینات جامع فصل ۷</h2>
+
+<h3>تمرین 1 (تشریحی): شناسایی آنومالی</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Order(OrderID, ProductID, ProductName, CustomerID, CustomerName, 
+      Quantity, Price, OrderDate):
+
++-----+-----+---------+-----+----------+-----+-------+------------+
+| OID | PID | PName   | CID | CName    | Qty | Price | Date       |
++-----+-----+---------+-----+----------+-----+-------+------------+
+| 1   | 100 | Laptop  | 10  | علی      | 2   | 5000  | 2024-01-01 |
+| 1   | 200 | Mouse   | 10  | علی      | 3   | 100   | 2024-01-01 |
+| 2   | 100 | Laptop  | 20  | سارا     | 1   | 5000  | 2024-01-02 |
++-----+-----+---------+-----+----------+-----+-------+------------+
+
+**سؤالات:**
+الف) 3 نمونه آنومالی INSERT، DELETE، UPDATE بیابید
+ب) FD های این رابطه را مشخص کنید
+ج) کلید اصلی چیست؟
+د) چه فرم نرمالی است؟
+ه) به BCNF تبدیل کنید</code></pre></div>
+
+<hr>
+<h3>تمرین 2 (تستی):</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کدام گزینه **نادرست** است؟
+
+الف) هر رابطه در BCNF، حتماً در 3NF است
+ب) هر رابطه در 3NF، حتماً در BCNF است
+ج) رابطه تمام‌کلید حداقل در BCNF است
+د) 2NF FD های جزئی را حذف می‌کند</code></pre></div>
+
+<hr>
+<h3>تمرین 3 (تحلیلی): محاسبه بستار</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A, B, C, D, E)
+F = {A → B, B → C, CD → E, C → D, E → A}
+
+**محاسبه کنید:**
+الف) A⁺ = ?
+ب) (B, C)⁺ = ?
+ج) E⁺ = ?
+د) همه کلیدهای کاندید را بیابید
+ه) آیا A → E از F استنتاج می‌شود؟
+و) آیا BC یک سوپرکلید است؟</code></pre></div>
+
+<hr>
+<h3>تمرین 4 (طراحی): نرمال‌سازی کامل</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(StudentID, CourseID, InstructorID, InstructorOffice, 
+  StudentMajor, CourseName, Semester, Grade)
+
+FD ها:
+1. (StudentID, CourseID, Semester) → Grade
+2. StudentID → StudentMajor
+3. CourseID → CourseName
+4. InstructorID → InstructorOffice
+5. (CourseID, Semester) → InstructorID
+
+**انجام دهید:**
+الف) کلید اصلی را بیابید
+ب) به 2NF تبدیل کنید
+ج) به 3NF تبدیل کنید
+د) به BCNF تبدیل کنید
+ه) نمودار ER جداول نهایی
+و) 3 Query SQL روی جداول نهایی</code></pre></div>
+
+<hr>
+<h3>تمرین 5 (مفهومی):</h3>
+
+<p>
+<strong>سؤال 1:</strong> تفاوت FD جزئی و FD انتقالی با مثال توضیح دهید.
+</p>
+
+<p>
+<strong>سؤال 2:</strong> چرا BCNF سخت‌گیرتر از 3NF است؟
+</p>
+
+<p>
+<strong>سؤال 3:</strong> چه موقع باید به 4NF یا 5NF برویم؟
+</p>
+
+<hr>
+<h3>تمرین 6 (پیشرفته): طراحی پایگاه داده کامل</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سیستم بیمارستان:
+
+موجودیت‌ها:
+- بیمار (کد، نام، آدرس، تلفن، تاریخ تولد)
+- دکتر (کد، نام، تخصص، اتاق)
+- بیماری (کد، نام، نوع)
+- دارو (کد، نام، شرکت سازنده)
+
+ارتباطات:
+- بیمار به دکتر مراجعه می‌کنه (تاریخ، تشخیص)
+- دکتر برای بیمار دارو تجویز می‌کنه (دوز، مدت)
+- بیمار ممکنه چند بیماری داشته باشه
+- هر دارو برای چند بیماری مؤثر است
+
+**طراحی کنید:**
+الف) نمودار ER کامل
+ب) نگاشت به جداول
+ج) FD های هر جدول
+د) نرمال‌سازی تا BCNF
+ه) 10 Query کاربردی SQL
+و) تحلیل آنومالی‌ها قبل و بعد نرمال‌سازی</code></pre></div>
+
+<hr>
+<h2>📌 نکات کلیدی فصل 7</h2>
+
+<p>
+✅ <strong>آنومالی:</strong>
+</p>
+<ul>
+<li>INSERT: عدم توانایی درج</li>
+<li>DELETE: حذف ناخواسته</li>
+<li>UPDATE: بروزرسانی چندگانه</li>
+</ul>
+
+<p>
+✅ <strong>FD (Functional Dependency):</strong>
+</p>
+<ul>
+<li>A → B: به ازای هر A فقط یک B</li>
+<li>عدم تقارن: A → B ≠ B → A</li>
+<li>کلید با همه صفات FD داره</li>
+</ul>
+
+<p>
+✅ <strong>Armstrong:</strong>
+</p>
+<ul>
+<li>Reflexivity: B ⊆ A → A → B</li>
+<li>Augmentation: A → B → AC → BC</li>
+<li>Transitivity: A → B, B → C → A → C</li>
+</ul>
+
+<p>
+✅ <strong>بستار:</strong>
+</p>
+<ul>
+<li>A⁺: همه صفاتی که A تعیین می‌کنه</li>
+<li>اگر A⁺ = R → A سوپرکلید است</li>
+</ul>
+
+<p>
+✅ <strong>فرم‌های نرمال:</strong>
+</p>
+<ul>
+<li>1NF: تک‌مقداری</li>
+<li>2NF: بدون FD جزئی</li>
+<li>3NF: بدون FD انتقالی</li>
+<li>BCNF: هر FD از سوپرکلید</li>
+<li>4NF: بدون MVD</li>
+<li>5NF: بدون JD</li>
+</ul>
+
+<p>
+✅ <strong>قاعده طلایی:</strong>
+DKNF ⊂ 5NF ⊂ 4NF ⊂ BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF
+</p>
+
+
+<hr>
+<h2>جدول مقایسه نهایی</h2>
+
+<div class="table-container"><table>
+<thead><tr><th>فرم</th><th>شرط</th><th>حذف</th><th>آنومالی</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>غیرنرمال</strong></td><td>-</td><td>-</td><td>✅ زیاد</td><td>S با {P:Qty}</td></tr>
+<tr><td><strong>1NF</strong></td><td>تک‌مقداری</td><td>-</td><td>✅ زیاد</td><td>First</td></tr>
+<tr><td><strong>2NF</strong></td><td>+FD کامل</td><td>FD جزئی</td><td>✅ دارد</td><td>Second</td></tr>
+<tr><td><strong>3NF</strong></td><td>+بدون انتقالی</td><td>FD انتقالی</td><td>⚠️ کم</td><td>Employee-Dept</td></tr>
+<tr><td><strong>BCNF</strong></td><td>FD از SK</td><td>FD غیر SK</td><td>❌ خیلی کم</td><td>SP</td></tr>
+<tr><td><strong>4NF</strong></td><td>MVD از SK</td><td>MVD</td><td>❌ نداره</td><td>-</td></tr>
+<tr><td><strong>5NF</strong></td><td>JD از CK</td><td>JD</td><td>❌ نداره</td><td>-</td></tr>
+</tbody></table></div><hr>
+
+<h2>استراتژی نرمال‌سازی عملی</h2>
+
+<p>
+<strong>گام 1:</strong> شناسایی FD ها (از محیط یا داده‌ها)
+</p>
+
+<p>
+<strong>گام 2:</strong> کلید کاندید (با بستار)
+</p>
+
+<p>
+<strong>گام 3:</strong> شروع از 1NF:
+  → همه صفات تک‌مقداری؟
+</p>
+
+<p>
+<strong>گام 4:</strong> بررسی 2NF:
+  → FD جزئی داره؟
+  → تقسیم بر اساس FD جزئی
+</p>
+
+<p>
+<strong>گام 5:</strong> بررسی 3NF:
+  → FD انتقالی داره؟
+  → تقسیم بر اساس FD انتقالی
+</p>
+
+<p>
+<strong>گام 6:</strong> بررسی BCNF:
+  → FD از غیر سوپرکلید؟
+  → تقسیم بر اساس آن FD
+</p>
+
+<p>
+<strong>گام 7:</strong> (اختیاری) 4NF و 5NF
+</p>
+
+<p>
+<strong>گام 8:</strong> بررسی بدون اتلاف بودن تقسیم
+  → R = R1 ⋈ R2 ⋈ ... ⋈ Rn
+</p>
+
+
+<hr>
+<h2>یادآوری مهم</h2>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>🎯 نرمال‌سازی یک trade-off است:
+
+**مزایا:**
+✅ کاهش افزونگی
+✅ حذف آنومالی
+✅ سازگاری داده
+✅ انعطاف‌پذیری
+
+**معایب:**
+❌ تعداد جداول بیشتر
+❌ نیاز به JOIN بیشتر
+❌ Query های پیچیده‌تر
+❌ Performance ممکنه کمتر بشه
+
+**قاعده:**
+عملاً تا 3NF یا BCNF کافی است!
+4NF و 5NF در موارد خاص.</code></pre></div>
+
+<hr>
+<p>
+<strong>پایان فصل ۷ - نرمال‌سازی</strong>
+</p>
+
+<p>
+<em>تبریک می‌گم! شما تمام 7 فصل طراحی پایگاه داده رو کامل کردید! 🎉</em>
+</p>
+
+<p>
+<em>دوره کامل شد - آماده برای طراحی پایگاه‌های حرفه‌ای! 🚀</em>
+</p>
+
+                </div>
+
+                <div class="page-navigation"><a href="7-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">فرم‌های نرمال پایه</span></a><span></span></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

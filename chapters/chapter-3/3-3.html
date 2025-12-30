@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="معماری پایگاه داده و دیدها - دیدها (Views)">
+    <meta name="keywords" content="پایگاه داده, Database Design, دیدها (Views)">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>دیدها (Views) | معماری پایگاه داده و دیدها | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">معماری پایگاه داده و دیدها</a>
+                <span class="separator">›</span>
+                <span class="current">دیدها (Views)</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">دیدها (Views)</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۳: معماری پایگاه داده و دیدها</h1>
+
+<h2>بخش ۳.۳: دیدها (Views)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا یکی از پرکاربردترین ابزارها رو یاد می‌گیریم! 👁️
+</p>
+
+<p>
+فرض کن یک شرکت داریم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>جدول Employee:
++--------+----------+------------+--------+----------+
+| EmpID  | Name     | Department | Salary | Phone    |
++--------+----------+------------+--------+----------+
+| 100    | علی      | IT         | 50M    | 09121... |
+| 110    | مریم     | HR         | 45M    | 09122... |
+| 120    | رضا      | Finance    | 55M    | 09123... |
++--------+----------+------------+--------+----------+
+
+مشکل:
+❌ کارمند حسابداری باید همه داده‌ها رو ببینه؟
+❌ کارمند دبیرخانه باید حقوق‌ها رو ببینه؟
+❌ مدیر HR باید شماره تلفن IT رو ببینه؟
+
+→ خطر امنیتی! ❌
+→ پیچیدگی برای کاربر! ❌</code></pre></div>
+
+<p>
+<strong>راه‌حل: View (دید)!</strong> ✨
+</p>
+
+<hr>
+<h3>📖 تعریف View</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>دید خارجی:</strong> دید کاربر خاص است نسبت به داده‌های ذخیره‌شده. در دیدهای قبلی، تمام داده‌ها دیده می‌شدند و کلی بودند ولی دید خارجی یک دید <strong>جزئی</strong> است و فقط محدوده‌ای از داده‌ها را می‌بیند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Base Tables<br/>جداول مبنا]
+    
+    B[Employee]
+    C[Department]
+    D[Project]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    E[Views<br/>دیدها]
+    
+    F[View1: Salary<br/>حقوق]
+    G[View2: Contact<br/>تماس]
+    H[View3: Report<br/>گزارش]
+    
+    E --> F
+    E --> G
+    E --> H
+    
+    B --> F
+    B --> G
+    B --> H
+    C --> H
+    D --> H
+    
+    I[کاربر 1<br/>حسابدار]
+    J[کاربر 2<br/>دبیرخانه]
+    K[کاربر 3<br/>مدیر]
+    
+    F --> I
+    G --> J
+    H --> K
+    
+    style A fill:#e74c3c,color:#fff
+    style E fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style F fill:#f39c12,color:#fff
+    style I fill:#9b59b6,color:#fff
+</pre></div>
+
+<p>
+<strong>ویژگی‌های View:</strong>
+</p>
+
+<p>
+✅ <strong>مجازی:</strong> داده ذخیره نمی‌شه (Virtual)
+✅ <strong>مبتنی بر Query:</strong> از SELECT ساخته می‌شه
+✅ <strong>پویا:</strong> همیشه به‌روز (با جدول مبنا)
+✅ <strong>نامدار:</strong> اسم داره (Named)
+✅ <strong>محدود:</strong> فقط بخشی از داده
+</p>
+
+
+<hr>
+<h3>🎨 ساختار CREATE VIEW</h3>
+
+<p>
+<strong>:</strong>  
+نحوه تعریف View با زبان SQL:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE VIEW view_name [(column_list)]
+AS
+    SELECT_statement
+[WITH CHECK OPTION];</code></pre></div>
+
+<p>
+<strong>نکته :</strong>  
+علامت <code>[ ]</code> به معنی <strong>اختیاری بودن</strong> است. اگر اسامی ستون‌های View با ستون‌های جدول اصلی یکسان باشد می‌توانیم ننویسیم.
+</p>
+
+<hr>
+<h3>🎯 مثال‌های کامل View</h3>
+
+<h4>مثال 1: View ساده - حقوق کارمندان</h4>
+
+<p>
+<strong>جدول مبنا:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Department NVARCHAR(30),
+    Salary DECIMAL(12,2),
+    Phone NVARCHAR(20),
+    Address NVARCHAR(100)
+);
+
+INSERT INTO Employee VALUES
+(100, 'علی رضایی', 'IT', 50000000, '09121234567', 'تهران'),
+(110, 'مریم احمدی', 'HR', 45000000, '09122345678', 'اصفهان'),
+(120, 'رضا نوری', 'Finance', 55000000, '09123456789', 'شیراز');</code></pre></div>
+
+<p>
+<strong>ایجاد View برای حسابدار:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- فقط شناسه، نام، و حقوق
+CREATE VIEW SalaryView AS
+SELECT EmpID, Name, Salary
+FROM Employee;</code></pre></div>
+
+<p>
+<strong>استفاده:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- کاربر فقط SalaryView می‌بینه
+SELECT * FROM SalaryView;</code></pre></div>
+
+<p>
+<strong>نتیجه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+--------+--------------+------------+
+| EmpID  | Name         | Salary     |
++--------+--------------+------------+
+| 100    | علی رضایی    | 50000000   |
+| 110    | مریم احمدی   | 45000000   |
+| 120    | رضا نوری     | 55000000   |
++--------+--------------+------------+
+
+→ تلفن، آدرس نمایش داده نمی‌شه! ✅</code></pre></div>
+
+<h4>مثال 2: View با WHERE - شهر خاص</h4>
+
+<p>
+<strong>:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE VIEW V2 (SCode, Status, City) AS
+SELECT S#, Status, City
+FROM S
+WHERE (City &lt;&gt; 'C3') AND (Account &gt; 100);</code></pre></div>
+
+<p>
+<strong>معنا:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>فقط تأمین‌کننده‌هایی که:
+→ شهرشون C3 نباشه ✅
+→ موجودی‌شون بیشتر از 100 باشه ✅</code></pre></div>
+
+<h4>مثال 3: View با JOIN - چند جدول</h4>
+
+<p>
+<strong>:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- S: Supplier, P: Part, SP: Supply
+CREATE VIEW V1 AS
+SELECT S.S#, S.SName, P.P#, P.PName, SP.Qty
+FROM S, P, SP
+WHERE (S.S# = SP.S#) 
+  AND (P.P# = SP.P#)
+  AND (S.City = 'C2')
+  AND (S.Account &gt; 100);</code></pre></div>
+
+<p>
+<strong>داده‌های مبنا:</strong>
+</p>
+
+<p>
+<strong>S (Supplier):</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>S#</th><th>SName</th><th>City</th><th>Account</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>Sn1</td><td>C1</td><td>150</td></tr>
+<tr><td>S2</td><td>Sn2</td><td>C2</td><td>200</td></tr>
+</tbody></table></div><strong>P (Part):</strong>
+<div class="table-container"><table>
+<thead><tr><th>P#</th><th>PName</th></tr></thead>
+<tbody>
+<tr><td>P1</td><td>Pn1</td></tr>
+<tr><td>P2</td><td>Pn2</td></tr>
+</tbody></table></div><strong>SP (Supply):</strong>
+<div class="table-container"><table>
+<thead><tr><th>S#</th><th>P#</th><th>Qty</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>P1</td><td>10</td></tr>
+<tr><td>S2</td><td>P2</td><td>5</td></tr>
+</tbody></table></div><strong>View V1 نتیجه:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+----+-------+----+-------+-----+
+| S# | SName | P# | PName | Qty |
++----+-------+----+-------+-----+
+| S2 | Sn2   | P2 | Pn2   | 5   |
++----+-------+----+-------+-----+
+
+→ فقط S2 (City=C2, Account&gt;100) ✅</code></pre></div>
+
+<h4>مثال 4: View آماری - Aggregation</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE VIEW DeptStats AS
+SELECT 
+    Department,
+    COUNT(*) AS EmpCount,
+    AVG(Salary) AS AvgSalary,
+    MAX(Salary) AS MaxSalary
+FROM Employee
+GROUP BY Department;</code></pre></div>
+
+<p>
+<strong>نتیجه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>+------------+----------+------------+------------+
+| Department | EmpCount | AvgSalary  | MaxSalary  |
++------------+----------+------------+------------+
+| IT         | 1        | 50000000   | 50000000   |
+| HR         | 1        | 45000000   | 45000000   |
+| Finance    | 1        | 55000000   | 55000000   |
++------------+----------+------------+------------+</code></pre></div>
+
+<hr>
+<h3>✅ مزایای View</h3>
+
+<p>
+<strong> - 4 مزیت اصلی:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((مزایای<br/>View))
+    1 اشتراک داده
+      Data Sharing
+      چند کاربر
+      یک منبع
+    2 امنیت
+      Data Hidden
+      محدود سازی دسترسی
+      مخفی سازی ستون
+    3 استقلال داده
+      Data Independence
+      تغییر جداول
+      View ثابت
+    4 ساده سازی
+      Simplification
+      کاهش پیچیدگی
+      ساختار محدود
+</pre></div>
+
+<h4>1️⃣ تأمین‌کننده اشتراک داده‌ها (Data Sharing)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>چند کاربر از یک View استفاده می‌کنن:
+
+کاربران دبیرخانه (10 نفر):
+→ همه از ContactView استفاده می‌کنن ✅
+→ هماهنگی داده ✅
+→ یک منبع (Employee) ✅</code></pre></div>
+
+<h4>2️⃣ مکانیزم اتوماتیک امنیت (Data Hidden)</h4>
+
+<p>
+<strong>:</strong>  
+مکانیزم اتوماتیک امنیت پایگاه داده‌ها با پیاده‌سازی مفهوم <strong>داده نهان</strong>.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- حسابدار فقط این رو می‌بینه:
+CREATE VIEW SalaryView AS
+SELECT EmpID, Name, Salary
+FROM Employee;
+
+-- نمی‌تونه Phone و Address ببینه! ✅
+-- نمی‌تونه جدول Employee ببینه! ✅</code></pre></div>
+
+<h4>3️⃣ تأمین‌کننده استقلال داده‌ای</h4>
+
+<p>
+<strong>:</strong>  
+تأمین‌کننده استقلال داده‌ای (Data Independency) که از مزایای مهم تکنولوژی دیتابیس است.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال:
+→ جدول Employee تغییر می‌کنه (ستون جدید)
+→ View‌ها تحت تأثیر قرار نمی‌گیرن ✅
+
+ALTER TABLE Employee ADD Email NVARCHAR(100);
+
+→ SalaryView همچنان کار می‌کنه ✅
+→ برنامه‌های کاربر نیازی به تغییر ندارن ✅</code></pre></div>
+
+<h4>4️⃣ تسهیل‌کننده برنامه‌سازی</h4>
+
+<p>
+<strong>:</strong>  
+تسهیل‌کننده برنامه‌سازی است چون کاربر با یک ساختار محدود کار می‌نماید و نه با جداول بزرگ.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>جدول Employee: 20 ستون ❌
+View SalaryView: 3 ستون ✅
+
+→ برنامه‌نویس راحت‌تر کار می‌کنه ✅
+→ خطای کمتر ✅</code></pre></div>
+
+<hr>
+<h3>❌ معایب View</h3>
+
+<p>
+<strong>:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((معایب<br/>View))
+    1 ذخیره سازی
+      مشکلات جدی
+      Updatable نیست
+      شرایط سخت
+    2 Overhead
+      نگاشت E C E
+      کندی
+      تبدیلات
+</pre></div>
+
+<h4>1️⃣ مشکلات جدی در عملیات ذخیره‌سازی</h4>
+
+<p>
+<strong>:</strong>  
+مشکلات جدی در عملیات ذخیره‌سازی.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>همه View‌ها Updatable نیستن! ❌
+
+مثال:
+View آماری:
+→ نمی‌شه INSERT ❌
+→ نمی‌شه UPDATE ❌
+→ چون داده مجازی است!</code></pre></div>
+
+<h4>2️⃣ فزون‌کاری (Overhead)</h4>
+
+<p>
+<strong>:</strong>  
+فزون‌کاری یا Overhead ناشی از لزوم انجام تبادلات (نگاشت‌ها).
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Query روی View:
+→ تبدیل به Query روی جدول مبنا ✅
+→ زمان اضافی ❌
+→ کندی ❌</code></pre></div>
+
+<p>
+<strong>دلایل دیگر بروز Overhead در DBMS‌ها ():</strong>
+</p>
+
+<ol>
+<li>لزوم انجام تبدیلات (Mapping)</li>
+<li>اعمال محدودیت‌های جامعیتی</li>
+<li>اعمال ضوابط امنیتی</li>
+</ol>
+
+
+<hr>
+<h3>🔄 شرایط View قابل به‌هنگام‌سازی (Updatable)</h3>
+
+<p>
+<strong> - شرایط:</strong>  
+ما روی هر دیدی نمی‌توانیم داده ذخیره کنیم. هر دیدی قابل ذخیره‌سازی نیست باید شرایطی داشته باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[شرایط Updatable View]
+    
+    B[1. روی یک جدول مبنا]
+    C[2. هر سطر = یک سطر جدول]
+    D[3. هر ستون = یک ستون جدول]
+    E[4. بدون GROUP BY]
+    F[5. بدون HAVING]
+    G[6. بدون DISTINCT]
+    H[7. ستون‌های NOT NULL]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+    A --> H
+    
+    style A fill:#e74c3c,color:#fff
+</pre></div>
+
+<h4>شرط 1: روی یک جدول مبنا</h4>
+
+<p>
+<strong>:</strong>  
+این دید باید روی یک جدول مبنا و یک دید قابل به‌هنگام‌سازی تعریف شده باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ✅ Updatable
+CREATE VIEW V1 AS
+SELECT EmpID, Name, Salary
+FROM Employee;
+
+-- ❌ NOT Updatable (دو جدول!)
+CREATE VIEW V2 AS
+SELECT E.EmpID, E.Name, D.DeptName
+FROM Employee E, Department D
+WHERE E.DeptID = D.DeptID;</code></pre></div>
+
+<p>
+<strong>استثنا :</strong>  
+اگر ارتباط ۲ جدول از طریق کلید اصلی باشد، View که از ارتباط این ۲ جدول به وجود می‌آید قابل به‌هنگام‌سازی است.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ✅ Updatable (اگر JOIN روی PK باشه)
+CREATE VIEW V4 AS
+SELECT T1.*, T2.*
+FROM T1 JOIN T2 ON T1.A1 = T2.B1;
+-- شرط: A1 و B1 کلید اصلی باشن</code></pre></div>
+
+<h4>شرط 2: هر سطر متناظر با یک سطر جدول</h4>
+
+<p>
+<strong>:</strong>  
+هر سطر دید باید متناظر با یک سطر جدول مبنا باشد (اگر کلید داشته باشد این شرط می‌تواند برقرار باشد).
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ✅ Updatable (کلید داره)
+CREATE VIEW V1 AS
+SELECT EmpID, Name, Salary
+FROM Employee;
+
+-- ❌ NOT Updatable (DISTINCT)
+CREATE VIEW V2 AS
+SELECT DISTINCT Department
+FROM Employee;
+-- هر Department چند بار تکرار می‌شه!</code></pre></div>
+
+<h4>شرط 3: هر ستون متناظر با یک ستون مشخص</h4>
+
+<p>
+<strong>:</strong>  
+هر ستون باید متناظر با یک ستون مشخص از جدول مبنا باشد. بنابر این اگر در یک دید ستون مجازی داشته باشیم (دید آماری باشد) این دید قابل به‌هنگام‌سازی نمی‌باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ NOT Updatable (ستون مجازی!)
+CREATE VIEW DeptStats AS
+SELECT 
+    Department,
+    COUNT(*) AS EmpCount,  -- ستون مجازی!
+    AVG(Salary) AS AvgSalary  -- ستون مجازی!
+FROM Employee
+GROUP BY Department;
+
+-- نمی‌شه INSERT کرد چون EmpCount مجازیه!</code></pre></div>
+
+<h4>شرط 4 و 5: بدون GROUP BY و HAVING</h4>
+
+<p>
+<strong>:</strong>  
+اگر در یک دید، GROUP BY داشته باشیم، آن دید قابل به‌هنگام‌سازی نمی‌باشد. اگر در یک دید، HAVING داشته باشیم، آن دید قابل به‌هنگام‌سازی نمی‌باشد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ NOT Updatable (GROUP BY)
+CREATE VIEW V1 AS
+SELECT Department, AVG(Salary) AS AvgSal
+FROM Employee
+GROUP BY Department;</code></pre></div>
+
+<p>
+<strong>نکته :</strong>  
+HAVING فقط برای ۶ دستور به‌کار می‌رود: <code>COUNT</code>, <code>AVG</code>, <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>COUNT(DISTINCT)</code>.
+</p>
+
+<h4>شرط 7: ستون‌های NOT NULL</h4>
+
+<p>
+<strong>:</strong>  
+از ستون‌های <code>NOT NULL</code> در جدول چند تا را نداشته باشیم INSERT نمی‌شود انجام داد ولی UPDATE و DELETE می‌توان انجام داد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جدول مبنا
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,      -- NOT NULL
+    Name NVARCHAR(50) NOT NULL, -- NOT NULL
+    Salary DECIMAL(12,2)
+);
+
+-- ❌ View برای INSERT
+CREATE VIEW V1 AS
+SELECT EmpID, Salary  -- Name نداره!
+FROM Employee;
+
+-- نمی‌شه INSERT (Name ضروریه!) ❌
+INSERT INTO V1 VALUES (130, 40000000);
+
+-- ✅ می‌شه UPDATE
+UPDATE V1 SET Salary = 45000000 WHERE EmpID = 100;
+
+-- ✅ می‌شه DELETE
+DELETE FROM V1 WHERE EmpID = 100;</code></pre></div>
+
+<hr>
+<h3>🔗 نگاشت بین لایه‌ها (Mapping)</h3>
+
+<p>
+<strong>:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[سطح خارجی<br/>External]
+    
+    B[Query روی View]
+    B1["SELECT City FROM V2<br/>WHERE Status > 100"]
+    
+    A --> B
+    B --> B1
+    
+    C[نگاشت E/C<br/>External → Conceptual]
+    
+    B1 --> C
+    
+    D[سطح ادراکی<br/>Conceptual]
+    
+    E[Query روی جدول]
+    E1["SELECT City FROM S<br/>WHERE (City<>C3)<br/>AND (Account>100)<br/>AND (Status>100)"]
+    
+    C --> D
+    D --> E
+    E --> E1
+    
+    F[نگاشت C/I<br/>Conceptual → Internal]
+    
+    E1 --> F
+    
+    G[سطح داخلی<br/>Internal]
+    
+    H[کد اجرایی<br/>Access Path]
+    
+    F --> G
+    G --> H
+    
+    style A fill:#3498db,color:#fff
+    style D fill:#2ecc71,color:#fff
+    style G fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال :</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تعریف View
+CREATE VIEW V2 (SCode, Status, City) AS
+SELECT S#, Status, City
+FROM S
+WHERE (City &lt;&gt; 'C3') AND (Account &gt; 100);
+
+-- Query در سطح خارجی
+SELECT City
+FROM V2
+WHERE Status &gt; 100;
+
+-- تبدیل به Query در سطح ادراکی (DBMS)
+SELECT City
+FROM S
+WHERE (City &lt;&gt; 'C3') 
+  AND (Account &gt; 100) 
+  AND (Status &gt; 100);</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۳.۳</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+دانشگاه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Major NVARCHAR(30),
+    GPA DECIMAL(3,2),
+    Phone NVARCHAR(20),
+    Address NVARCHAR(100)
+);</code></pre></div>
+
+<p>
+<strong>ایجاد کنید:</strong>
+</p>
+<ul>
+<li>View1 (دبیرخانه): StudentID, Name, Major</li>
+<li>View2 (استاد): StudentID, Name, GPA</li>
+<li>View3 (مخابرات): StudentID, Name, Phone</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>کدوم Updatable هست؟</li>
+<li>چرا View2 نمی‌تونه INSERT کنه؟</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام View قابل به‌هنگام‌سازی <strong>نیست</strong>؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">الف) CREATE VIEW V1 AS SELECT EmpID, Name FROM Employee;
+ب) CREATE VIEW V2 AS SELECT Department, COUNT(*) FROM Employee GROUP BY Department;
+ج) CREATE VIEW V3 AS SELECT EmpID, Name, Salary FROM Employee WHERE Salary &gt; 40M;
+د) CREATE VIEW V4 AS SELECT * FROM Employee;</code></pre></div>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+فروشگاه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Product (
+    ProductID INT,
+    ProductName NVARCHAR(50),
+    Category NVARCHAR(30),
+    Price DECIMAL(10,2),
+    Stock INT,
+    SupplierID INT
+);</code></pre></div>
+
+<p>
+<strong>ایجاد View:</strong>
+</p>
+<ul>
+<li>فقط محصولات دسته "الکترونیک"</li>
+<li>فقط محصولاتی که موجودی بیشتر از 10</li>
+<li>فقط نام و قیمت</li>
+</ul>
+
+<p>
+<strong>آیا Updatable است؟ چرا؟</strong>
+</p>
+
+<h4>تمرین 4 (تحلیلی):</h4>
+<p>
+مزایا و معایب View را با مثال کامل توضیح دهید.  
+چه زمانی استفاده از View توصیه می‌شود؟
+</p>
+
+<h4>تمرین 5 (پیشرفته):</h4>
+<p>
+کتابخانه:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Book (BookID INT, Title NVARCHAR(100), Author NVARCHAR(50));
+CREATE TABLE Borrow (BorrowID INT, BookID INT, MemberID INT, BorrowDate DATE);
+CREATE TABLE Member (MemberID INT, Name NVARCHAR(50), MemberType NVARCHAR(20));</code></pre></div>
+
+<p>
+<strong>ایجاد View:</strong>
+</p>
+<ul>
+<li>نمایش کتاب‌های قرض‌گرفته‌شده با اطلاعات کامل</li>
+<li>View از 3 جدول (JOIN)</li>
+<li>آیا Updatable است؟ چرا؟</li>
+</ul>
+
+<h4>تمرین 6 (سناریو):</h4>
+<p>
+شرکت 100 کارمند داره. هر کارمند یک View مخصوص خودش می‌خواد که فقط اطلاعات خودش رو ببینه.
+</p>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>یک View عمومی</li>
+<li>نحوه محدودسازی با WHERE</li>
+<li>استفاده از متغیر SESSION</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((View<br/>دید))
+    تعریف
+      جدول مجازی
+      مبتنی بر SELECT
+      نامدار
+      بخشی از داده
+    CREATE VIEW
+      نام
+      AS SELECT
+      WITH CHECK
+    مزایا
+      اشتراک
+      امنیت
+      استقلال
+      ساده سازی
+    معایب
+      مشکل ذخیره
+      Overhead
+      نگاشت
+    Updatable
+      یک جدول
+      بدون GROUP BY
+      بدون DISTINCT
+      NOT NULL ها
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>View:</strong> جدول مجازی، داده ذخیره نمی‌شه</li>
+<li>✅ <strong>مزایا:</strong> امنیت (Data Hidden) + ساده‌سازی + استقلال + اشتراک</li>
+<li>❌ <strong>معایب:</strong> Overhead نگاشت + مشکل ذخیره‌سازی</li>
+<li>✅ <strong>Updatable:</strong> یک جدول + بدون GROUP BY/HAVING/DISTINCT</li>
+<li>✅ <strong>استفاده:</strong> محدودسازی دسترسی، ساده‌سازی Query پیچیده</li>
+<li>✅ <strong>CREATE:</strong> <code>CREATE VIEW name AS SELECT ...</code></li>
+<li>✅ <strong>نگاشت:</strong> Query View → Query جدول (اتوماتیک)</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="3-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">معماری ANSI-SPARC</span></a><a href="3-4.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">استقلال داده‌ای</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

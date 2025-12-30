@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - معماری توزیع‌شده و شفافیت">
+    <meta name="keywords" content="پایگاه داده, Database Design, معماری توزیع‌شده و شفافیت">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>معماری توزیع‌شده و شفافیت | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">معماری توزیع‌شده و شفافیت</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">معماری توزیع‌شده و شفافیت</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۳.۲: معماری توزیع‌شده (DDB) و شفافیت‌ها</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، در بخش قبل با معماری متمرکز و کلاینت/سرور آشنا شدیم. حالا می‌خوایم بریم سراغ <strong>قدرتمندترین معماری</strong>: <strong>پایگاه داده توزیع‌شده (DDB)</strong>!
+</p>
+
+<p>
+فرض کن یک شرکت بین‌المللی داری با دفاتر در:
+</p>
+<ul>
+<li>تهران 🇮🇷</li>
+<li>دبی 🇦🇪</li>
+<li>لندن 🇬🇧</li>
+<li>نیویورک 🇺🇸</li>
+</ul>
+
+<p>
+<strong>سوال:</strong> یک DB در تهران بذاریم و همه ازش استفاده کنن؟ ❌
+</p>
+
+<p>
+<strong>مشکلات:</strong>
+</p>
+<ul>
+<li>تاخیر شبکه برای لندن و نیویورک خیلی زیاده! 🐌</li>
+<li>اگر شبکه قطع شه، دفاتر خارج نمی‌تونن کار کنن! ❌</li>
+<li>سرعت خیلی پایینه! 😰</li>
+</ul>
+
+<p>
+<strong>راه حل:</strong> پایگاه داده توزیع‌شده! 🎉
+</p>
+
+<hr>
+<h3>📖 تعریف DDB ()</h3>
+
+<p>
+<strong>DDB (Distributed Data Base):</strong>  
+نوعی معماری پایگاهی می‌باشد که در آن یک دیتابیس مطلقاً مجتمع داریم ولی با داده‌های توزیع شده در سایت‌های مختلف. <strong>فیزیکی - نامجتمع و نامتمرکز</strong> سه‌گونه‌ای که از منظر کاربر یک سیستم پایگاهی دیده می‌شود.
+</p>
+
+<h4>تحلیل تعریف</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((DDB))
+    از نظر منطقی
+      یک DB
+      مجتمع
+      یکپارچه
+    از نظر فیزیکی
+      چند سایت
+      نامجتمع
+      نامتمرکز
+    از نظر کاربر
+      شفاف
+      نمی بینه کجاست
+      یک DB می بینه
+</pre></div>
+
+<p>
+<strong>نکات کلیدی:</strong>
+</p>
+<ol>
+<li><strong>منطقی → مجتمع</strong>: کاربر یک DB می‌بینه ✅</li>
+<li><strong>فیزیکی → نامجتمع</strong>: داده‌ها در چند سایت هستن ✅</li>
+<li><strong>کاربر → نمی‌دونه</strong>: شفافیت کامل ✅</li>
+</ol>
+
+<hr>
+<h3>🗺️ ساختار DDB</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "سایت تهران"
+    A1[DBMS تهران]
+    A2[DB بخش ایران]
+    A1 --> A2
+    end
+    
+    subgraph "سایت دبی"
+    B1[DBMS دبی]
+    B2[DB بخش خلیج]
+    B1 --> B2
+    end
+    
+    subgraph "سایت لندن"
+    C1[DBMS لندن]
+    C2[DB بخش اروپا]
+    C1 --> C2
+    end
+    
+    subgraph "سایت نیویورک"
+    D1[DBMS نیویورک]
+    D2[DB بخش آمریکا]
+    D1 --> D2
+    end
+    
+    A1 <-->|شبکه| B1
+    B1 <-->|شبکه| C1
+    C1 <-->|شبکه| D1
+    D1 <-->|شبکه| A1
+    
+    E[کاربر در تهران] --> A1
+    F[کاربر در دبی] --> B1
+    G[کاربر در لندن] --> C1
+    H[کاربر در نیویورک] --> D1
+    
+    style A1 fill:#e74c3c,color:#fff
+    style B1 fill:#3498db,color:#fff
+    style C1 fill:#2ecc71,color:#fff
+    style D1 fill:#f39c12,color:#fff
+</pre></div>
+
+<h4>مثال عملی: شرکت بین‌المللی</h4>
+
+<p>
+<strong>توزیع داده‌ها:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>سایت</th><th>داده‌های محلی</th><th>داده‌های مشترک</th></tr></thead>
+<tbody>
+<tr><td><strong>تهران</strong></td><td>مشتریان ایران</td><td>کاتالوگ محصولات</td></tr>
+<tr><td><strong>دبی</strong></td><td>مشتریان خلیج</td><td>کاتالوگ محصولات</td></tr>
+<tr><td><strong>لندن</strong></td><td>مشتریان اروپا</td><td>کاتالوگ محصولات</td></tr>
+<tr><td><strong>نیویورک</strong></td><td>مشتریان آمریکا</td><td>کاتالوگ محصولات</td></tr>
+</tbody></table></div><strong>چرا این توزیع؟</strong>
+<ul>
+<li><strong>داده‌های محلی</strong>: هر سایت به داده‌های خودش بیشتر نیاز داره → سریع‌تر ✅</li>
+<li><strong>داده‌های مشترک</strong>: همه جا نیاز هست → کپی می‌شه یا توزیع می‌شه</li>
+</ul>
+
+<hr>
+<h3>🔍 دو مدل دسترسی در DDB</h3>
+
+<h4>1. مدل محلی (Local Model)</h4>
+
+<p>
+<strong>:</strong> "اگر داده‌های مورد نظر کاربر در سایتی باشد که برنامه کاربر در آن اجرا می‌شود. در اصطلاح می‌گویند کاربر با اسلوب محلی یا Local Model به داده‌ها دسترسی پیدا نموده است."
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant U as کاربر تهران
+    participant DB as DBMS تهران
+    participant Data as داده محلی
+    
+    U->>DB: SELECT * FROM Customers_Iran
+    Note over DB: داده محلی است ✅
+    DB->>Data: خواندن
+    Data->>DB: داده
+    DB->>U: نتیجه (سریع! ⚡)
+</pre></div>
+
+<p>
+<strong>مزیت:</strong> خیلی سریعه! چون داده همون‌جاست.
+</p>
+
+<h4>2. مدل راه دور (Remote Model)</h4>
+
+<p>
+<strong>:</strong> "اما اگر داده‌های مورد نظر کاربر در سایت‌های راه دور باشد از نظر کاربر، برنامه کماکان بصورت محلی اجرا می‌شود. یعنی کاربر اصلا نمی‌بیند که داده‌ها چگونه و در کجا ذخیره شده اند."
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant U as کاربر تهران
+    participant DB1 as DBMS تهران
+    participant N as شبکه
+    participant DB2 as DBMS لندن
+    participant Data as داده لندن
+    
+    U->>DB1: SELECT * FROM Customers_Europe
+    Note over DB1: داده در لندن است
+    DB1->>N: درخواست از لندن
+    N->>DB2: درخواست
+    DB2->>Data: خواندن
+    Data->>DB2: داده
+    DB2->>N: پاسخ
+    N->>DB1: پاسخ
+    DB1->>U: نتیجه (کندتر 🐌 ولی شفاف!)
+</pre></div>
+
+<p>
+<strong>نکته مهم:</strong> کاربر نمی‌دونه داده از لندن اومده! همچنان فکر می‌کنه محلی کار می‌کنه! ✨
+</p>
+
+<hr>
+<h3>🎨 شفافیت (Transparency) - قلب DDB</h3>
+
+<p>
+<strong>ایده اصلی:</strong> کاربر نباید بفهمه که سیستم توزیع‌شده است!
+</p>
+
+<p>
+: "کاربر سایت‌های دیگر را نمی‌بیند از لحاظ تکنیکی می‌گوییم در این معماری از جنبه‌های مختلف شفافیت وجود دارد."
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[کاربر] -->|می‌بینه| B[یک DB یکپارچه]
+    
+    C[واقعیت] -->|چند سایت| D[سایت 1]
+    C --> E[سایت 2]
+    C --> F[سایت 3]
+    C --> G[سایت N]
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<h4>5 نوع شفافیت ()</h4>
+
+<p>
+<strong>1. شفافیت مکان (Location Transparency)</strong>
+</p>
+
+<p>
+<strong>:</strong> "کاربر محل داده‌ها را نمی‌داند."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- کاربر می‌نویسه:
+SELECT * FROM Customers WHERE Country = 'Iran';
+
+-- نمی‌دونه که این داده در سایت تهران است!
+-- DDBMS خودش می‌فهمه و از اونجا می‌گیره ✅</code></pre></div>
+
+<p>
+<strong>بدون شفافیت مکان:</strong> (بد ❌)
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">SELECT * FROM Tehran.DB.Customers WHERE Country = 'Iran';
+-- کاربر مجبوره بگه "Tehran"!</code></pre></div>
+
+<p>
+<strong>2. شفافیت توزیع (Distribution Transparency)</strong>
+</p>
+
+<p>
+<strong>:</strong> "کاربر نحوه توزیع را نمی‌داند."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: جدول Customers توزیع شده:
+- Customers_Iran → تهران
+- Customers_Europe → لندن  
+- Customers_USA → نیویورک
+
+کاربر می‌بینه: یک جدول Customers ✅
+نمی‌دونه که 3 تکه است!</code></pre></div>
+
+<p>
+<strong>3. شفافیت سخت‌افزار (Hardware Transparency)</strong>
+</p>
+
+<p>
+<strong>:</strong> "کاربر سخت‌افزار را نمی‌بیند (سخت‌افزار مورد استفاده در سایت‌های دیگر قرار دارد)"
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سایت تهران: سرور HP
+سایت لندن: سرور Dell
+سایت نیویورک: سرور IBM
+
+کاربر نمی‌دونه! فقط یک DB می‌بینه ✅</code></pre></div>
+
+<p>
+<strong>4. شفافیت سیستم عامل (OS Transparency)</strong>
+</p>
+
+<p>
+<strong>:</strong> "کاربر فقط سیستم عامل خود را می‌بیند."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سایت تهران: Windows Server
+سایت لندن: Linux (Ubuntu)
+سایت نیویورک: Unix (Solaris)
+
+کاربر در تهران فقط Windows رو می‌بینه ✅</code></pre></div>
+
+<p>
+<strong>5. شفافیت شبکه (Network Transparency)</strong>
+</p>
+
+<p>
+<strong>:</strong> "کاربر شبکه‌ها را نمی‌بیند."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>بین سایت‌ها:
+- Fiber Optic
+- Satellite
+- VPN
+- MPLS
+
+کاربر نمی‌دونه! فقط Query می‌فرسته ✅</code></pre></div>
+
+<hr>
+<h3>🎭 مثال جامع: شفافیت کامل</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+sequenceDiagram
+    participant U as کاربر تهران<br/>(Windows)
+    participant S1 as سایت تهران<br/>(Windows+SQL Server)
+    participant N as شبکه<br/>(شفاف)
+    participant S2 as سایت لندن<br/>(Linux+PostgreSQL)
+    
+    U->>S1: SELECT * FROM AllCustomers
+    Note over U: فقط یک جدول می‌بینه!
+    Note over S1: DDBMS می‌فهمه:<br/>بخشی محلی<br/>بخشی در لندن
+    
+    S1->>S1: خواندن داده محلی
+    S1->>N: درخواست داده لندن
+    Note over N: کاربر نمی‌دونه<br/>چه شبکه‌ای!
+    N->>S2: درخواست
+    Note over S2: Linux و PostgreSQL<br/>ولی کاربر نمی‌دونه!
+    S2->>N: پاسخ
+    N->>S1: داده از لندن
+    
+    S1->>S1: ترکیب داده‌ها
+    S1->>U: نتیجه نهایی
+    Note over U: فکر می‌کنه همه محلی بود! ✨
+</pre></div>
+
+<p>
+<strong>کاربر:</strong>
+</p>
+<ul>
+<li>نمی‌دونه سایت لندن وجود داره (Location) ✅</li>
+<li>نمی‌دونه جدول توزیع شده (Distribution) ✅</li>
+<li>نمی‌دونه لندن چه سخت‌افزاری داره (Hardware) ✅</li>
+<li>نمی‌دونه لندن Linux داره (OS) ✅</li>
+<li>نمی‌دونه چه شبکه‌ای استفاده شده (Network) ✅</li>
+</ul>
+
+<p>
+<strong>همه چیز شفاف!</strong> ✨✨✨
+</p>
+
+<hr>
+<h3>🔧 نکته مهم: استقلال (Independence)</h3>
+
+<p>
+<strong>:</strong> "گاه به جای شفافیت از Independence یا استقلال استفاده می‌شود."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>شفافیت = استقلال
+
+Location Transparency = Location Independence
+Distribution Transparency = Distribution Independence
+...</code></pre></div>
+
+<p>
+<strong>معنا:</strong> سیستم <strong>مستقل</strong> از این جزئیات است!
+</p>
+
+<hr>
+<h3>🏗️ مراحل طراحی DDB ()</h3>
+
+<p>
+<strong>فاز 1:</strong> طراحی سیستم مانند CDB (پایگاه داده متمرکز) انجام می‌گیرد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مرحله 1: طراحی معمولی
+↓
+- نمودار ER
+- جداول
+- رابطه‌ها
+- کلیدها
+
+→ انگار متمرکز است!</code></pre></div>
+
+<p>
+<strong>فاز 2:</strong> طراحی توزیع بر اساس استراتژی‌های خاص انجام می‌گیرد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مرحله 2: طراحی توزیع
+↓
+سوالات:
+- چه داده‌هایی را در چه سایتی ذخیره نماییم؟
+- داده‌ها را چگونه توزیع نماییم؟
+
+استراتژی‌ها:
+1. بر اساس مکان کاربران
+2. بر اساس حجم تراکنش‌ها
+3. بر اساس قوانین کسب و کار</code></pre></div>
+
+<h4>مثال طراحی: شرکت بین‌المللی</h4>
+
+<p>
+<strong>فاز 1: طراحی متمرکز</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جداول:
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Country VARCHAR(50),
+    ...
+);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATE,
+    ...
+);</code></pre></div>
+
+<p>
+<strong>فاز 2: طراحی توزیع</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>استراتژی: توزیع بر اساس Country
+
+سایت تهران:
+- Customers WHERE Country IN ('Iran', 'Iraq', 'Afghanistan')
+- Orders مربوط به این Customers
+
+سایت لندن:
+- Customers WHERE Country IN ('UK', 'France', 'Germany')
+- Orders مربوط به این Customers
+
+سایت نیویورک:
+- Customers WHERE Country IN ('USA', 'Canada', 'Mexico')
+- Orders مربوط به این Customers</code></pre></div>
+
+<hr>
+<h3>🔄 برنامه سراسری (Global Program)</h3>
+
+<p>
+<strong>:</strong> "منظور از برنامه سراسری برنامه‌ای است که برای اجرا شدن به بیش از یک سایت نیاز داشته باشد."
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[برنامه سراسری] --> B[سایت 1]
+    A --> C[سایت 2]
+    A --> D[سایت 3]
+    
+    style A fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- برنامه سراسری: گزارش فروش جهانی
+SELECT Country, SUM(Sales)
+FROM Orders
+GROUP BY Country;
+
+-- این Query نیاز داره:
+-- 1. داده از سایت تهران (ایران)
+-- 2. داده از سایت لندن (اروپا)
+-- 3. داده از سایت نیویورک (آمریکا)
+
+→ برنامه سراسری است! ✅</code></pre></div>
+
+<p>
+<strong>نکته :</strong> "در این معماری هر سایت حداقل در اجرای یک برنامه سراسری مشارکت دارد."
+</p>
+
+<hr>
+<h3>🎯 نرم‌افزار DDB: DDBMS</h3>
+
+<p>
+<strong>:</strong> "نرم افزار اصلی در این سیستم DDBMS است که یک نوع DBMS است."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>DDBMS = DBMS + قابلیت DF (وظایف توزیع شده)</code></pre></div>
+
+<p>
+<strong>وظایف اضافی DDBMS:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((DDBMS))
+    مدیریت توزیع
+      تشخیص مکان داده
+      مسیریابی Query
+    هماهنگی
+      Transaction توزیع شده
+      Commit دوفازی
+    شفافیت
+      پنهان کردن توزیع
+      ترکیب نتایج
+    بهینه سازی
+      کاهش تاخیر شبکه
+      انتخاب بهترین سایت
+</pre></div>
+
+<hr>
+<h3>🔀 نا همگنی (Heterogeneity)</h3>
+
+<p>
+<strong>نکته مهم :</strong> "در این معماری اجزا می‌توانند <strong>ناهمگن</strong> باشند (بر خلاف C/S)"
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>C/S</th><th>DDB</th></tr></thead>
+<tbody>
+<tr><td><strong>DBMS</strong></td><td>باید یکسان (همگن)</td><td>می‌تونه متفاوت (ناهمگن)</td></tr>
+<tr><td><strong>OS</strong></td><td>باید یکسان</td><td>می‌تونه متفاوت</td></tr>
+<tr><td><strong>سخت‌افزار</strong></td><td>باید یکسان</td><td>می‌تونه متفاوت</td></tr>
+</tbody></table></div><strong>مثال DDB ناهمگن:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سایت تهران: Windows + SQL Server + HP Server
+سایت لندن: Linux + PostgreSQL + Dell Server
+سایت نیویورک: Unix + Oracle + IBM Server
+
+→ همه با هم کار می‌کنن! ✅ (با DDBMS قدرتمند)</code></pre></div>
+
+<p>
+<strong>چرا این یک مزیت بزرگه؟</strong>
+</p>
+<ul>
+<li>می‌تونی از بهترین DBMS برای هر سایت استفاده کنی</li>
+<li>انعطاف‌پذیری بالا</li>
+<li>می‌تونی سیستم‌های قدیمی رو ادغام کنی</li>
+</ul>
+
+<hr>
+<h3>🏛️ خودمختاری سایت‌ها (Site Autonomy)</h3>
+
+<p>
+<strong>:</strong> "در این معماری در مدل ایده‌آلش سایت خودمختاری دارند اما تامین خودمختاری کامل در عمل غیرممکن است. در عمل نقش Master Site را یا هماهنگ کننده اصلی را به عهده دارد."
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[سایت اصلی<br/>Master Site<br/>هماهنگ کننده] --> B[سایت 1]
+    A --> C[سایت 2]
+    A --> D[سایت 3]
+    
+    B -.->|خودمختاری نسبی| B
+    C -.->|خودمختاری نسبی| C
+    D -.->|خودمختاری نسبی| D
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>خودمختاری یعنی:</strong>
+</p>
+<ul>
+<li>هر سایت می‌تونه تصمیمات محلی بگیره</li>
+<li>هر سایت می‌تونه برنامه‌های محلی اجرا کنه</li>
+<li>هر سایت می‌تونه داده‌های محلی مدیریت کنه</li>
+</ul>
+
+<p>
+<strong>ولی:</strong>
+</p>
+<ul>
+<li>برای تصمیمات سراسری → نیاز به هماهنگی با Master Site</li>
+<li>برای Transaction توزیع شده → نیاز به Coordinator</li>
+</ul>
+
+<hr>
+<h3>✅ مزایای DDB</h3>
+
+<h4>1. مقیاس‌پذیری بالا</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نیاز به ظرفیت بیشتر؟
+→ فقط یک سایت جدید اضافه کن! ✅
+
+متمرکز: باید سرور بزرگ‌تر بخری (محدود!)</code></pre></div>
+
+<h4>2. قابلیت اطمینان بالاتر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر سایت تهران down بشه:
+→ سایت‌های دیگه همچنان کار می‌کنن ✅
+→ فقط داده‌های ایران در دسترس نیستن
+
+متمرکز: کل سیستم down می‌شه ❌</code></pre></div>
+
+<h4>3. عملکرد بهتر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کاربر تهران → داده محلی تهران (سریع! ⚡)
+کاربر لندن → داده محلی لندن (سریع! ⚡)
+
+متمرکز: همه به یک سرور → کند 🐌</code></pre></div>
+
+<h4>4. خودمختاری محلی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سایت تهران می‌تونه:
+- قوانین محلی خودش رو اعمال کنه
+- زبان فارسی رو پشتیبانی کنه
+- ساعات کاری ایران رو رعایت کنه</code></pre></div>
+
+<h4>5. انعطاف‌پذیری</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>می‌خوای سایت جدید اضافه کنی؟ ✅
+می‌خوای یک سایت رو upgrade کنی؟ ✅
+می‌خوای DBMS یک سایت رو عوض کنی؟ ✅
+
+همه امکان‌پذیره!</code></pre></div>
+
+<hr>
+<h3>❌ معایب و چالش‌های DDB</h3>
+
+<h4>1. پیچیدگی بسیار بالا</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>باید مدیریت کنی:
+- چند سایت
+- چند DBMS (شاید متفاوت)
+- شبکه‌های پیچیده
+- توزیع داده
+- Transaction توزیع شده
+- Replication
+- Consistency
+
+→ نیاز به تیم خبره! 💰💰💰</code></pre></div>
+
+<h4>2. هزینه بالا</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>هزینه‌ها:
+- چند سرور
+- شبکه قوی
+- DDBMS گران
+- تیم بزرگ
+- آموزش</code></pre></div>
+
+<h4>3. مشکلات امنیتی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>چند سایت = چند نقطه حمله ممکن
+→ باید همه رو امن کنی</code></pre></div>
+
+<h4>4. Consistency</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر داده کپی شده باشه:
+سایت تهران: Balance = 1000
+سایت لندن: Balance = 1000
+
+تراکنش در تهران: Balance = 900
+تراکنش در لندن: Balance = 800
+
+کدوم درسته؟! 😱
+
+→ نیاز به الگوریتم‌های پیچیده Consistency</code></pre></div>
+
+<h4>5. تاخیر شبکه</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Query سراسری:
+→ باید داده از چند سایت جمع بشه
+→ تاخیر شبکه × تعداد سایت‌ها
+→ می‌تونه کند باشه</code></pre></div>
+
+<hr>
+<h3>📊 مقایسه کامل معماری‌ها</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>متمرکز</th><th>C/S</th><th>DDB</th></tr></thead>
+<tbody>
+<tr><td><strong>پیچیدگی</strong></td><td>ساده ✅✅✅</td><td>متوسط ✅✅</td><td>پیچیده ❌</td></tr>
+<tr><td><strong>هزینه</strong></td><td>کم ✅✅✅</td><td>متوسط ✅✅</td><td>بالا ❌</td></tr>
+<tr><td><strong>مقیاس‌پذیری</strong></td><td>کم ❌</td><td>متوسط ✅✅</td><td>بالا ✅✅✅</td></tr>
+<tr><td><strong>قابلیت اطمینان</strong></td><td>کم (SPOF) ❌</td><td>متوسط ✅✅</td><td>بالا ✅✅✅</td></tr>
+<tr><td><strong>عملکرد</strong></td><td>متوسط ✅✅</td><td>خوب ✅✅</td><td>عالی ✅✅✅</td></tr>
+<tr><td><strong>شفافیت</strong></td><td>کامل ✅✅✅</td><td>متوسط ✅✅</td><td>کامل ✅✅✅</td></tr>
+<tr><td><strong>خودمختاری</strong></td><td>ندارد ❌</td><td>ندارد ❌</td><td>دارد ✅✅✅</td></tr>
+<tr><td><strong>ناهمگنی</strong></td><td>ندارد ❌</td><td>ندارد ❌</td><td>دارد ✅✅✅</td></tr>
+</tbody></table></div><hr>
+
+<h3>🎯 کی از کدوم استفاده کنیم؟</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TD
+    A{چند سایت جغرافیایی؟} -->|یک| B{چند کاربر؟}
+    A -->|چند| C[DDB]
+    
+    B -->|کم<br/>تا 100| D[متمرکز]
+    B -->|زیاد<br/>100+| E[C/S]
+    
+    C --> F{بودجه کافی؟}
+    F -->|بله| G[DDB ✅]
+    F -->|خیر| H[C/S Multi Server]
+    
+    style C fill:#2ecc71,color:#fff
+    style D fill:#e74c3c,color:#fff
+    style E fill:#3498db,color:#fff
+    style G fill:#27ae60,color:#fff
+</pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۱.۳.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+5 نوع شفافیت در DDB را با یک مثال واقعی از یک شرکت چندملیتی توضیح دهید.
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>درست</strong> است؟
+</p>
+
+<p>
+الف) در DDB، کاربر باید محل داده را بداند  
+ب) DDB می‌تواند ناهمگن باشد  
+ج) DDB ساده‌تر از C/S است  
+د) در DDB، خودمختاری کامل امکان‌پذیر است
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+یک دانشگاه با 5 پردیس در شهرهای مختلف می‌خواهد سیستم یکپارچه بسازد:
+</p>
+<ul>
+<li>پردیس 1 (تهران): 20,000 دانشجو</li>
+<li>پردیس 2 (شیراز): 15,000 دانشجو</li>
+<li>پردیس 3 (تبریز): 10,000 دانشجو</li>
+<li>پردیس 4 (اصفهان): 12,000 دانشجو</li>
+<li>پردیس 5 (مشهد): 8,000 دانشجو</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ol>
+<li>معماری DDB مناسب</li>
+<li>چه داده‌هایی را در هر سایت ذخیره می‌کنید؟</li>
+<li>چه داده‌هایی باید Replicate بشن؟</li>
+</ol>
+
+<h4>تمرین 4 (مقایسه):</h4>
+<p>
+جدول مقایسه کاملی بکشید بین:
+</p>
+<ul>
+<li>Multi Client / Multi Server (C/S)</li>
+<li>Distributed Database (DDB)</li>
+</ul>
+
+<p>
+از نظر: شفافیت، ناهمگنی، خودمختاری، پیچیدگی
+</p>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+شما مشاور یک بانک بین‌المللی هستید. بانک شعبه در 50 کشور دارد.
+</p>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>کدام معماری پیشنهاد می‌کنید؟ چرا؟</li>
+<li>چه چالش‌هایی وجود دارد؟</li>
+<li>چگونه 5 نوع شفافیت را تامین می‌کنید؟</li>
+<li>چگونه Consistency را حفظ می‌کنید؟</li>
+</ul>
+
+<h4>تمرین 6 (تحلیلی):</h4>
+<p>
+چرا در DDB خودمختاری کامل غیرممکن است؟  
+نقش Master Site چیست؟  
+3 مورد که نیاز به هماهنگی مرکزی دارند بیاورید.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((DDB))
+    مفهوم
+      منطقی یکپارچه
+      فیزیکی توزیع شده
+      شفاف برای کاربر
+    شفافیت ها
+      Location
+      Distribution
+      Hardware
+      OS
+      Network
+    ویژگی ها
+      ناهمگن
+      خودمختار
+      مقیاس پذیر
+      قابل اطمینان
+    چالش ها
+      پیچیدگی
+      هزینه
+      Consistency
+      امنیت
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>DDB</strong>: قدرتمندترین ولی پیچیده‌ترین!</li>
+<li>✅ <strong>5 شفافیت</strong>: Location, Distribution, Hardware, OS, Network</li>
+<li>✅ <strong>ناهمگنی</strong>: می‌تونه DBMS‌های مختلف داشته باشه</li>
+<li>✅ <strong>خودمختاری</strong>: هر سایت استقلال نسبی داره</li>
+<li>✅ <strong>DDBMS</strong>: DBMS + قابلیت توزیع</li>
+</ul>
+
+<hr>
+<p>
+<strong>پایان فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</strong> ✅✅✅
+</p>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="1-3-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">معماری متمرکز و کلاینت/سرور</span></a><a href="../chapter-2/2-1-1.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">موجودیت و نوع موجودیت</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

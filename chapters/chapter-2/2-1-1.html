@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - موجودیت و نوع موجودیت">
+    <meta name="keywords" content="پایگاه داده, Database Design, موجودیت و نوع موجودیت">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>موجودیت و نوع موجودیت | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">موجودیت و نوع موجودیت</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">موجودیت و نوع موجودیت</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۱.۱: موجودیت (Entity) - قوی و ضعیف</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا وارد یکی از مهم‌ترین فصل‌های درس می‌شیم: <strong>مدل‌سازی معنایی داده‌ها</strong>!
+</p>
+
+<p>
+فرض کن می‌خوای سیستم دانشگاه رو طراحی کنی. اولین سوال این است: <strong>چی‌ها رو باید ذخیره کنیم؟</strong> 🤔
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشگاه:
+- دانشجو؟ ✅
+- درس؟ ✅
+- استاد؟ ✅
+- کلاس؟ ✅
+- رنگ موی دانشجو؟ ❌ (مهم نیست!)
+- تعداد قدم‌های استاد؟ ❌ (ربطی نداره!)</code></pre></div>
+
+<p>
+به چیزهایی که <strong>مهم هستن</strong> و می‌خوایم ذخیره کنیم، <strong>موجودیت (Entity)</strong> می‌گیم!
+</p>
+
+<hr>
+<h3>📖 تعریف مدل‌سازی معنایی داده‌ها ()</h3>
+
+<p>
+<strong>تعریف :</strong>  
+ارائه یک مدل کلی از پایگاهی که قرار است برای محیط ایجاد شود در <strong>بالاترین سطح انتزاع</strong> به کمک مفاهیم انتزاعی و با توجه به <strong>معنایی که کاربر برای داده‌هایش قائل می‌شود</strong>.
+</p>
+
+<h4>سطوح طراحی</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[سطح انتزاعی<br/>ER Diagram] --> B[سطح منطقی<br/>جداول]
+    B --> C[سطح پیاده‌سازی<br/>SQL]
+    
+    A1[دانشجو - درس<br/>موجودیت‌ها] -.-> A
+    B1[Student, Course<br/>Tables] -.-> B
+    C1[CREATE TABLE<br/>Code] -.-> C
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>چرا سطح انتزاعی؟</strong>
+</p>
+<ul>
+<li>مستقل از DBMS (SQL Server, Oracle, ...)</li>
+<li>مستقل از جزئیات پیاده‌سازی</li>
+<li>تمرکز روی <strong>معنا</strong> نه روی تکنیک</li>
+</ul>
+
+<hr>
+<h3>🧩 ابزار مدل‌سازی: ER (Entity-Relationship)</h3>
+
+<p>
+<strong>ER دو بخش داره:</strong>
+</p>
+<ol>
+<li><strong>Basic ER:</strong> موجودیت، صفت، ارتباط</li>
+<li><strong>Extended ER (EER):</strong> وراثت، تخصیص، تعمیم</li>
+</ol>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[ER Model] --> B[Basic ER]
+    A --> C[Extended ER]
+    
+    B --> B1[Entity<br/>موجودیت]
+    B --> B2[Attribute<br/>صفت]
+    B --> B3[Relationship<br/>ارتباط]
+    
+    C --> C1[Is-A<br/>وراثت]
+    C --> C2[U-Type<br/>دسته‌بندی]
+    C --> C3[Aggregation<br/>تجمع]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>🎯 موجودیت (Entity) - تعریف کامل</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>موجودیت:</strong> آن چیزهایی روی محیط که اطلاعات روی آن ذخیره می‌شود - مفهوم کلی آنچه می‌خواهیم در موردش اطلاع داشته باشیم.
+</p>
+
+<h4>خصوصیات موجودیت ()</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((موجودیت))
+    حتما نام دارد
+      Student
+      Course
+      Teacher
+    حتما معنی دارد
+      دانشجو = کسی که درس می خواند
+      درس = مجموعه مطالب آموزشی
+    نمونه ها دارد
+      علی، رضا، مریم
+      Instance Set
+    حداقل 1 نمونه
+      باید وجود داشته باشد
+    صفات دارد
+      حداقل 1 صفت
+      معرف موجودیت
+    ارتباط دارد
+      با موجودیت های دیگر
+      ممکن است 0 باشد
+</pre></div>
+
+<h4>نماد موجودیت در ER</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>دانشجو]
+    
+    style A fill:#3498db,color:#fff,stroke:#000,stroke-width:3px
+</pre></div>
+
+<p>
+<strong>نماد:</strong> مستطیل
+</p>
+
+<hr>
+<h3>📝 مثال: موجودیت دانشجو</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Student]
+    
+    A --> B((StudentID))
+    A --> C((Name))
+    A --> D((Field))
+    A --> E((Code))
+    
+    B -.->|شناسه| B
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#2ecc71,color:#fff
+    style E fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نکته :</strong>
+</p>
+<ul>
+<li>موجودیت: مستطیل</li>
+<li>صفت: بیضی</li>
+<li>صفت شناسه: زیرش خط</li>
+</ul>
+
+<p>
+<strong>Instance Set (مجموعه نمونه‌ها):</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>StudentID</th><th>Name</th><th>Field</th><th>Code</th></tr></thead>
+<tbody>
+<tr><td>123</td><td>علی علیزاده</td><td>کامپیوتر</td><td>9412345</td></tr>
+<tr><td>124</td><td>رضا رضایی</td><td>برق</td><td>9412346</td></tr>
+<tr><td>125</td><td>مریم محمدی</td><td>عمران</td><td>9412347</td></tr>
+</tbody></table></div><hr>
+
+<h3>🔑 انواع موجودیت: قوی و ضعیف</h3>
+
+<p>
+<strong>:</strong>  
+انواع نوع موجودیت:
+</p>
+<ol>
+<li><strong>قوی (Strong Entity)</strong></li>
+<li><strong>ضعیف (Weak Entity)</strong></li>
+</ol>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[انواع موجودیت] --> B[قوی<br/>Strong]
+    A --> C[ضعیف<br/>Weak]
+    
+    B --> B1[استقلال وجودی ✅]
+    B --> B2[شناسه دارد ✅]
+    B --> B3[مستطیل معمولی]
+    
+    C --> C1[وابستگی وجودی ❌]
+    C --> C2[شناسه ندارد ❌]
+    C --> C3[صفت ممیزه ✓]
+    C --> C4[مستطیل دولایه]
+    
+    style B fill:#2ecc71,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<hr>
+<h3>💪 موجودیت قوی (Strong Entity)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>قوی:</strong> موجودیتی است که <strong>استقلال وجودی</strong> دارد.
+</p>
+
+<h4>ویژگی‌های موجودیت قوی</h4>
+
+<p>
+<strong>1. استقلال وجودی ✅</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشجو:
+- می‌تونه خودش وجود داشته باشه
+- نیازی به چیز دیگه نداره
+- مستقل است ✅</code></pre></div>
+
+<p>
+<strong>2. شناسه دارد ✅</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشجو:
+- StudentID: شناسه یکتا
+- هر دانشجو یک کد منحصربفرد داره</code></pre></div>
+
+<p>
+<strong>3. نماد:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>موجودیت قوی]
+    
+    style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
+</pre></div>
+
+<p>
+<strong>مستطیل تک لایه</strong>
+</p>
+
+<h4>مثال‌های موجودیت قوی</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    subgraph "محیط دانشگاه"
+    A[Student<br/>دانشجو]
+    B[Course<br/>درس]
+    C[Teacher<br/>استاد]
+    D[Department<br/>دانشکده]
+    end
+    
+    style A fill:#2ecc71,color:#fff
+    style B fill:#2ecc71,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+همه اینها <strong>قوی</strong> هستن چون:
+</p>
+<ul>
+<li>خودشون وجود دارن ✅</li>
+<li>شناسه دارن (StudentID, CourseID, ...) ✅</li>
+<li>به چیز دیگه‌ای وابسته نیستن ✅</li>
+</ul>
+
+<hr>
+<h3>🔗 موجودیت ضعیف (Weak Entity)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>ضعیف:</strong> موجودیتی است که برای وجود داشتن به یک نوع موجودیت قوی دیگر <strong>وابستگی</strong> دارد و اگر قوی را حذف نماییم، ضعیف نیز باید حذف شود.
+</p>
+
+<h4>ویژگی‌های کلیدی ()</h4>
+
+<p>
+<strong>1. وابستگی وجودی ❌</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر موجودیت قوی حذف شه:
+→ موجودیت ضعیف هم باید حذف شه ❌</code></pre></div>
+
+<p>
+<strong>2. شناسه ندارد ❌</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>موجودیت ضعیف خودش شناسه نداره!
+به جاش: صفت ممیزه داره</code></pre></div>
+
+<p>
+<strong>3. صفت ممیزه (Discriminator)</strong>
+</p>
+
+<p>
+<strong>تعریف صفت ممیزه :</strong>  
+صفتی است که در تمامی نمونه‌های موجودیت ضعیف یکتایی مقدار ندارد ولی در نمونه موجودیت‌های وابسته به یک نمونه موجودیت قوی یکتایی مقدار دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[صفت ممیزه] -->|در کل| B[یکتا نیست ❌]
+    A -->|در یک قوی| C[یکتا است ✅]
+    
+    style A fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>4. نماد:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند<br/>قوی]
+    B{دارد}
+    C[EducationHistory<br/>سابقه تحصیلی<br/>ضعیف]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    D((EmpID))
+    E((Degree))
+    
+    D -.->|شناسه| A
+    E -.->|ممیزه| C
+    
+    style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
+    style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
+    style E fill:#f39c12,color:#fff,stroke:#000,stroke-dasharray: 5 5
+</pre></div>
+
+<p>
+<strong>نکات نمادی:</strong>
+</p>
+<ul>
+<li>موجودیت قوی: مستطیل تک‌لایه</li>
+<li>موجودیت ضعیف: <strong>مستطیل دو لایه</strong> (خط ضخیم‌تر)</li>
+<li>ارتباط شناسه: <strong>لوزی دو لایه</strong></li>
+<li>صفت ممیزه: بیضی با <strong>خط نقطه‌چین</strong> زیرش</li>
+</ul>
+
+<hr>
+<h3>🎓 مثال کامل: کارمند و سابقه تحصیلی</h3>
+
+<h4>سناریو</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>یک شرکت کارمندان داره.
+هر کارمند می‌تونه چندین سابقه تحصیلی داشته باشه:
+- دیپلم از دبیرستان الغدیر
+- لیسانس از دانشگاه تهران
+- فوق‌لیسانس از دانشگاه شریف</code></pre></div>
+
+<h4>نمودار ER</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    B{Has<br/>دارد}
+    C[EducationHistory<br/>سابقه تحصیلی]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    A1((EmpID))
+    A2((EmpName))
+    
+    C1((Degree))
+    C2((University))
+    C3((GraduationYear))
+    C4((GPA))
+    
+    A --- A1
+    A --- A2
+    
+    C --- C1
+    C --- C2
+    C --- C3
+    C --- C4
+    
+    A1 -.->|PK| A1
+    C1 -.->|Discriminator| C1
+    
+    style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
+    style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:6px
+    style A1 fill:#f39c12,color:#fff
+    style C1 fill:#f39c12,color:#fff,stroke:#000,stroke-dasharray: 5 5
+</pre></div>
+
+<h4>داده‌ها</h4>
+
+<p>
+<strong>Employee (قوی):</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>EmpName</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>علی احمدی</td></tr>
+<tr><td>11</td><td>رضا رضایی</td></tr>
+</tbody></table></div><strong>EducationHistory (ضعیف):</strong>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Degree</th><th>University</th><th>Year</th><th>GPA</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>دیپلم</td><td>دبیرستان الغدیر</td><td>1385</td><td>18.5</td></tr>
+<tr><td>10</td><td>لیسانس</td><td>دانشگاه تهران</td><td>1390</td><td>17.2</td></tr>
+<tr><td>10</td><td>فوق‌لیسانس</td><td>دانشگاه شریف</td><td>1394</td><td>19.0</td></tr>
+<tr><td>11</td><td>دیپلم</td><td>دبیرستان البرز</td><td>1384</td><td>20.0</td></tr>
+<tr><td>11</td><td>لیسانس</td><td>دانشگاه شریف</td><td>1388</td><td>19.5</td></tr>
+<tr><td>11</td><td>فوق‌لیسانس</td><td>MIT</td><td>1390</td><td>18.8</td></tr>
+<tr><td>11</td><td>دکترا</td><td>Stanford</td><td>1394</td><td>19.2</td></tr>
+</tbody></table></div>#### تحلیل صفت ممیزه
+
+<p>
+<strong>Degree (مقطع) صفت ممیزه است:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>در کل جدول:
+- دیپلم: 2 بار تکرار شده ❌ (یکتا نیست)
+- لیسانس: 2 بار تکرار شده ❌
+- فوق‌لیسانس: 2 بار تکرار شده ❌
+
+برای EmpID=10:
+- دیپلم: 1 بار ✅ (یکتا است)
+- لیسانس: 1 بار ✅
+- فوق‌لیسانس: 1 بار ✅
+
+برای EmpID=11:
+- دیپلم: 1 بار ✅ (یکتا است)
+- لیسانس: 1 بار ✅
+- فوق‌لیسانس: 1 بار ✅
+- دکترا: 1 بار ✅
+
+→ پس Degree صفت ممیزه است! ✓</code></pre></div>
+
+<hr>
+<h3>⚠️ چرا ضعیف؟</h3>
+
+<h4>سوالات کلیدی ()</h4>
+
+<p>
+<strong>1. آیا یک مدرک تحصیلی وجود دارد که مال هیچ کارمندی نباشد؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>❌ خیر! وجود ندارد.
+→ وابستگی وجودی به کارمند دارد</code></pre></div>
+
+<p>
+<strong>2. اگر کارمند حذف شه، چی می‌شه؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند (EmpID=10) حذف می‌شه:
+→ همه سابقه‌های تحصیلیش هم باید حذف شن ❌
+→ چون معنا نداره سابقه‌ای بدون کارمند!</code></pre></div>
+
+<p>
+<strong>3. آیا صفت Degree منحصر به فرد است؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>❌ خیر!
+در کل: چندین کارمند "لیسانس" دارن
+→ منحصر به فرد نیست
+
+ولی برای یک کارمند: فقط یک "لیسانس" داره ✅
+→ در داخل یک کارمند منحصر به فرد است</code></pre></div>
+
+<hr>
+<h3>🔑 نکات مهم موجودیت ضعیف ()</h3>
+
+<h4>نکته 1: قوی و ضعیف بودن نسبی است</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سابقه تحصیلی:
+- نسبت به کارمند: ضعیف ❌
+- نسبت به خودش: وجود ندارد ✓</code></pre></div>
+
+<p>
+<strong>ولی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کارمند:
+- نسبت به اعضای خانواده: قوی ✅
+
+اعضای خانواده:
+- نسبت به کارمند: ضعیف ❌
+- نسبت به سابقه بیماری: قوی ✅ (!!)
+
+سابقه بیماری:
+- نسبت به اعضای خانواده: ضعیف ❌</code></pre></div>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[کارمند<br/>قوی] -->|دارد| B[اعضای خانواده<br/>ضعیف نسبت به کارمند]
+    B -->|دارد| C[سابقه بیماری<br/>ضعیف نسبت به اعضا]
+    
+    style A fill:#2ecc71,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<p>
+<strong>پس ضعیف یا قوی بودن نسبی است و به محیط بستگی دارد!</strong>
+</p>
+
+<h4>نکته 2: ارتباط شناسه (Identifying Relationship)</h4>
+
+<p>
+<strong>:</strong> "ارتباط بین قوی و ضعیف را ارتباط شناسه می‌گوییم چون یک ارتباط قوی است."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>چرا "شناسه"؟
+→ چون موجودیت قوی، موجودیت ضعیف رو شناسایی می‌کنه!</code></pre></div>
+
+<p>
+<strong>نماد:</strong> لوزی دو لایه (خط ضخیم)
+</p>
+
+<h4>نکته 3: مشارکت ضعیف الزامی است</h4>
+
+<p>
+<strong>:</strong> "نوع مشارکت موجودیت ضعیف در ارتباط شناسه الزامی می‌باشد."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سابقه تحصیلی:
+→ حتماً باید به یک کارمند تعلق داشته باشه
+→ نمی‌تونه بدون کارمند وجود داشته باشه
+→ مشارکت الزامی ✅</code></pre></div>
+
+<h4>نکته 4: چندی (Cardinality)</h4>
+
+<p>
+<strong>:</strong> "در اکثر مواقع ارتباط موجودیت ضعیف 1:N است. ولی در برخی مواقع M:N هم می‌تواند باشد."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>معمولاً:
+کارمند (1) ──── (N) سابقه تحصیلی
+
+ولی ممکنه:
+موجودیت قوی (M) ──── (N) موجودیت ضعیف</code></pre></div>
+
+<h4>نکته 5: درجه ارتباط</h4>
+
+<p>
+<strong>:</strong> "درجه اکثر مواقع در ارتباط شناسه 2 است و می‌تواند بیشتر از 2 نیز باشد ولی نمی‌تواند یک باشد."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>درجه 2: کارمند ──── سابقه تحصیلی ✅
+درجه 3: ممکن است ✅
+درجه 1: غیرممکن! ❌ (موجودیت به خودش وابسته؟!)</code></pre></div>
+
+<h4>نکته 6: اگر کد ملی بذاریم چی می‌شه؟</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سابقه تحصیلی:
+- اگر صفت "کد مدرک" اضافه کنیم:
+  → هر مدرک یک کد یکتا داره
+  → دیگه ضعیف نیست! ✅
+  → تبدیل به موجودیت قوی می‌شه!</code></pre></div>
+
+<hr>
+<h3>🎨 مثال‌های بیشتر</h3>
+
+<h4>مثال 1: دانشجو و پروژه (ضعیف نیست!)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>دانشجو]
+    B{انجام می‌دهد}
+    C[Project<br/>پروژه]
+    
+    A -->|M| B
+    B -->|N| C
+    
+    A1((StudentID))
+    C1((ProjectID))
+    
+    A --- A1
+    C --- C1
+    
+    style A fill:#2ecc71,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>چرا پروژه ضعیف نیست؟</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>- پروژه می‌تونه بدون دانشجو وجود داشته باشه ✅
+- پروژه شناسه داره (ProjectID) ✅
+- اگر دانشجو حذف شه، پروژه می‌مونه ✅
+→ پروژه قوی است!</code></pre></div>
+
+<h4>مثال 2: کارمند و اعضای خانواده</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    B{دارد}
+    C[FamilyMember<br/>عضو خانواده]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    A1((EmpID))
+    A2((Name))
+    
+    C1((Name))
+    C2((Relation))
+    C3((BirthDate))
+    
+    A --- A1
+    A --- A2
+    
+    C --- C1
+    C --- C2
+    C --- C3
+    
+    A1 -.->|PK| A1
+    C1 -.->|Discriminator?| C1
+    
+    style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
+    style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:6px
+</pre></div>
+
+<p>
+<strong>نکته:</strong> Name ممکنه صفت ممیزه خوبی نباشه! چون ممکنه دو فرزند هم‌نام داشته باشه!
+</p>
+
+<p>
+<strong>بهتر:</strong> از ترکیب (Name + Relation) استفاده کنیم:
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>EmpID=10:
+- (علی, پسر) ✅
+- (مریم, دختر) ✅
+
+اگر دو پسر علی داشته باشه؟
+- (علی, پسر اول)
+- (علی, پسر دوم)</code></pre></div>
+
+<hr>
+<h3>📊 جدول مقایسه: قوی vs ضعیف</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>موجودیت قوی</th><th>موجودیت ضعیف</th></tr></thead>
+<tbody>
+<tr><td><strong>استقلال وجودی</strong></td><td>دارد ✅</td><td>ندارد ❌</td></tr>
+<tr><td><strong>شناسه</strong></td><td>دارد (PK) ✅</td><td>ندارد ❌</td></tr>
+<tr><td><strong>صفت ممیزه</strong></td><td>ندارد</td><td>دارد ✅</td></tr>
+<tr><td><strong>حذف</strong></td><td>مستقل</td><td>با حذف قوی حذف می‌شه</td></tr>
+<tr><td><strong>نماد</strong></td><td>مستطیل تک‌لایه</td><td>مستطیل دو لایه</td></tr>
+<tr><td><strong>مثال</strong></td><td>Student, Employee</td><td>EducationHistory, FamilyMember</td></tr>
+<tr><td><strong>نسبیت</strong></td><td>نسبی (می‌تونه ضعیف باشه)</td><td>نسبی (می‌تونه قوی باشه)</td></tr>
+</tbody></table></div><hr>
+
+<h3>✍️ تمرینات بخش ۲.۱.۱</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+با استفاده از سناریوی زیر موجودیت‌های قوی و ضعیف را شناسایی و توضیح دهید:
+</p>
+
+<p>
+"یک کتابخانه دارای کتاب‌هایی است. هر کتاب می‌تواند چندین نسخه فیزیکی داشته باشد که با بارکد مشخص می‌شوند."
+</p>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>کتاب قوی است یا ضعیف؟ چرا؟</li>
+<li>نسخه فیزیکی قوی است یا ضعیف؟ چرا؟</li>
+<li>صفت ممیزه چیست؟</li>
+<li>نمودار ER بکشید.</li>
+</ul>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<p>
+الف) موجودیت ضعیف حتماً باید صفت ممیزه داشته باشد  
+ب) صفت ممیزه در کل موجودیت ضعیف یکتا نیست  
+ج) اگر موجودیت قوی حذف شود، همه موجودیت‌های ضعیف حذف می‌شوند  
+د) مشارکت موجودیت ضعیف در ارتباط شناسه الزامی است
+</p>
+
+<h4>تمرین 3 (طراحی):</h4>
+<p>
+محیط بیمارستان:
+</p>
+<ul>
+<li>بیمار</li>
+<li>پذیرش (هر بار که بیمار به بیمارستان می‌آید)</li>
+<li>اتاق</li>
+<li>پزشک</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ol>
+<li>کدام‌ها قوی و کدام‌ها ضعیف هستند؟</li>
+<li>چرا؟</li>
+<li>صفات ممیزه کدام‌اند؟</li>
+<li>نمودار ER کامل</li>
+</ol>
+
+<h4>تمرین 4 (تحلیلی):</h4>
+<p>
+چرا "قوی یا ضعیف بودن نسبی است"؟  
+یک مثال سه سطحی بیاورید (مثل کارمند → اعضای خانواده → سابقه بیماری) و توضیح دهید.
+</p>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+شرکت پیک موتوری:
+</p>
+<ul>
+<li>هر پیک می‌تواند چندین سفارش داشته باشد</li>
+<li>هر سفارش چندین بسته دارد</li>
+<li>هر بسته آدرس مقصد خاص دارد</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>کدام موجودیت ضعیف است؟</li>
+<li>چرا؟</li>
+<li>صفت ممیزه چیست؟</li>
+<li>اگر به هر بسته یک شماره رهگیری بدهیم، چه اتفاقی می‌افتد؟</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+آیا ممکن است یک موجودیت هم‌زمان نسبت به یک موجودیت قوی و نسبت به موجودیت دیگر ضعیف باشد؟  
+مثال بزنید و نمودار ER بکشید.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((موجودیت))
+    قوی
+      استقلال وجودی
+      شناسه دارد
+      مستطیل تک لایه
+      مثال Student
+    ضعیف
+      وابستگی وجودی
+      شناسه ندارد
+      صفت ممیزه
+      مستطیل دو لایه
+      مثال EducationHistory
+    ارتباط شناسه
+      لوزی دو لایه
+      قوی را به ضعیف متصل می کند
+      مشارکت ضعیف الزامی
+    نسبیت
+      قوی می تونه ضعیف باشه
+      ضعیف می تونه قوی باشه
+      بستگی به محیط دارد
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>موجودیت:</strong> چیزی که می‌خوایم در موردش اطلاع داشته باشیم</li>
+<li>✅ <strong>قوی:</strong> استقلال وجودی + شناسه دارد</li>
+<li>✅ <strong>ضعیف:</strong> وابستگی وجودی + صفت ممیزه</li>
+<li>✅ <strong>صفت ممیزه:</strong> در کل یکتا نیست، در یک قوی یکتا است</li>
+<li>✅ <strong>نسبیت:</strong> ضعیف/قوی بودن به محیط بستگی دارد</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="../chapter-1/1-3-2.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">معماری توزیع‌شده و شفافیت</span></a><a href="2-1-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">صفات موجودیت، دامنه و مقادیر</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

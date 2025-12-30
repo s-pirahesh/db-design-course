@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مدل‌سازی معنایی داده‌ها - ER & EER - چندی (Cardinality)">
+    <meta name="keywords" content="پایگاه داده, Database Design, چندی (Cardinality)">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>چندی (Cardinality) | مدل‌سازی معنایی داده‌ها - ER & EER | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مدل‌سازی معنایی داده‌ها - ER & EER</a>
+                <span class="separator">›</span>
+                <span class="current">چندی (Cardinality)</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">چندی (Cardinality)</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۲: مدل‌سازی معنایی داده‌ها (ER & EER)</h1>
+
+<h2>بخش ۲.۲.۲: چندی (Cardinality)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، در بخش قبل یاد گرفتیم که موجودیت‌ها با هم <strong>ارتباط</strong> دارن. حالا سوال مهم: <strong>چند تا؟</strong> 🤔
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>دانشجو ↔ درس:
+- یک دانشجو چند درس می‌تونه بگیره؟ 🤔
+- یک درس چند دانشجو می‌تونه داشته باشه؟ 🤔
+
+استاد ↔ اداره:
+- یک استاد در چند اداره کار می‌کنه؟
+- یک اداره چند استاد داره؟
+
+این "چند تا" همون چندی (Cardinality) است! ✨</code></pre></div>
+
+<hr>
+<h3>📖 تعریف چندی (Cardinality)</h3>
+
+<p>
+<strong>تعریف :</strong>  
+<strong>چندی نوع ارتباط R بین نوع موجودیت E و F</strong> عبارت است از <strong>چگونگی تناظر بین مجموعه نمونه موجودیت‌های آن هر نوع موجودیت</strong>. تناظر می‌تواند <strong>یک به یک</strong>، <strong>یک به N</strong> و <strong>N به M</strong> باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((چندی<br/>Cardinality))
+    تعریف
+      چگونگی تناظر
+      بین نمونه موجودیت ها
+      در یک ارتباط
+    انواع
+      1:1 یک به یک
+      1:N یک به چند
+      M:N چند به چند
+    نماد
+      روی خطوط ارتباط
+      M یا N یا 1
+</pre></div>
+
+<p>
+<strong>نکته :</strong>  
+"چندی ارتباط یک <strong>محدودیت معنایی ناظر به ارتباط</strong> به طرز ارتباط تأثیر دارد."
+</p>
+
+<hr>
+<h3>🔢 انواع چندی</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[انواع چندی] --> B[1:1<br/>یک به یک<br/>One-to-One]
+    A --> C[1:N<br/>یک به چند<br/>One-to-Many]
+    A --> D[M:N<br/>چند به چند<br/>Many-to-Many]
+    
+    style B fill:#e74c3c,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>1️⃣ چندی 1:1 (یک به یک - One-to-One)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+هر نمونه موجودیت E با <strong>حداکثر یک</strong> نمونه موجودیت F ارتباط دارد و بالعکس.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Entity E]
+    B{Relationship}
+    C[Entity F]
+    
+    A -->|1| B
+    B -->|1| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>مثال 1: کارمند - اداره (مدیریت)</h4>
+
+<p>
+<strong>سناریو :</strong>  
+یک کارمند می‌تواند مدیر یک اداره باشد. یک اداره یک مدیر دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Employee<br/>کارمند]
+    B{Manage<br/>مدیریت}
+    C[Department<br/>اداره]
+    
+    A -->|1| B
+    B -->|1| C
+    
+    A1((EmpID))
+    A2((Name))
+    
+    C1((DeptID))
+    C2((DeptName))
+    
+    A --- A1
+    A --- A2
+    
+    C --- C1
+    C --- C2
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Employee:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>DeptID (مدیر کجا؟)</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>علی</td><td>D1</td></tr>
+<tr><td>11</td><td>رضا</td><td>D2</td></tr>
+<tr><td>12</td><td>مریم</td><td>NULL (مدیر نیست)</td></tr>
+<tr><td>13</td><td>سارا</td><td>NULL</td></tr>
+</tbody></table></div><strong>Department:</strong>
+<div class="table-container"><table>
+<thead><tr><th>DeptID</th><th>DeptName</th><th>ManagerID</th></tr></thead>
+<tbody>
+<tr><td>D1</td><td>فروش</td><td>10</td></tr>
+<tr><td>D2</td><td>IT</td><td>11</td></tr>
+<tr><td>D3</td><td>منابع انسانی</td><td>NULL (مدیر نداره)</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>کارمند 10 (علی) → مدیر اداره D1 ✅ (یک به یک)</li>
+<li>کارمند 11 (رضا) → مدیر اداره D2 ✅</li>
+<li>کارمند 12 (مریم) → مدیر هیچ اداره‌ای نیست ✅</li>
+<li>اداره D3 → مدیر نداره ✅</li>
+</ul>
+
+<p>
+<strong>1:1 است چون:</strong>
+</p>
+<ul>
+<li>هر کارمند حداکثر مدیر <strong>یک</strong> اداره است</li>
+<li>هر اداره حداکثر <strong>یک</strong> مدیر دارد</li>
+</ul>
+
+<h4>مثال 2: دانشجو - پروژه</h4>
+
+<p>
+<strong>سناریو:</strong>  
+هر دانشجو یک پروژه پایان‌نامه دارد. هر پروژه به یک دانشجو تعلق دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student]
+    B{Has}
+    C[Project]
+    
+    A -->|1| B
+    B -->|1| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li>دانشجو → پروژه: یک به یک</li>
+<li>پروژه → دانشجو: یک به یک</li>
+<li><strong>چندی: 1:1</strong> ✅</li>
+</ul>
+
+<hr>
+<h3>2️⃣ چندی 1:N (یک به چند - One-to-Many)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+هر نمونه موجودیت E با <strong>چند</strong> نمونه موجودیت F ارتباط دارد، ولی هر نمونه F با <strong>حداکثر یک</strong> نمونه E ارتباط دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Entity E<br/>طرف 1]
+    B{Relationship}
+    C[Entity F<br/>طرف N]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>مثال 1: اداره - کارمند</h4>
+
+<p>
+<strong>سناریو:</strong>  
+یک اداره چند کارمند دارد. هر کارمند در یک اداره کار می‌کند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Department<br/>اداره]
+    B{Has<br/>دارد}
+    C[Employee<br/>کارمند]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    A1((DeptID))
+    B1((FromDate))
+    C1((EmpID))
+    
+    A --- A1
+    B --- B1
+    C --- C1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Department:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>DeptID</th><th>DeptName</th></tr></thead>
+<tbody>
+<tr><td>D1</td><td>فروش</td></tr>
+<tr><td>D2</td><td>IT</td></tr>
+</tbody></table></div><strong>Employee:</strong>
+<div class="table-container"><table>
+<thead><tr><th>EmpID</th><th>Name</th><th>DeptID</th></tr></thead>
+<tbody>
+<tr><td>100</td><td>علی</td><td>D1</td></tr>
+<tr><td>110</td><td>رضا</td><td>D1</td></tr>
+<tr><td>120</td><td>مریم</td><td>D1</td></tr>
+<tr><td>130</td><td>سارا</td><td>D2</td></tr>
+<tr><td>140</td><td>حسین</td><td>D2</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>اداره D1 (فروش) → 3 کارمند (علی، رضا، مریم) ✅ <strong>N</strong></li>
+<li>اداره D2 (IT) → 2 کارمند (سارا، حسین) ✅ <strong>N</strong></li>
+<li>کارمند علی → فقط اداره D1 ✅ <strong>1</strong></li>
+<li>کارمند سارا → فقط اداره D2 ✅ <strong>1</strong></li>
+</ul>
+
+<p>
+<strong>1:N است چون:</strong>
+</p>
+<ul>
+<li>هر اداره <strong>چند</strong> کارمند داره (N)</li>
+<li>هر کارمند در <strong>یک</strong> اداره کار می‌کنه (1)</li>
+</ul>
+
+<h4>مثال 2: مشتری - فاکتور</h4>
+
+<p>
+<strong>سناریو :</strong>  
+هر فاکتور برای یک مشتری صادر می‌شود. هر مشتری می‌تواند N فاکتور داشته باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Customer<br/>مشتری]
+    B{Has<br/>دارد}
+    C[Invoice<br/>فاکتور]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    A1((CustomerID))
+    C1((InvoiceID))
+    C2((Date))
+    C3((Amount))
+    
+    A --- A1
+    C --- C1
+    C --- C2
+    C --- C3
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Customer:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>CustomerID</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>C1</td><td>شرکت A</td></tr>
+<tr><td>C2</td><td>شرکت B</td></tr>
+</tbody></table></div><strong>Invoice:</strong>
+<div class="table-container"><table>
+<thead><tr><th>InvoiceID</th><th>CustomerID</th><th>Date</th><th>Amount</th></tr></thead>
+<tbody>
+<tr><td>INV001</td><td>C1</td><td>1403/01/10</td><td>1,000,000</td></tr>
+<tr><td>INV002</td><td>C1</td><td>1403/02/15</td><td>2,500,000</td></tr>
+<tr><td>INV003</td><td>C1</td><td>1403/03/20</td><td>500,000</td></tr>
+<tr><td>INV004</td><td>C2</td><td>1403/01/25</td><td>3,000,000</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>مشتری C1 → 3 فاکتور ✅ <strong>N</strong></li>
+<li>مشتری C2 → 1 فاکتور ✅ <strong>N</strong> (حداقل 1، نه دقیقاً N!)</li>
+<li>فاکتور INV001 → فقط مشتری C1 ✅ <strong>1</strong></li>
+</ul>
+
+<h4>مثال 3: استاد - دانشجو (راهنمایی)</h4>
+
+<p>
+<strong>سناریو:</strong>  
+یک استاد راهنمای چند دانشجو است. هر دانشجو یک استاد راهنما دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Teacher<br/>استاد]
+    B{Supervise<br/>راهنمایی}
+    C[Student<br/>دانشجو]
+    
+    A -->|1| B
+    B -->|N| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>3️⃣ چندی M:N (چند به چند - Many-to-Many)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+هر نمونه موجودیت E با <strong>چند</strong> نمونه موجودیت F ارتباط دارد و هر نمونه F با <strong>چند</strong> نمونه E ارتباط دارد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Entity E]
+    B{Relationship}
+    C[Entity F]
+    
+    A -->|M| B
+    B -->|N| C
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<h4>مثال 1: دانشجو - درس</h4>
+
+<p>
+<strong>سناریو:</strong>  
+یک دانشجو چند درس انتخاب می‌کند. یک درس توسط چند دانشجو انتخاب می‌شود.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student<br/>دانشجو]
+    B{Enroll<br/>ثبت‌نام}
+    C[Course<br/>درس]
+    
+    A -->|M| B
+    B -->|N| C
+    
+    A1((StudentID))
+    B1((Grade))
+    B2((Term))
+    C1((CourseID))
+    
+    A --- A1
+    B --- B1
+    B --- B2
+    C --- C1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Student:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>StudentID</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>علی</td></tr>
+<tr><td>S2</td><td>رضا</td></tr>
+<tr><td>S3</td><td>مریم</td></tr>
+</tbody></table></div><strong>Course:</strong>
+<div class="table-container"><table>
+<thead><tr><th>CourseID</th><th>CourseName</th></tr></thead>
+<tbody>
+<tr><td>C1</td><td>پایگاه داده</td></tr>
+<tr><td>C2</td><td>شبکه</td></tr>
+<tr><td>C3</td><td>الگوریتم</td></tr>
+</tbody></table></div><strong>Enrollment (جدول ارتباط):</strong>
+<div class="table-container"><table>
+<thead><tr><th>StudentID</th><th>CourseID</th><th>Term</th><th>Grade</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>C1</td><td>1403-1</td><td>18</td></tr>
+<tr><td>S1</td><td>C2</td><td>1403-1</td><td>17</td></tr>
+<tr><td>S1</td><td>C3</td><td>1403-1</td><td>19</td></tr>
+<tr><td>S2</td><td>C1</td><td>1403-1</td><td>16</td></tr>
+<tr><td>S2</td><td>C2</td><td>1403-1</td><td>15</td></tr>
+<tr><td>S3</td><td>C1</td><td>1403-1</td><td>20</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>دانشجو S1 (علی) → 3 درس (C1, C2, C3) ✅ <strong>M</strong></li>
+<li>دانشجو S2 (رضا) → 2 درس (C1, C2) ✅ <strong>M</strong></li>
+<li>دانشجو S3 (مریم) → 1 درس (C1) ✅ <strong>M</strong></li>
+<li>درس C1 (پایگاه داده) → 3 دانشجو (S1, S2, S3) ✅ <strong>N</strong></li>
+<li>درس C2 (شبکه) → 2 دانشجو (S1, S2) ✅ <strong>N</strong></li>
+<li>درس C3 (الگوریتم) → 1 دانشجو (S1) ✅ <strong>N</strong></li>
+</ul>
+
+<p>
+<strong>M:N است چون:</strong>
+</p>
+<ul>
+<li>هر دانشجو <strong>چند</strong> درس می‌گیره (M)</li>
+<li>هر درس <strong>چند</strong> دانشجو داره (N)</li>
+</ul>
+
+<h4>مثال 2: فروشنده - قطعه</h4>
+
+<p>
+<strong>سناریو :</strong>  
+یک فروشنده چند قطعه تولید می‌کند. یک قطعه توسط چند فروشنده تولید می‌شود.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Supplier<br/>فروشنده]
+    B{Supply<br/>تأمین}
+    C[Part<br/>قطعه]
+    
+    A -->|M| B
+    B -->|N| C
+    
+    A1((SupplierID))
+    B1((Quantity))
+    C1((PartID))
+    
+    A --- A1
+    B --- B1
+    C --- C1
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<p>
+<strong>Supplier:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>SupplierID</th><th>Name</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>فروشنده A</td></tr>
+<tr><td>S2</td><td>فروشنده B</td></tr>
+</tbody></table></div><strong>Part:</strong>
+<div class="table-container"><table>
+<thead><tr><th>PartID</th><th>PartName</th></tr></thead>
+<tbody>
+<tr><td>P1</td><td>پیچ</td></tr>
+<tr><td>P2</td><td>مهره</td></tr>
+</tbody></table></div><strong>Supply:</strong>
+<div class="table-container"><table>
+<thead><tr><th>SupplierID</th><th>PartID</th><th>Quantity</th></tr></thead>
+<tbody>
+<tr><td>S1</td><td>P1</td><td>100</td></tr>
+<tr><td>S1</td><td>P2</td><td>200</td></tr>
+<tr><td>S2</td><td>P1</td><td>50</td></tr>
+</tbody></table></div><strong>تحلیل:</strong>
+<ul>
+<li>فروشنده S1 → 2 قطعه (P1, P2) ✅ <strong>M</strong></li>
+<li>فروشنده S2 → 1 قطعه (P1) ✅ <strong>M</strong></li>
+<li>قطعه P1 → 2 فروشنده (S1, S2) ✅ <strong>N</strong></li>
+<li>قطعه P2 → 1 فروشنده (S1) ✅ <strong>N</strong></li>
+</ul>
+
+<h4>مثال 3: محصول - فاکتور</h4>
+
+<p>
+<strong>سناریو:</strong>  
+یک فاکتور شامل چند محصول است. یک محصول در چند فاکتور است.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Invoice<br/>فاکتور]
+    B{Contains<br/>شامل}
+    C[Product<br/>محصول]
+    
+    A -->|M| B
+    B -->|N| C
+    
+    B1((Quantity))
+    B2((Price))
+    B3((Discount))
+    
+    B --- B1
+    B --- B2
+    B --- B3
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>📊 جدول مقایسه چندی‌ها</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>چندی</th><th>نام</th><th>E → F</th><th>F → E</th><th>مثال</th><th>نکته</th></tr></thead>
+<tbody>
+<tr><td><strong>1:1</strong></td><td>یک به یک</td><td>1</td><td>1</td><td>کارمند-اداره (مدیریت)</td><td>نادر</td></tr>
+<tr><td><strong>1:N</strong></td><td>یک به چند</td><td>N</td><td>1</td><td>اداره-کارمند</td><td>رایج ✅</td></tr>
+<tr><td><strong>M:N</strong></td><td>چند به چند</td><td>N</td><td>M</td><td>دانشجو-درس</td><td>رایج ✅</td></tr>
+</tbody></table></div><hr>
+
+<h3>🎯 تشخیص چندی</h3>
+
+<h4>چگونه چندی رو مشخص کنیم?</h4>
+
+<p>
+<strong>سوالات کلیدی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>برای E → F:
+"یک E چند تا F می‌تونه داشته باشه؟"
+→ اگر 1: یک
+→ اگر بیشتر از 1: چند (N یا M)
+
+برای F → E:
+"یک F چند تا E می‌تونه داشته باشه؟"
+→ اگر 1: یک
+→ اگر بیشتر از 1: چند (N یا M)</code></pre></div>
+
+<h4>مثال: استاد - گروه آموزشی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال 1: "یک استاد عضو چند گروه آموزشی است؟"
+پاسخ: فقط یک گروه → 1 ✅
+
+سوال 2: "یک گروه آموزشی چند استاد دارد؟"
+پاسخ: چند استاد → N ✅
+
+نتیجه: استاد (1) ← گروه (N)
+یا به عبارتی: گروه (1) → استاد (N)
+چندی: 1:N ✅</code></pre></div>
+
+<hr>
+<h3>🔄 چندی در ارتباطات بازگشتی</h3>
+
+<h4>مثال 1: پیش‌نیاز درس (M:N بازگشتی)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Course<br/>درس]
+    B{Prerequisite<br/>پیش‌نیاز}
+    
+    A -->|N| B
+    B -->|M| A
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li>یک درس می‌تونه چند پیش‌نیاز داشته باشه (N)</li>
+<li>یک درس می‌تونه پیش‌نیاز چند درس دیگه باشه (M)</li>
+<li><strong>چندی: M:N</strong> ✅</li>
+</ul>
+
+<p>
+<strong>مثال داده:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>CourseID</th><th>CourseName</th><th>PrerequisiteID</th></tr></thead>
+<tbody>
+<tr><td>C1</td><td>پایگاه داده</td><td>C2, C3</td></tr>
+<tr><td>C2</td><td>ساختمان داده</td><td>C4</td></tr>
+<tr><td>C3</td><td>سیستم‌های اطلاعاتی</td><td>-</td></tr>
+<tr><td>C4</td><td>الگوریتم</td><td>-</td></tr>
+</tbody></table></div>- C1 دو پیش‌نیاز داره (C2, C3) → <strong>چند</strong> ✅
+<ul>
+<li>C2 پیش‌نیاز یک درس است (C1) → می‌تونه پیش‌نیاز <strong>چند</strong> درس باشه</li>
+</ul>
+
+<h4>مثال 2: مسئول کارمند (1:N بازگشتی)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Employee<br/>کارمند]
+    B{Supervise<br/>مسئول}
+    
+    A -->|N| B
+    B -->|1| A
+    
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+<ul>
+<li>یک کارمند <strong>یک</strong> مسئول داره (1)</li>
+<li>یک کارمند می‌تونه مسئول <strong>چند</strong> کارمند باشه (N)</li>
+<li><strong>چندی: 1:N</strong> ✅</li>
+</ul>
+
+<hr>
+<h3>⚠️ نکات مهم</h3>
+
+<h4>نکته 1: تعداد ارتباطات ممکن</h4>
+
+<p>
+<strong>:</strong>  
+"اگر N تعداد نوع ارتباط‌های بین E و F باشد: <strong>0 ≤ N</strong>"
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>می‌تواند هیچ ارتباطی بین موجودیت‌ها وجود نداشته باشد
+یا چندین ارتباط بین موجودیت باشد</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Student]
+    
+    B1{Enroll}
+    B2{Rate}
+    B3{Audit}
+    
+    C[Course]
+    
+    A --> B1 --> C
+    A --> B2 --> C
+    A --> B3 --> C
+    
+    style A fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<ul>
+<li>Enroll: دانشجو درس را ثبت‌نام می‌کنه</li>
+<li>Rate: دانشجو به درس نمره می‌ده</li>
+<li>Audit: دانشجو درس را مهمان می‌شنوه</li>
+</ul>
+
+<p>
+<strong>سه ارتباط مختلف!</strong> بین همون دو موجودیت!
+</p>
+
+<h4>نکته 2: چندی یک محدودیت معنایی است</h4>
+
+<p>
+<strong>:</strong>  
+"چندی ارتباط یک <strong>محدودیت معنایی ناظر به ارتباط</strong> است."
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>چندی = قانون کسب و کار (Business Rule)
+
+مثال:
+"هر دانشجو حداکثر 24 واحد می‌تونه بگیره"
+→ محدودیت روی تعداد
+→ بخشی از چندی
+
+"هر کارمند فقط در یک اداره کار می‌کنه"
+→ محدودیت روی ارتباط
+→ چندی 1:N</code></pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۲.۲.۲</h3>
+
+<h4>تمرین 1 (تشریحی):</h4>
+<p>
+برای هر یک از موارد زیر چندی را مشخص کنید و نمودار ER بکشید:
+</p>
+
+<p>
+الف) کتاب - نویسنده  
+ب) مادر - فرزند  
+ج) شهر - دانشگاه  
+د) بیمار - پزشک (ویزیت)
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>درست</strong> است؟
+</p>
+
+<p>
+الف) چندی 1:1 بیشتر از M:N رایج است  
+ب) در چندی M:N نیاز به جدول واسط داریم  
+ج) چندی فقط برای ارتباطات Binary معنا دارد  
+د) هر ارتباط حداکثر یک چندی دارد
+</p>
+
+<h4>تمرین 3 (تحلیلی):</h4>
+<p>
+یک بانک:
+</p>
+<ul>
+<li>هر مشتری می‌تواند چند حساب داشته باشد</li>
+<li>هر حساب می‌تواند چند صاحب (مشتری) داشته باشد (حساب مشترک)</li>
+</ul>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چندی چیست؟</li>
+<li>چرا این چندی منطقی است؟</li>
+<li>نمودار ER بکشید</li>
+<li>جداول پیشنهادی چیست؟</li>
+</ul>
+
+<h4>تمرین 4 (طراحی):</h4>
+<p>
+محیط کتابخانه:
+</p>
+<ul>
+<li>کتاب - نویسنده: یک کتاب چند نویسنده دارد</li>
+<li>کتاب - نسخه فیزیکی: یک کتاب چند نسخه دارد</li>
+<li>نسخه - عضو (امانت): یک نسخه به یک عضو داده می‌شود</li>
+<li>عضو - امانت: یک عضو چند امانت دارد</li>
+</ul>
+
+<p>
+<strong>طراحی کنید:</strong>
+</p>
+<ul>
+<li>چندی هر ارتباط</li>
+<li>نمودار ER کامل</li>
+<li>صفات مناسب</li>
+</ul>
+
+<h4>تمرین 5 (سناریو):</h4>
+<p>
+شرکت حمل و نقل:
+</p>
+<ul>
+<li>راننده - کامیون: هر راننده یک کامیون دارد، هر کامیون یک راننده دارد</li>
+<li>کامیون - سفر: هر کامیون چند سفر انجام می‌دهد</li>
+<li>سفر - محصول: هر سفر چند محصول حمل می‌کند</li>
+<li>محصول - مشتری: هر محصول به یک مشتری تعلق دارد</li>
+</ul>
+
+<p>
+<strong>تحلیل کنید:</strong>
+</p>
+<ul>
+<li>چندی همه ارتباطات</li>
+<li>کدام 1:1، کدام 1:N، کدام M:N</li>
+<li>نمودار ER کامل</li>
+</ul>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+آیا می‌توان یک ارتباط با چندی‌های مختلف داشت؟  
+مثال: دانشجو-درس با دو نوع ارتباط:
+</p>
+<ul>
+<li>Enroll (M:N)</li>
+<li>Prerequisite (دانشجو باید پیش‌نیاز را گذرانده باشد - منطق متفاوت)</li>
+</ul>
+
+<p>
+طراحی کنید و توضیح دهید.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((چندی<br/>Cardinality))
+    تعریف
+      چگونگی تناظر
+      محدودیت معنایی
+    انواع
+      1:1 نادر
+      1:N رایج
+      M:N رایج
+    تشخیص
+      یک E چند F
+      یک F چند E
+    ارتباط بازگشتی
+      می تواند M:N باشد
+      می تواند 1:N باشد
+</pre></div>
+
+<p>
+<strong>نکات طلایی:</strong>
+</p>
+<ul>
+<li>✅ <strong>چندی:</strong> چگونگی تناظر بین موجودیت‌ها</li>
+<li>✅ <strong>1:1:</strong> نادر (مدیریت، پروژه)</li>
+<li>✅ <strong>1:N:</strong> رایج‌ترین! (اداره-کارمند)</li>
+<li>✅ <strong>M:N:</strong> رایج (دانشجو-درس، فروشنده-قطعه)</li>
+<li>✅ <strong>تشخیص:</strong> "یک E چند F؟" و "یک F چند E؟"</li>
+<li>✅ <strong>محدودیت معنایی:</strong> قانون کسب و کار</li>
+</ul>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="2-2-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">ارتباط و درجه ارتباط</span></a><a href="2-2-3.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">مشارکت (Participation)</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

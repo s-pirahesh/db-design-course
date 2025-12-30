@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="نرمال‌سازی - فرم‌های نرمال پایه">
+    <meta name="keywords" content="پایگاه داده, Database Design, فرم‌های نرمال پایه">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>فرم‌های نرمال پایه | نرمال‌سازی | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">نرمال‌سازی</a>
+                <span class="separator">›</span>
+                <span class="current">فرم‌های نرمال پایه</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">فرم‌های نرمال پایه</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۷: نرمال‌سازی - ادامه</h1>
+
+<h2>آکسیوم‌های Armstrong (Armstrong's Axioms)</h2>
+
+<h3>بستار F (F⁺)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+بستار F (F⁺) مجموعه‌ای از FD هایی است که به صورت منطقی از F استنتاج می‌شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>F⁺ = {تمام FD هایی که از F استنتاج می‌شن}</code></pre></div>
+
+<hr>
+<h3>قوانین آکسیوم Armstrong</h3>
+
+<p>
+α، β: مجموعه‌ای از صفات
+a، b: فقط یک صفت ساده
+</p>
+
+<p>
+<strong>قانون 1 - بازتابی (Reflexivity):</strong>
+اگر α ⊆ β → β → α
+</p>
+
+<p>
+مثال:
+{A, B} ⊆ {A, B, C}
+→ (A, B, C) → (A, B) ✅ (نامهم/Trivial)
+</p>
+
+<p>
+<strong>قانون 2 - افزایشی (Augmentation):</strong>
+اگر α → β → αγ → βγ
+</p>
+
+<p>
+مثال:
+A → B
+→ (A, C) → (B, C) ✅
+</p>
+
+<p>
+<strong>قانون 3 - انتقالی (Transitivity):</strong>
+اگر α → β و β → γ → α → γ
+</p>
+
+<p>
+مثال:
+A → B
+B → C
+→ A → C ✅
+</p>
+
+
+<hr>
+<h3>قوانین مشتق شده</h3>
+
+<p>
+<strong>قانون 4 - اتحاد (Union):</strong>
+α → β و α → γ → α → βγ
+</p>
+
+<p>
+اثبات:
+α → β         (فرض)
+α → γ         (فرض)
+αα → βγ       (Augmentation)
+α → βγ        (ساده‌سازی)
+</p>
+
+<p>
+<strong>قانون 5 - تجزیه (Decomposition):</strong>
+α → βγ → α → β و α → γ
+</p>
+
+<p>
+اثبات:
+α → βγ        (فرض)
+β ⊆ βγ        (مشخص)
+βγ → β        (Reflexivity)
+α → β         (Transitivity)
+</p>
+
+<p>
+<strong>قانون 6 - شبه‌انتقالی (Pseudo-transitivity):</strong>
+α → β و βγ → δ → αγ → δ
+</p>
+
+<p>
+اثبات:
+α → β         (فرض)
+αγ → βγ       (Augmentation)
+βγ → δ        (فرض)
+αγ → δ        (Transitivity)
+</p>
+
+
+<hr>
+<h3>کاربردهای قوانین Armstrong</h3>
+
+<p>
+<strong>1. محاسبه بستار F (F⁺)</strong>
+   → مجموعه‌ای از FD هایی که از F استنتاج می‌شود
+</p>
+
+<p>
+<strong>2. محاسبه بستار صفت A (A⁺)</strong>
+   → مجموعه تمام صفاتی که با A وابستگی تابعی دارند
+</p>
+
+<p>
+<strong>3. محاسبه مجموعه کاهش‌ناپذیر FD های یک رابطه</strong>
+   → حذف FD های افزونه
+</p>
+
+<p>
+<strong>4. تشخیص خوب بودن تجزیه یک رابطه</strong>
+   → آیا Join بدون اتلاف است؟
+</p>
+
+
+<hr>
+<h3>بستار صفت A (A⁺)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+مجموعه تمام صفاتی که با A وابستگی تابعی دارند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A⁺ = {B | A → B}</code></pre></div>
+
+<hr>
+<h4>الگوریتم محاسبه A⁺</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ورودی: F (مجموعه FD ها)، A (صفت یا صفات)
+خروجی: A⁺
+
+گام 1: A⁺ = A
+گام 2: تکرار:
+       برای هر FD مثل X → Y در F:
+         اگر X ⊆ A⁺:
+           A⁺ = A⁺ ∪ Y
+       تا وقتی A⁺ تغییر نکند
+گام 3: برگردان A⁺</code></pre></div>
+
+<hr>
+<h4>مثال 1: محاسبه بستار</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A, B, C, D, E)
+F = {A → B, B → C, C → D}
+
+سؤال: A⁺ = ?
+
+گام 1: A⁺ = {A}
+
+گام 2 (دور 1):
+- A → B: A ⊆ {A} ✅ → A⁺ = {A, B}
+- B → C: B ⊆ {A, B} ✅ → A⁺ = {A, B, C}
+- C → D: C ⊆ {A, B, C} ✅ → A⁺ = {A, B, C, D}
+
+گام 2 (دور 2):
+- A → B: B ∈ A⁺ (قبلاً اضافه شده)
+- B → C: C ∈ A⁺ (قبلاً اضافه شده)
+- C → D: D ∈ A⁺ (قبلاً اضافه شده)
+→ تغییری نداره، تمام!
+
+جواب: A⁺ = {A, B, C, D}</code></pre></div>
+
+<hr>
+<h4>مثال 2: تشخیص Super Key</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A, B, C, D)
+F = {A → B, B → C, A → D}
+
+سؤال: آیا A یک Super Key است؟
+
+راه‌حل:
+محاسبه A⁺:
+
+دور 1:
+A⁺ = {A}
+A → B: A⁺ = {A, B}
+B → C: A⁺ = {A, B, C}
+A → D: A⁺ = {A, B, C, D}
+
+دور 2: تغییری نداره
+
+A⁺ = {A, B, C, D} = R ✅
+
+بله! A یک Super Key است
+(چون تمام صفات رو تعیین می‌کنه)</code></pre></div>
+
+<hr>
+<h3>کاربرد بستار A (A⁺)</h3>
+
+<p>
+<strong>1. تشخیص Super Key (SK):</strong>
+   اگر A⁺ = R → A یک SK است ✅
+</p>
+
+<p>
+<strong>2. تشخیص Candidate Key (CK):</strong>
+</p>
+<ul>
+<li>A⁺ = R (منحصربه‌فرد) ✅</li>
+<li>کاهش‌ناپذیر (نمی‌شه با A⁺ تشخیص داد)</li>
+</ul>
+
+<p>
+<strong>3. تشخیص FD افزونه:</strong>
+   اگر B ∈ A⁺ → A → B از F استنتاج می‌شه
+</p>
+
+
+<hr>
+<h3>FD افزونه (Redundant FD)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+FD افزونه: اگر از مجموعه F حذف شود، F⁺ تغییر نکند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>F - {X → Y} قدرت = F
+
+مثال:
+F = {A → B, B → C, A → C}
+      ↑             ↑
+   اصلی          افزونه!
+
+چون: A → B و B → C → A → C (Transitivity)
+
+F' = {A → B, B → C}
+F'⁺ = F⁺  ✅
+
+A → C افزونه است</code></pre></div>
+
+<hr>
+<h2>سلسله‌مراتب فرم‌های نرمال</h2>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[رابطه غیرنرمال]
+    B[1NF]
+    C[2NF]
+    D[3NF]
+    E[BCNF]
+    F[4NF]
+    G[5NF]
+    H[DKNF]
+    
+    A -->|صفات تک‌مقداری| B
+    B -->|FD کامل با PK| C
+    C -->|حذف FD انتقالی| D
+    D -->|هر FD از کلید کاندید| E
+    E -->|حذف MVD| F
+    F -->|حذف JD| G
+    G -->|نرمال‌ترین| H
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#f1c40f,color:#000
+    style D fill:#2ecc71,color:#fff
+    style E fill:#3498db,color:#fff
+    style F fill:#9b59b6,color:#fff
+    style G fill:#1abc9c,color:#fff
+    style H fill:#34495e,color:#fff
+</pre></div>
+
+<p>
+<strong>نکته:</strong>
+از بالا به پایین:
+→ مجموعه کوچک‌تر می‌شه (نرمال‌تر)
+→ تعداد رابطه‌ها بیشتر می‌شه
+</p>
+
+<p>
+هر رابطه در سطح پایین‌تر، حتماً در سطح بالاتر هم هست:
+DKNF ⊂ 5NF ⊂ 4NF ⊂ BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF
+</p>
+
+
+<hr>
+<h2>🔷 First Normal Form (1NF)</h2>
+
+<h3>تعریف</h3>
+
+<p>
+<strong>1NF:</strong>  
+رابطه R در فرم 1NF است اگر و تنها اگر <strong>تمامی صفات آن تک‌مقداری باشند</strong>.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>شرط 1NF:
+→ هر سلول فقط یک مقدار (Atomic)
+→ هیچ صفت چندمقداری نداشته باشیم
+→ هیچ صفت مرکب ذخیره نشده نداشته باشیم</code></pre></div>
+
+<hr>
+<h3>رابطه نرمال vs غیرنرمال</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>❌ غیرنرمال (Unnormalized):
+
+Student:
++-----+--------+----------------+
+| SID | Name   | Phones         |
++-----+--------+----------------+
+| 100 | علی    | {091, 092}     |  ← چندمقداری!
+| 110 | سارا   | {093}          |
++-----+--------+----------------+
+
+✅ نرمال (1NF):
+
+Student:
++-----+--------+-------+
+| SID | Name   | Phone |
++-----+--------+-------+
+| 100 | علی    | 091   |
+| 100 | علی    | 092   |  ← دو رکورد!
+| 110 | سارا   | 093   |
++-----+--------+-------+</code></pre></div>
+
+<hr>
+<h3>مثال 1: Supplier-Part غیرنرمال</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>❌ غیرنرمال:
+
+S:
++----+-------+----------------+
+| S# | SName | Products       |
++----+-------+----------------+
+| 10 | Smith | {P1:10, P2:20} |  ← چندمقداری!
+| 20 | Jones | {P1:15}        |
++----+-------+----------------+
+
+✅ نرمال (1NF):
+
+SP:
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 10  |
+| 10 | 2  | 20  |
+| 20 | 1  | 15  |
++----+----+-----+</code></pre></div>
+
+<hr>
+<h3>مزایا و معایب 1NF</h3>
+
+<p>
+<strong>مزایا:</strong>
+✅ سادگی در نمایش ظاهری رابطه
+✅ سادگی در دستورات DSL (SQL)
+✅ سادگی در نحوه اجرای دستورات
+✅ صفات تقارن دارند (هیچ صفتی نسبت به دیگری ارجحیت نداره)
+</p>
+
+<p>
+<strong>معایب:</strong>
+❌ افزونگی در داده‌ها (افزونگی ادراکی/منطقی)
+   → ممکنه منجر به افزونگی فیزیکی بشه
+❌ طولانی شدن کلیدها
+❌ دشواری در نمایش Data Type پیچیده
+❌ دشواری در نمایش مفهوم وراثت
+❌ دشواری در نمایش ارتباط منطقی بین اشیا
+</p>
+
+
+<hr>
+<h3>⚠️ 1NF ممکن است آنومالی داشته باشد!</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First(S#, P#, Qty, City, Status):
+
+✅ در 1NF است (همه صفات تک‌مقداری)
+❌ ولی آنومالی داره!
+
++----+----+-----+--------+--------+
+| S# | P# | Qty | City   | Status |
++----+----+-----+--------+--------+
+| 10 | 1  | 300 | Tehran | 100    |
+| 10 | 2  | 200 | Tehran | 100    |  ← افزونگی!
++----+----+-----+--------+--------+
+
+مشکل: City و Status برای S#=10 تکراره!</code></pre></div>
+
+<hr>
+<h2>دلایل آنومالی در 1NF</h2>
+
+<p>
+<strong>دلیل اصلی:</strong>
+وجود FD های کاهش‌پذیر (Reducible FD)
+</p>
+
+<p>
+<strong>راه‌حل:</strong>
+رابطه را به دو رابطه کوچک‌تر تقسیم کنیم
+و FD های کاهش‌پذیر را از بین ببریم
+</p>
+
+
+<hr>
+<h3>مثال: حل آنومالی 1NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First(S#, P#, Qty, City, Status):
+PK = (S#, P#)
+F = {(S#, P#) → Qty,
+     S# → City,      ← FD کاهش‌پذیر!
+     S# → Status}    ← FD کاهش‌پذیر!
+
+چرا کاهش‌پذیر؟
+→ PK = (S#, P#) ولی City و Status فقط به S# وابسته‌اند
+→ P# اضافی است!
+
+تقسیم:
+
+SP(S#, P#, Qty):
+PK = (S#, P#)
+F = {(S#, P#) → Qty}  ← کاهش‌ناپذیر ✅
+
+Second(S#, City, Status):
+PK = S#
+F = {S# → City, S# → Status}  ← کاهش‌ناپذیر ✅
+
+بازیابی:
+First = Second ⋈ SP  ✅</code></pre></div>
+
+<hr>
+<h2>🔷 Second Normal Form (2NF)</h2>
+
+<h3>تعریف</h3>
+
+<p>
+<strong>2NF:</strong>  
+رابطه R در فرم 2NF است اگر و تنها اگر:
+</p>
+<ol>
+<li>در 1NF باشد</li>
+<li><strong>هر صفت ناکلید با کلید اصلی، FD کامل</strong> داشته باشد</li>
+</ol>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>FD کامل (Full FD):
+A → B کامل است اگر هیچ زیرمجموعه A' ⊂ A نباشد که A' → B
+
+FD جزئی (Partial FD):
+A → B جزئی است اگر زیرمجموعه A' ⊂ A باشد که A' → B</code></pre></div>
+
+<hr>
+<h3>صفت عمده و ناکلید</h3>
+
+<p>
+<strong>صفت عمده (Prime Attribute):</strong>
+صفتی که جزو کلید اصلی باشد
+</p>
+
+<p>
+<strong>صفت ناکلید (Non-prime Attribute):</strong>
+صفتی که جزو کلید اصلی نباشد
+</p>
+
+
+<hr>
+<h3>مثال: First (نقض 2NF)</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First(S#, P#, Qty, City, Status):
+PK = (S#, P#)
+
+صفات:
+- عمده: S#, P# (جزو PK)
+- ناکلید: Qty, City, Status
+
+FD ها:
+1. (S#, P#) → Qty       ← کامل ✅
+2. S# → City            ← جزئی! ❌
+3. S# → Status          ← جزئی! ❌
+
+چرا جزئی؟
+→ S# ⊂ (S#, P#) و S# → City
+→ City به تمام PK وابسته نیست، فقط به S#!
+
+نتیجه: First در 2NF نیست! ❌</code></pre></div>
+
+<hr>
+<h3>حل: تبدیل به 2NF</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>First (نه در 2NF)
+     ↓
+  تقسیم به:
+
+SP(S#, P#, Qty):
+PK = (S#, P#)
+FD = {(S#, P#) → Qty}
+✅ Qty به تمام PK وابسته → FD کامل → در 2NF
+
+Second(S#, City, Status):
+PK = S#
+FD = {S# → City, S# → Status}
+✅ همه صفات ناکلید به PK وابسته → در 2NF
+
+هر دو رابطه در 2NF هستند! ✅</code></pre></div>
+
+<hr>
+<h3>بررسی آنومالی در Second</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Second(S#, City, Status):
+
++----+--------+--------+
+| S# | City   | Status |
++----+--------+--------+
+| 10 | Tehran | 100    |
+| 20 | Shiraz | 200    |
+| 30 | Tehran | 150    |
+| 40 | Yazd   | 100    |
++----+--------+--------+
+
+سؤال: آنومالی داره؟
+
+❌ INSERT: نمی‌تونیم &lt;40, C4&gt; رو بدون Status درج کنیم
+❌ DELETE: اگر S20 رو حذف کنیم، C2 هم از بین می‌ره
+❌ UPDATE: اگر City=C1 رو به C7 تغییر بدیم، باید S10 و S30 رو بروزرسانی کنیم
+
+چرا؟
+→ هنوز FD انتقالی (Transitive FD) داریم!</code></pre></div>
+
+<hr>
+<h3>نتیجه‌گیری</h3>
+
+<p>
+<strong>SP:</strong>
+✅ در نرمال‌ترین سطح ممکن (BCNF)
+✅ آنومالی نداره
+</p>
+
+<p>
+<strong>Second:</strong>
+✅ در 2NF
+❌ ولی هنوز آنومالی داره!
+❌ باید به 3NF برسیم
+</p>
+
+
+<hr>
+<h2>مقایسه 1NF و 2NF</h2>
+
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>1NF</th><th>2NF</th></tr></thead>
+<tbody>
+<tr><td><strong>شرط</strong></td><td>صفات تک‌مقداری</td><td>1NF + FD کامل</td></tr>
+<tr><td><strong>FD جزئی</strong></td><td>مجاز</td><td>غیرمجاز</td></tr>
+<tr><td><strong>آنومالی</strong></td><td>دارد</td><td>ممکنه داشته باشه</td></tr>
+<tr><td><strong>مثال خوب</strong></td><td>SP</td><td>SP</td></tr>
+<tr><td><strong>مثال بد</strong></td><td>First</td><td>Second (هنوز آنومالی داره)</td></tr>
+</tbody></table></div><hr>
+
+<h3>جدول خلاصه تاکنون</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>رابطه</th><th>1NF</th><th>2NF</th><th>آنومالی</th></tr></thead>
+<tbody>
+<tr><td><strong>First</strong></td><td>✅</td><td>❌</td><td>✅ دارد</td></tr>
+<tr><td><strong>SP</strong></td><td>✅</td><td>✅</td><td>❌ نداره</td></tr>
+<tr><td><strong>Second</strong></td><td>✅</td><td>✅</td><td>✅ دارد</td></tr>
+</tbody></table></div><hr>
+
+<p>
+<em>ادامه دارد... (3NF، BCNF و فرم‌های پیشرفته در بخش بعدی)</em>
+</p>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="7-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">آنومالی و وابستگی تابعی</span></a><a href="7-3.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">فرم‌های نرمال پیشرفته</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

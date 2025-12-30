@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - تعریف داده، اطلاع و دانش">
+    <meta name="keywords" content="پایگاه داده, Database Design, تعریف داده، اطلاع و دانش">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>تعریف داده، اطلاع و دانش | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">تعریف داده، اطلاع و دانش</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">تعریف داده، اطلاع و دانش</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۱.۱: تعریف داده، اطلاع و دانش</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، قبل از اینکه وارد دنیای پایگاه داده بشیم، باید با سه مفهوم کلیدی آشنا بشیم که پایه و اساس تمام سیستم‌های اطلاعاتی هستند: <strong>داده</strong>، <strong>اطلاع</strong> و <strong>دانش</strong>. 
+</p>
+
+<p>
+فرض کن الان داری به یک کتاب نگاه می‌کنی و می‌بینی که روی جلدش عدد "1402" نوشته شده. این عدد خودش به تنهایی چیزی به شما نمی‌گه، درسته؟ ولی وقتی بهت بگم این عدد "سال انتشار کتاب" هست، یه معنا پیدا می‌کنه. این تفاوت بین <strong>داده</strong> و <strong>اطلاع</strong> است که الان می‌خوایم باهاش آشنا بشیم.
+</p>
+
+<hr>
+<h3>📖 تعریف دقیق داده (Data)</h3>
+
+<p>
+<strong>داده</strong> یعنی: <strong>نمایش واقعیات با استفاده از تعدادی نماد</strong>
+</p>
+
+<p>
+اجازه بده این تعریف رو باز کنیم و عمیق‌تر بررسی کنیم:
+</p>
+
+<h4>چرا "نمایش واقعیات"؟</h4>
+<p>
+واقعیات همان چیزهایی هستند که در دنیای واقعی وجود دارند. مثلاً:
+</p>
+<ul>
+<li>نام یک دانشجو: "علی"</li>
+<li>شماره شناسنامه: "123"</li>
+<li>تاریخ تولد: "1380/05/15"</li>
+</ul>
+
+<p>
+این واقعیات رو نمی‌تونیم همینطوری در کامپیوتر بریزیم! باید با <strong>نمادها</strong> نمایششون بدیم.
+</p>
+
+<h4>چرا "تعدادی نماد"؟</h4>
+<p>
+نمادها می‌تونن باشن:
+</p>
+<ul>
+<li><strong>حروف الفبا</strong>: A-Z یا الف-ی</li>
+<li><strong>اعداد</strong>: 0-9</li>
+<li><strong>کاراکترهای خاص</strong>: @, #, -, /</li>
+</ul>
+
+<p>
+<strong>مثال :</strong>
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نام: "علی" → استفاده از نمادهای حروف فارسی
+شماره شناسنامه: 10 → استفاده از نمادهای عددی</code></pre></div>
+
+<hr>
+<h3>📊 تعریف دقیق اطلاع (Information)</h3>
+
+<p>
+<strong>اطلاع</strong> یعنی: <strong>معنایی که بر داده منتسب می‌شود</strong>
+</p>
+
+<p>
+این یکی از مهم‌ترین تفاوت‌هاست! بیا با یک مثال واضح‌تر کنیم:
+</p>
+
+<h4>مثال عملی:</h4>
+
+<p>
+تصور کن این داده‌ها رو داری:
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>"علی"، 10، "علیزاده"</code></pre></div>
+
+<p>
+خودشون به تنهایی فقط چند تا نماد هستن. ولی وقتی بهشون معنا بدیم:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>نام</th><th>شماره شناسنامه</th><th>نام خانوادگی</th></tr></thead>
+<tbody>
+<tr><td>علی</td><td>10</td><td>علیزاده</td></tr>
+</tbody></table></div>حالا این <strong>اطلاع</strong> شد! چون فهمیدیم:
+<ul>
+<li>"علی" نام یک شخص است</li>
+<li>"10" شماره شناسنامه این شخص است</li>
+<li>"علیزاده" نام خانوادگی این شخص است</li>
+</ul>
+
+<hr>
+<h3>🧠 تعریف دقیق دانش (Knowledge)</h3>
+
+<p>
+<strong>دانش</strong> یعنی: <strong>داده‌های پردازش شده که از طریق تحلیل و استنتاج به دست می‌آیند</strong>
+</p>
+
+<p>
+دانش یک سطح بالاتر از اطلاع است. وقتی روی اطلاعات تحلیل انجام می‌دیم و نتیجه‌گیری می‌کنیم، به <strong>دانش</strong> می‌رسیم.
+</p>
+
+<h4>مثال پیشرفته:</h4>
+
+<p>
+فرض کن این اطلاعات رو داریم:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>نام دانشجو</th><th>شماره شناسنامه</th><th>معدل ترم ۱</th><th>معدل ترم ۲</th><th>معدل ترم ۳</th></tr></thead>
+<tbody>
+<tr><td>علی</td><td>10</td><td>17</td><td>18</td><td>18.5</td></tr>
+<tr><td>حسن</td><td>20</td><td>14</td><td>15</td><td>16</td></tr>
+<tr><td>حسین</td><td>30</td><td>19</td><td>19.5</td><td>19.8</td></tr>
+</tbody></table></div>حالا اگر این اطلاعات رو <strong>تحلیل</strong> کنیم:
+<ul>
+<li>دانشجوی "علی" روند صعودی داره ✅</li>
+<li>دانشجوی "حسن" روند صعودی ولی کند داره 📈</li>
+<li>دانشجوی "حسین" دانشجوی ممتاز و با عملکرد عالی است ⭐</li>
+</ul>
+
+<p>
+این نتیجه‌گیری‌ها <strong>دانش</strong> هستند!
+</p>
+
+<hr>
+<h3>🔄 سلسله مراتب: از داده تا دانش</h3>
+
+<p>
+بیا این سه مفهوم رو در یک سلسله مراتب نشون بدیم:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[نمادها و کاراکترها<br/>Symbols] --> B[داده<br/>Data]
+    B --> C[اطلاع<br/>Information]
+    C --> D[دانش<br/>Knowledge]
+    
+    style A fill:#e1f5ff
+    style B fill:#b3e0ff
+    style C fill:#66c2ff
+    style D fill:#0080ff,color:#fff
+</pre></div>
+
+<p>
+<strong>توضیح نمودار:</strong>
+</p>
+<ol>
+<li><strong>نمادها</strong>: حروف، اعداد، کاراکترها</li>
+<li><strong>داده</strong>: ترکیب نمادها برای نمایش واقعیت</li>
+<li><strong>اطلاع</strong>: داده + معنا</li>
+<li><strong>دانش</strong>: اطلاع + تحلیل و استنتاج</li>
+</ol>
+
+<hr>
+<h3>💡 مثال جامع از محیط دانشگاه</h3>
+
+<p>
+بیا یک مثال کامل از محیط دانشگاه ببینیم که  هم هست:
+</p>
+
+<h4>مرحله ۱: داده‌ها (فقط نمادها)</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>"حسن"، 20، "حسن‌زاده"</code></pre></div>
+
+<h4>مرحله ۲: اطلاع (داده + معنا)</h4>
+<div class="table-container"><table>
+<thead><tr><th>نام</th><th>شماره شناسنامه</th><th>نام خانوادگی</th></tr></thead>
+<tbody>
+<tr><td>حسن</td><td>20</td><td>حسن‌زاده</td></tr>
+</tbody></table></div><strong>معنا:</strong> یک دانشجو به نام "حسن حسن‌زاده" با شماره شناسنامه 20 در دانشگاه ثبت‌نام کرده.
+
+<h4>مرحله ۳: دانش (اطلاع + تحلیل)</h4>
+<p>
+اگر ما داده‌های بیشتری داشته باشیم:
+</p>
+<div class="table-container"><table>
+<thead><tr><th>نام</th><th>تعداد واحد پاس شده</th><th>ترم ورود</th></tr></thead>
+<tbody>
+<tr><td>حسن</td><td>140</td><td>1400</td></tr>
+</tbody></table></div><strong>تحلیل و دانش:</strong>
+<ul>
+<li>حسن دانشجوی ترم ۸ است (1400 تا 1404)</li>
+<li>حسن 140 واحد پاس کرده و نزدیک فارغ‌التحصیلی است</li>
+<li>احتمالاً حسن دانشجوی با پشتکار است چون همه واحدها رو پاس کرده</li>
+</ul>
+
+<hr>
+<h3>🎓 چرا این تفاوت‌ها مهم است؟</h3>
+
+<p>
+در طراحی پایگاه داده:
+</p>
+<ol>
+<li><strong>داده‌ها را ذخیره می‌کنیم</strong> → در جداول و فیلدها</li>
+<li><strong>اطلاع را استخراج می‌کنیم</strong> → با Query ها و گزارش‌ها</li>
+<li><strong>دانش را تولید می‌کنیم</strong> → با تحلیل داده‌ها (Data Mining, KBMS)</li>
+</ol>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Database<br/>ذخیره داده] --> B[DBMS<br/>مدیریت اطلاع]
+    B --> C[KBMS<br/>تولید دانش]
+    
+    style A fill:#ffcccc
+    style B fill:#ccffcc
+    style C fill:#ccccff
+</pre></div>
+
+<hr>
+<h3>✍️ تمرینات بخش ۱.۱.۱</h3>
+
+<h4>تمرین ۱ (تشریحی): </h4>
+<p>
+با استفاده از مثال "کتابخانه دانشگاه"، سه نمونه داده، اطلاع و دانش ارائه دهید و تفاوت آنها را توضیح دهید.
+</p>
+
+<h4>تمرین ۲ (تستی):</h4>
+<p>
+کدام گزینه <strong>اطلاع</strong> محسوب می‌شود؟
+</p>
+
+<p>
+الف) "1402"  
+ب) "دانشگاه تهران"  
+ج) "دانشجوی علی با کد ملی 0123456789 در ترم 1402/01 ثبت‌نام کرده است"  
+د) "0123456789"
+</p>
+
+<h4>تمرین ۳ (تحلیل سناریو):</h4>
+<p>
+فرض کنید داده‌های زیر را دارید:
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>"رضا", "مهندسی کامپیوتر", 18.5, 1401
+"سارا", "مهندسی برق", 17, 1400  
+"محمد", "مهندسی عمران", 14, 1402</code></pre></div>
+<ul>
+<li>این داده‌ها را به اطلاع تبدیل کنید (با معنا دادن)</li>
+<li>یک دانش از این اطلاعات استخراج کنید</li>
+</ul>
+
+<h4>تمرین ۴ (تشریحی):</h4>
+<p>
+چرا در سیستم‌های پایگاه داده نمی‌توانیم مستقیماً "دانش" را ذخیره کنیم؟ توضیح دهید.
+</p>
+
+<h4>تمرین ۵ (مفهومی):</h4>
+<p>
+در سلسله مراتب داده-اطلاع-دانش، اگر "نماد" را پایین‌ترین سطح در نظر بگیریم، آیا می‌توان سطح بالاتر از "دانش" تعریف کرد؟ اگر بله، آن را چه می‌نامیم و مثال بزنید.
+</p>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>مفهوم</th><th>تعریف</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td><strong>داده</strong></td><td>نمایش واقعیات با نمادها</td><td>"علی", 10, "1380"</td></tr>
+<tr><td><strong>اطلاع</strong></td><td>داده + معنا</td><td>نام دانشجو: علی، کد: 10</td></tr>
+<tr><td><strong>دانش</strong></td><td>اطلاع + تحلیل</td><td>علی دانشجوی موفق است</td></tr>
+</tbody></table></div><hr>
+
+
+
+
+
+                </div>
+
+                <div class="page-navigation"><span></span><a href="1-1-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">سلسله مراتب ذخیره‌سازی داده</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

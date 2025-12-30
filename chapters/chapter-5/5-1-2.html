@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="جامعیت پایگاه داده - مفاهیم جامعیت عام">
+    <meta name="keywords" content="پایگاه داده, Database Design, مفاهیم جامعیت عام">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>مفاهیم جامعیت عام | جامعیت پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">جامعیت پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">مفاهیم جامعیت عام</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">مفاهیم جامعیت عام</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۵: جامعیت پایگاه داده (Data Integrity)</h1>
+
+<h2>مقدمه تعاملی - چرا جامعیت مهم است؟</h2>
+
+<p>
+خوب دانشجوی عزیز، فرض کن یک پایگاه داده بانکی داریم:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Account:
++-----+---------+----------+
+| ID  | Name    | Balance  |
++-----+---------+----------+
+| 100 | علی     | 5000000  |
+| 110 | سارا    | NULL     |  ← ❌ موجودی ناشناخته؟
+| 120 | رضا     | -300000  |  ← ❌ موجودی منفی؟
++-----+---------+----------+
+
+Transaction:
++-----+----------+--------+
+| TID | AccID    | Amount |
++-----+----------+--------+
+| 1   | 100      | -50000 |
+| 2   | 999      | 100000 |  ← ❌ حساب 999 وجود نداره!
++-----+----------+--------+
+
+مشکلات:
+❌ داده‌های نامعتبر
+❌ ناسازگاری
+❌ از بین رفتن اعتبار سیستم
+
+راه‌حل: **جامعیت پایگاه داده (Data Integrity)**! ✅</code></pre></div>
+
+<hr>
+<h2>🔷 بخش ۵.۱: مفهوم جامعیت و تفاوت با امنیت</h2>
+
+<h3>تعریف جامعیت (Data Integrity)</h3>
+
+<p>
+<strong>جامعیت پایگاه داده:</strong>  
+صحت، دقت و سازگاری داده‌های پایگاه داده در تمامی عمر پایگاه داده را جامعیت پایگاه داده گویند.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((جامعیت<br/>Data Integrity))
+    صحت Correctness
+      داده درست
+      بدون خطا
+      معتبر
+    دقت Accuracy
+      مطابق واقعیت
+      بدون تقریب اشتباه
+      قابل اعتماد
+    سازگاری Consistency
+      بدون تناقض
+      هماهنگ
+      یکپارچه
+    در تمام عمر
+      از ایجاد
+      تا حذف
+      همیشه معتبر
+</pre></div>
+
+<hr>
+<h3>مثال - عدم جامعیت</h3>
+
+<p>
+<strong>سیستم دانشگاه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ بدون جامعیت:
+Student:
++-----+--------+-------+------+
+| ID  | Name   | Major | GPA  |
++-----+--------+-------+------+
+| 100 | علی    | NULL  | 18.5 |  ← بدون رشته؟
+| 110 | سارا   | CS    | 25.0 |  ← GPA بیش از 20؟
+| 100 | رضا    | Math  | 17.0 |  ← تکراری ID!
+| 120 |        | Phys  | 16.0 |  ← بدون نام؟
++-----+--------+-------+------+
+
+Enrollment:
++-----+-----+-------+
+| SID | CID | Grade |
++-----+-----+-------+
+| 100 | 201 | 18.5  |
+| 999 | 202 | 17.0  |  ← دانشجوی 999 وجود نداره!
+| 110 | 888 | 19.0  |  ← درس 888 وجود نداره!
++-----+-----+-------+
+
+مشکلات:
+1. داده نامعتبر (GPA &gt; 20)
+2. داده تکراری (StudentID=100)
+3. داده ناقص (Name خالی)
+4. عدم سازگاری (SID=999 وجود نداره)</code></pre></div>
+
+<hr>
+<h3>تفاوت جامعیت و امنیت</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>جامعیت (Integrity)</th><th>امنیت (Security)</th></tr></thead>
+<tbody>
+<tr><td><strong>هدف</strong></td><td>صحت و سازگاری داده</td><td>محافظت از داده</td></tr>
+<tr><td><strong>سؤال</strong></td><td>آیا داده درست است؟</td><td>چه کسی دسترسی دارد؟</td></tr>
+<tr><td><strong>تهدید</strong></td><td>داده نامعتبر، ناسازگار</td><td>دسترسی غیرمجاز</td></tr>
+<tr><td><strong>ابزار</strong></td><td>Constraints, Triggers</td><td>Authentication, Authorization</td></tr>
+<tr><td><strong>مثال</strong></td><td>GPA نباید >20 باشه</td><td>فقط استاد نمره ببینه</td></tr>
+<tr><td><strong>مسئول</strong></td><td>DBMS (خودکار)</td><td>DBA + سیستم</td></tr>
+</tbody></table></div><strong>مثال جامعیت:</strong>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,  -- جامعیت: یکتایی
+    Name NVARCHAR(50) NOT NULL,  -- جامعیت: نه NULL
+    GPA DECIMAL(4,2) CHECK (GPA &gt;= 0 AND GPA &lt;= 20)  -- جامعیت: محدوده معتبر
+);</code></pre></div>
+
+<p>
+<strong>مثال امنیت:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- فقط استاد می‌تونه نمره ببینه
+GRANT SELECT ON Grades TO Professor;
+DENY SELECT ON Grades TO Student;</code></pre></div>
+
+<hr>
+<h3>مسئولیت تأمین جامعیت</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[تأمین جامعیت]
+    
+    B[مسئول اصلی:<br/>DBMS]
+    C[نقش DBA]
+    D[نقش برنامه‌نویس]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[بررسی خودکار]
+    B2[اعمال قیود]
+    B3[جلوگیری از نقض]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    
+    C1[تعریف قیود]
+    C2[نظارت]
+    C3[رفع مشکلات]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    D1[Validation]
+    D2[کدنویسی صحیح]
+    D3[تست]
+    
+    D --> D1
+    D --> D2
+    D --> D3
+    
+    style B fill:#2ecc71,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<p>
+<strong>مسئولیت تامین جامعیت پایگاه داده با خود DBMS است.</strong>
+</p>
+
+<p>
+اطلاعات باید به DBMS داده شود از طریق:
+</p>
+<ul>
+<li><strong>DBA (Database Administrator)</strong></li>
+<li><strong>SQL Statements</strong></li>
+<li><strong>Trigger</strong></li>
+<li><strong>Assertion</strong></li>
+</ul>
+
+<hr>
+<h3>Integrity Rules (قواعد جامعیتی)</h3>
+
+<p>
+به اطلاعاتی که برای برقراری جامعیت لازم است می‌گوییم:
+</p>
+<ul>
+<li><strong>Integrity Rules</strong></li>
+<li><strong>Integrity Constraints (IC)</strong></li>
+</ul>
+
+<p>
+<strong>دو راه اعمال:</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Integrity Constraints]
+    
+    B[1. زبان پایگاهی<br/>SQL]
+    C[2. قطعه برنامه<br/>Trigger]
+    
+    A --> B
+    A --> C
+    
+    B1[DDL]
+    B2[CHECK]
+    B3[FOREIGN KEY]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    
+    C1[BEFORE/AFTER]
+    C2[INSERT/UPDATE/DELETE]
+    C3[Custom Logic]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<hr>
+<h3>چرا DBMS‌ها کند هستند؟</h3>
+
+<p>
+<strong>3 دلیل اصلی کندی DBMS:</strong>
+</p>
+
+<ol>
+<li><strong>سربار ناشی از نگاشت بین سطوح DBMS</strong></li>
+</ol>
+<p>
+   → سطح خارجی → ادراکی → داخلی
+   → هر تبدیل زمان می‌بره!
+</p>
+
+<ol>
+<li><strong>سربار ناشی از اعمال قواعد جامعیتی</strong> ⭐</li>
+</ol>
+<p>
+   → هر INSERT/UPDATE/DELETE باید چک بشه
+   → Constraints بررسی بشن
+   → Triggers اجرا بشن
+</p>
+
+<ol>
+<li><strong>سربار ناشی از اعمال خط‌مشی‌های امنیتی</strong></li>
+</ol>
+<p>
+   → بررسی دسترسی
+   → Logging
+   → Encryption
+</p>
+
+<p>
+<strong>نتیجه:</strong> جامعیت قیمت دارد ولی ضروری است! ✅
+</p>
+
+
+<hr>
+<h2>🔷 بخش ۵.۲: قیود عام (General Integrity Constraints)</h2>
+
+<h3>انواع قیود جامعیتی</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[قیود جامعیتی<br/>Integrity Constraints]
+    
+    B[قیود عام<br/>General<br/>MC/MR]
+    C[قیود خاص<br/>Specific<br/>UC/UR]
+    
+    A --> B
+    A --> C
+    
+    B1[C1:<br/>Entity Integrity]
+    B2[C2:<br/>Referential Integrity]
+    
+    B --> B1
+    B --> B2
+    
+    C1[AC:<br/>Attribute Constraints]
+    C2[DC:<br/>Domain Constraints]
+    C3[RC:<br/>Relation Constraints]
+    C4[DBC:<br/>Database Constraints]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    C --> C4
+    
+    style B fill:#2ecc71,color:#fff
+    style C fill:#3498db,color:#fff
+</pre></div>
+
+<p>
+<strong>قیود عام (MC - Mandatory Constraints):</strong>  
+ناوابسته به داده‌ها، در تمامی DBMS‌ها برقرار هستند.
+</p>
+
+<p>
+<strong>قیود خاص (UC - User Constraints):</strong>  
+وابسته به داده‌ها، در هر محیط محدودیت‌های خاص آن محیط وجود دارد.
+</p>
+
+<hr>
+<h3>C1: جامعیت موجودیتی (Entity Integrity)</h3>
+
+<h4>تعریف</h4>
+
+<p>
+<strong>قاعده C1 ناظر به کلید اصلی است:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کلید اصلی و هیچکدام از اجزای آن نمی‌توانند NULL باشند.</code></pre></div>
+
+<p>
+<strong>دلیل:</strong>  
+کلید اصلی عامل تشخیص موجودیت‌هاست و این کلید نمی‌تواند مقدار ناشناخته داشته باشد.
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[Entity Integrity C1]
+    
+    B[PK نباید NULL]
+    C[اجزای PK نباید NULL]
+    D[عامل تشخیص موجودیت]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    E[مثال نقض:<br/>Student NULL StudentID]
+    F[مثال صحیح:<br/>Student100 StudentID]
+    
+    B --> E
+    B --> F
+    
+    style E fill:#e74c3c,color:#fff
+    style F fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h4>مثال - Entity Integrity</h4>
+
+<p>
+<strong>❌ نقض C1:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Major NVARCHAR(30)
+);
+
+-- تلاش برای درج با PK=NULL
+INSERT INTO Student VALUES (NULL, 'علی', 'CS');
+-- ❌ خطا! Cannot insert NULL into PRIMARY KEY
+
+-- تلاش با PK ترکیبی
+CREATE TABLE Enrollment (
+    StudentID INT,
+    CourseID INT,
+    Grade DECIMAL(4,2),
+    PRIMARY KEY (StudentID, CourseID)
+);
+
+INSERT INTO Enrollment VALUES (100, NULL, 18.5);
+-- ❌ خطا! CourseID جزو PK است و نمی‌تونه NULL باشه</code></pre></div>
+
+<p>
+<strong>✅ رعایت C1:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- همه PK‌ها مقدار دارن
+INSERT INTO Student VALUES (100, 'علی', 'CS');  ✅
+INSERT INTO Student VALUES (110, 'سارا', 'Math');  ✅
+
+INSERT INTO Enrollment VALUES (100, 201, 18.5);  ✅
+INSERT INTO Enrollment VALUES (110, 202, 17.0);  ✅</code></pre></div>
+
+<hr>
+<h4>اعمال C1</h4>
+
+<p>
+<strong>C1 را چگونه می‌توان اعمال نمود؟</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- روش 1: با PRIMARY KEY (توصیه شده ✅)
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,  -- خودکار NOT NULL
+    Name NVARCHAR(50)
+);
+
+-- روش 2: با NOT NULL صریح
+CREATE TABLE Student (
+    StudentID INT NOT NULL,
+    Name NVARCHAR(50),
+    PRIMARY KEY (StudentID)
+);
+
+-- روش 3: PK ترکیبی
+CREATE TABLE Enrollment (
+    StudentID INT NOT NULL,  -- صریح (اختیاری)
+    CourseID INT NOT NULL,   -- صریح (اختیاری)
+    Grade DECIMAL(4,2),
+    PRIMARY KEY (StudentID, CourseID)  -- خودکار NOT NULL برای هر دو
+);</code></pre></div>
+
+<p>
+<strong>نکته:</strong> با تعریف PRIMARY KEY، DBMS خودکار NOT NULL رو اعمال می‌کنه! ✅
+</p>
+
+<hr>
+<h3>C2: جامعیت ارجاعی (Referential Integrity)</h3>
+
+<h4>تعریف</h4>
+
+<p>
+<strong>قاعده C2 ناظر به کلید خارجی است:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>اگر صفت Ai در رابطه R1 کلید خارجی باشد و در R2 کلید کاندید باشد،
+آنگاه Ai باید از مقادیری باشد که در R2 وجود دارد.</code></pre></div>
+
+<p>
+به عبارت ساده:  
+<strong>کلید خارجی باید به مقدار موجود اشاره کند!</strong>
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[R1: Employee]
+    B[R2: Department]
+    
+    A1[EmpID: 100<br/>DeptID: 10]
+    A2[EmpID: 110<br/>DeptID: 20]
+    A3[EmpID: 120<br/>DeptID: 99]
+    
+    B1[DeptID: 10<br/>CS]
+    B2[DeptID: 20<br/>Math]
+    
+    A --> A1
+    A --> A2
+    A --> A3
+    
+    B --> B1
+    B --> B2
+    
+    A1 -.->|FK ✅| B1
+    A2 -.->|FK ✅| B2
+    A3 -.->|FK ❌| C[DeptID: 99<br/>وجود نداره!]
+    
+    style A1 fill:#2ecc71,color:#fff
+    style A2 fill:#2ecc71,color:#fff
+    style A3 fill:#e74c3c,color:#fff
+    style C fill:#e74c3c,color:#fff
+</pre></div>
+
+<hr>
+<h4>مثال - Referential Integrity</h4>
+
+<p>
+<strong>طراحی:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- رابطه R2 (ارجاع شونده)
+CREATE TABLE Department (
+    DeptID INT PRIMARY KEY,
+    DeptName NVARCHAR(50)
+);
+
+-- رابطه R1 (ارجاع کننده)
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    DeptID INT,  -- FK
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+);</code></pre></div>
+
+<p>
+<strong>داده نمونه:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Department:
++----+--------+
+| ID | Name   |
++----+--------+
+| 10 | CS     |
+| 20 | Math   |
++----+--------+
+
+Employee:
++-----+--------+--------+
+| EID | Name   | DeptID |
++-----+--------+--------+
+| 100 | علی    | 10     |  ✅ اشاره به 10 (موجود)
+| 110 | سارا   | 20     |  ✅ اشاره به 20 (موجود)
++-----+--------+--------+</code></pre></div>
+
+<p>
+<strong>❌ نقض C2:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تلاش برای درج با DeptID غیرموجود
+INSERT INTO Employee VALUES (120, 'رضا', 99);
+-- ❌ خطا! DeptID=99 در Department وجود نداره
+
+-- تلاش برای UPDATE به مقدار غیرموجود
+UPDATE Employee SET DeptID = 99 WHERE EmpID = 100;
+-- ❌ خطا! نقض Referential Integrity</code></pre></div>
+
+<p>
+<strong>✅ رعایت C2:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ابتدا اداره رو اضافه کن
+INSERT INTO Department VALUES (30, 'Physics');
+
+-- حالا می‌تونی کارمند با DeptID=30 اضافه کنی
+INSERT INTO Employee VALUES (120, 'رضا', 30);  ✅</code></pre></div>
+
+<hr>
+<h3>مکانیزم اعمال C2</h3>
+
+<p>
+برای اعمال C2 سه کار لازم است:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[اعمال C2<br/>Referential Integrity]
+    
+    B[1. معرفی FK]
+    C[2. گراف ارجاعات]
+    D[3. شیوه اعمال]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[FOREIGN KEY clause]
+    
+    B --> B1
+    
+    C1[مشخص کردن<br/>چه کسی به چه کسی<br/>اشاره می‌کنه]
+    
+    C --> C1
+    
+    D1[ON DELETE]
+    D2[ON UPDATE]
+    
+    D --> D1
+    D --> D2
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<hr>
+<h4>1. معرفی کلیدهای خارجی</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    DeptID INT,
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+                         ↑                      ↑
+                    جدول ارجاع شونده        ستون ارجاع شونده
+);</code></pre></div>
+
+<hr>
+<h4>2. گراف ارجاعات (Reference Graph)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نمونه موجودیتی که کلید خارجی داشته باشد که به یک موجودیت دیگر اشاره نماید،
+با فلشی به آن وصل می‌نماییم.</code></pre></div>
+
+<p>
+<strong>مثال 1: ساده</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>City ← S ← SP
+       ↑   ↑
+       │   │
+       P───┘
+
+S: FK به City
+SP: FK به S و P</code></pre></div>
+
+<p>
+<strong>مثال 2: چرخه ارجاع</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>┌──────┐
+      │      ↓
+Emp → Dept
+ ↑      │
+ └──────┘
+
+امکان دارد در این مسیر ارجاع، چرخه به وجود بیاید.</code></pre></div>
+
+<p>
+<strong>مثال 3: خود-ارجاعی</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee ─┐
+   ↑      │
+   └──────┘  (BossID)
+
+حلقه یا دور (چرخه ارجاع)</code></pre></div>
+
+<hr>
+<h4>3. شیوه اعمال C2</h4>
+
+<p>
+<strong>برای عملیات INSERT:</strong>  
+نیازی به اعمال C2 نیست، چون اجازه درج سر جدید داده نمی‌شود.
+</p>
+
+<p>
+<strong>برای عملیات UPDATE یا DELETE:</strong>  
+باید شیوه اعمال را مشخص کنیم:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[شیوه‌های اعمال C2]
+    
+    B[CASCADE<br/>آبشاری]
+    C[RESTRICT<br/>محدود کردن]
+    D[NO ACTION<br/>عدم عمل]
+    E[NULLIFY<br/>Null کردن]
+    F[SET DEFAULT<br/>مقدار پیش‌فرض]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#e74c3c,color:#fff
+    style D fill:#95a5a6,color:#fff
+    style E fill:#f39c12,color:#fff
+    style F fill:#9b59b6,color:#fff
+</pre></div>
+
+<hr>
+<h5>CASCADE (آبشاری)</h5>
+
+<p>
+<strong>عملیات روی رکورد والد، روی رکوردهای فرزند هم اعمال می‌شود.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    DeptID INT,
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+        ON DELETE CASCADE  -- حذف آبشاری
+        ON UPDATE CASCADE  -- بروزرسانی آبشاری
+);</code></pre></div>
+
+<p>
+<strong>مثال DELETE CASCADE:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Department:
++----+--------+
+| 10 | CS     |  ← می‌خوایم حذف کنیم
+| 20 | Math   |
++----+--------+
+
+Employee:
++-----+--------+--------+
+| 100 | علی    | 10     |  ← وابسته به Dept=10
+| 110 | سارا   | 10     |  ← وابسته به Dept=10
+| 120 | رضا    | 20     |
++-----+--------+--------+
+
+DELETE FROM Department WHERE DeptID = 10;
+
+→ CASCADE: کارمندان 100 و 110 هم حذف می‌شن! ✅
+
+Employee بعد از حذف:
++-----+--------+--------+
+| 120 | رضا    | 20     |
++-----+--------+--------+</code></pre></div>
+
+<p>
+<strong>مثال UPDATE CASCADE:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>UPDATE Department SET DeptID = 15 WHERE DeptID = 10;
+
+→ CASCADE: DeptID کارمندان 100 و 110 هم به 15 تغییر می‌کنه! ✅
+
+Employee بعد از بروزرسانی:
++-----+--------+--------+
+| 100 | علی    | 15     |  ← تغییر کرد
+| 110 | سارا   | 15     |  ← تغییر کرد
+| 120 | رضا    | 20     |
++-----+--------+--------+</code></pre></div>
+
+<hr>
+<h5>RESTRICT (محدود کردن)</h5>
+
+<p>
+<strong>اگر رکورد فرزندی وجود داشته باشد، از حذف یا بروزرسانی والد جلوگیری می‌نماید.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    DeptID INT,
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+        ON DELETE RESTRICT  -- منع حذف
+        ON UPDATE RESTRICT  -- منع بروزرسانی
+);</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>DELETE FROM Department WHERE DeptID = 10;
+
+→ RESTRICT: ❌ خطا! چون کارمندانی با DeptID=10 وجود دارن
+
+راه‌حل:
+1. ابتدا کارمندها رو حذف کن
+2. سپس اداره رو حذف کن</code></pre></div>
+
+<hr>
+<h5>NO ACTION (عدم عمل)</h5>
+
+<p>
+<strong>Trigger‌ها را در نظر می‌گیرد.</strong>
+</p>
+
+<p>
+مشابه RESTRICT ولی Trigger‌ها اجرا می‌شن.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION</code></pre></div>
+
+<hr>
+<h5>NULLIFY (Null کردن)</h5>
+
+<p>
+<strong>اگر رکورد مربوطه حذف گردد، آنرا NULL کن.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    DeptID INT,  -- می‌تونه NULL باشه
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+        ON DELETE SET NULL  -- Null کن
+        ON UPDATE SET NULL
+);</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>DELETE FROM Department WHERE DeptID = 10;
+
+→ NULLIFY: DeptID کارمندان 100 و 110 می‌شه NULL! ✅
+
+Employee:
++-----+--------+--------+
+| 100 | علی    | NULL   |  ← Null شد
+| 110 | سارا   | NULL   |  ← Null شد
+| 120 | رضا    | 20     |
++-----+--------+--------+</code></pre></div>
+
+<p>
+<strong>⚠️ نکته مهم:</strong>  
+اگر کلید اصلی جزو کلید خارجی باشد، NULLIFY نمودن اشتباه است!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ اشتباه!
+CREATE TABLE Enrollment (
+    StudentID INT,
+    CourseID INT,
+    Grade DECIMAL(4,2),
+    PRIMARY KEY (StudentID, CourseID),
+    FOREIGN KEY (StudentID) REFERENCES Student(StudentID)
+        ON DELETE SET NULL  -- ❌ نمی‌شه! StudentID جزو PK است
+);</code></pre></div>
+
+<hr>
+<h5>SET DEFAULT (مقدار پیش‌فرض)</h5>
+
+<p>
+<strong>اگر رکورد حذف شد، مقدار پیش‌فرض را قرار بده.</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    DeptID INT DEFAULT 99,  -- اداره "نامشخص"
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+        ON DELETE SET DEFAULT
+);</code></pre></div>
+
+<p>
+<strong>⚠️ نکته:</strong> مقدار پیش‌فرض حتماً باید در جدول ارجاع شونده وجود داشته باشد!
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ابتدا اداره "نامشخص" رو اضافه کن
+INSERT INTO Department VALUES (99, 'نامشخص');
+
+-- حالا DELETE با SET DEFAULT کار می‌کنه
+DELETE FROM Department WHERE DeptID = 10;
+
+Employee:
++-----+--------+--------+
+| 100 | علی    | 99     |  ← مقدار پیش‌فرض
+| 110 | سارا   | 99     |  ← مقدار پیش‌فرض
+| 120 | رضا    | 20     |
++-----+--------+--------+</code></pre></div>
+
+<hr>
+<h3>مثال کامل C2</h3>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- جداول
+CREATE TABLE S (
+    S# INT PRIMARY KEY,
+    SName NVARCHAR(50),
+    City NVARCHAR(30),
+    Status INT
+);
+
+CREATE TABLE P (
+    P# INT PRIMARY KEY,
+    PName NVARCHAR(50),
+    Color NVARCHAR(20),
+    Weight INT
+);
+
+CREATE TABLE SP (
+    S# INT,
+    P# INT,
+    Qty INT,
+    PRIMARY KEY (S#, P#),
+    FOREIGN KEY (S#) REFERENCES S(S#)
+        ON DELETE NO ACTION
+        ON UPDATE CASCADE,
+    FOREIGN KEY (P#) REFERENCES P(P#)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
+);</code></pre></div>
+
+<p>
+<strong>تحلیل:</strong>
+</p>
+
+<p>
+<strong>برای S#:</strong>
+</p>
+<ul>
+<li>ON DELETE NO ACTION: اگر فروشنده‌ای رو حذف کنیم که تولید داره → ❌ خطا</li>
+<li>ON UPDATE CASCADE: اگر S# فروشنده عوض شه → در SP هم عوض می‌شه</li>
+</ul>
+
+<p>
+<strong>برای P#:</strong>
+</p>
+<ul>
+<li>ON DELETE CASCADE: اگر قطعه‌ای رو حذف کنیم → رکوردهای مربوط در SP هم حذف می‌شن</li>
+<li>ON UPDATE RESTRICT: اگر P# قطعه عوض شه و تولید داره → ❌ خطا</li>
+</ul>
+
+
+<hr>
+<p>
+<em>ادامه دارد در بخش بعدی...</em>
+</p>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="../chapter-4/4-3-3.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">قواعد نگاشت ER به رابطه‌ای - بخش ۳</span></a><a href="5-3.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">قیود خاص</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

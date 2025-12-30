@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مفاهیم بنیادی و فلسفه پایگاه داده - سلسله مراتب ذخیره‌سازی داده">
+    <meta name="keywords" content="پایگاه داده, Database Design, سلسله مراتب ذخیره‌سازی داده">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>سلسله مراتب ذخیره‌سازی داده | مفاهیم بنیادی و فلسفه پایگاه داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">مفاهیم بنیادی و فلسفه پایگاه داده</a>
+                <span class="separator">›</span>
+                <span class="current">سلسله مراتب ذخیره‌سازی داده</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">سلسله مراتب ذخیره‌سازی داده</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۱: مفاهیم بنیادی و فلسفه پایگاه داده</h1>
+
+<h2>بخش ۱.۱.۲: سلسله مراتب ذخیره‌سازی (از بیت تا فایل)</h2>
+
+<h3>🎯 مقدمه تعاملی</h3>
+
+<p>
+خوب دانشجوی عزیز، حالا که با مفاهیم داده، اطلاع و دانش آشنا شدیم، وقتشه که بفهمیم این داده‌ها دقیقاً چطور در کامپیوتر ذخیره می‌شن!
+</p>
+
+<p>
+فرض کن می‌خوای اطلاعات یک دانشجو رو ذخیره کنی. از کجا شروع می‌کنی؟ از کوچک‌ترین واحد ذخیره‌سازی یعنی <strong>بیت</strong> شروع می‌کنیم و تا بزرگ‌ترین سازه یعنی <strong>سیستم فایل</strong> پیش می‌ریم.
+</p>
+
+<p>
+این مسیر رو با هم طی می‌کنیم:
+</p>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>بیت → بایت → فیلد → رکورد → فایل → سیستم فایل</code></pre></div>
+
+<hr>
+<h3>1️⃣ سطح اول: بیت (Bit)</h3>
+
+<p>
+<strong>بیت</strong> یعنی: <strong>کوچک‌ترین واحد قابل ذخیره‌سازی در کامپیوتر</strong>
+</p>
+
+<h4>چرا بیت؟</h4>
+<p>
+کامپیوتر فقط دو حالت رو می‌فهمه:
+</p>
+<ul>
+<li><strong>0</strong> → جریان برق نداره / خاموش</li>
+<li><strong>1</strong> → جریان برق داره / روشن</li>
+</ul>
+
+<p>
+یک بیت می‌تونه یکی از این دو مقدار رو نگه داره: <code>0</code> یا <code>1</code>
+</p>
+
+<h4>مثال عملی:</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>یک بیت: 1
+معنا: یک وضعیت روشن/خاموش، بله/خیر، صحیح/غلط</code></pre></div>
+
+<h4>چرا بیت تنها کافی نیست؟</h4>
+<p>
+با یک بیت فقط می‌تونیم <strong>دو حالت</strong> رو نشون بدیم! برای ذخیره اطلاعات پیچیده‌تر نیاز به <strong>ترکیب بیت‌ها</strong> داریم.
+</p>
+
+<hr>
+<h3>2️⃣ سطح دوم: بایت (Byte)</h3>
+
+<p>
+<strong>بایت</strong> یعنی: <strong>مجموعه‌ای از 8 بیت</strong>
+</p>
+
+<h4>چرا 8 بیت؟</h4>
+<p>
+با 8 بیت می‌تونیم 2^8 = <strong>256 حالت مختلف</strong> رو نمایش بدیم که برای نمایش:
+</p>
+<ul>
+<li>حروف الفبا (A-Z, a-z)</li>
+<li>اعداد (0-9)</li>
+<li>کاراکترهای خاص (@, #, $, ...)</li>
+</ul>
+
+<p>
+کافیه!
+</p>
+
+<h4>جدول تبدیل:</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>تعداد بیت</th><th>تعداد حالات</th><th>کاربرد</th></tr></thead>
+<tbody>
+<tr><td>1 بیت</td><td>2 حالت</td><td>بله/خیر</td></tr>
+<tr><td>4 بیت</td><td>16 حالت</td><td>یک رقم هگزادسیمال</td></tr>
+<tr><td>8 بیت (1 بایت)</td><td>256 حالت</td><td>یک کاراکتر</td></tr>
+</tbody></table></div>#### مثال کد ASCII:
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>حرف 'A' در کامپیوتر:
+بایت: 01000001
+معادل دهدهی: 65</code></pre></div>
+
+<hr>
+<h3>3️⃣ سطح سوم: فیلد/صفت (Field/Attribute)</h3>
+
+<p>
+<strong>تعریف دقیق :</strong>  
+<strong>فیلد (صفت)</strong>: کوچک‌ترین واحد اطلاعاتی که قابل ذخیره نمودن است. حداقل یک بیت است و حداکثر بستگی به سیستم عامل و زبان برنامه‌نویسی دارد.
+</p>
+
+<h4>چرا فیلد مهمه؟</h4>
+<p>
+فیلد اولین سطحی است که <strong>معنا</strong> داره! یک فیلد نشون‌دهنده <strong>یک ویژگی</strong> از یک شی است.
+</p>
+
+<h4>انواع فیلد بر اساس نوع داده:</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TD
+    A[فیلد/صفت] --> B[عددی]
+    A --> C[رشته‌ای]
+    A --> D[تاریخ]
+    A --> E[منطقی]
+    
+    B --> B1[Integer: 4 بایت]
+    B --> B2[Float: 4 بایت]
+    B --> B3[Double: 8 بایت]
+    
+    C --> C1[Char: 1 کاراکتر]
+    C --> C2[VARCHAR: متغیر]
+    C --> C3[TEXT: نامحدود]
+    
+    D --> D1[Date: تاریخ]
+    D --> D2[DateTime: تاریخ+زمان]
+    
+    E --> E1[Boolean: True/False]
+    
+    style A fill:#ff6b6b,color:#fff
+    style B fill:#4ecdc4
+    style C fill:#45b7d1
+    style D fill:#96ceb4
+    style E fill:#ffeaa7
+</pre></div>
+
+<h4>مثال‌های فیلد از محیط دانشگاه:</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>نام فیلد</th><th>نوع داده</th><th>حداقل فضا</th><th>حداکثر فضا (مثال)</th></tr></thead>
+<tbody>
+<tr><td>شماره شناسنامه</td><td>Integer</td><td>4 بایت</td><td>4 بایت</td></tr>
+<tr><td>نام</td><td>VARCHAR</td><td>1 بایت</td><td>50 بایت</td></tr>
+<tr><td>نام خانوادگی</td><td>VARCHAR</td><td>1 بایت</td><td>50 بایت</td></tr>
+<tr><td>معدل</td><td>Float</td><td>4 بایت</td><td>4 بایت</td></tr>
+</tbody></table></div><hr>
+
+<h3>4️⃣ سطح چهارم: رکورد (Record)</h3>
+
+<p>
+<strong>تعریف دقیق :</strong>  
+<strong>رکورد</strong>: مجموعه‌ای از چندین فیلد نشان‌دهنده ویژگی‌های یک مفهوم یا پدیده یا شی و یا انسان می‌باشد.
+</p>
+
+<h4>چرا رکورد؟</h4>
+<p>
+رکورد یک <strong>نمونه کامل</strong> از یک موجودیت است. برای مثال، اطلاعات <strong>یک دانشجو</strong> یک رکورد است.
+</p>
+
+<h4>ساختار رکورد:</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[رکورد Student] --> B[فیلد 1:<br/>شماره شناسنامه]
+    A --> C[فیلد 2:<br/>نام]
+    A --> D[فیلد 3:<br/>نام خانوادگی]
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#3498db,color:#fff
+</pre></div>
+
+<h4>مثال رکورد Student :</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>شماره شناسنامه</th><th>نام</th><th>نام خانوادگی</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>علی</td><td>علیزاده</td></tr>
+</tbody></table></div>این یک <strong>رکورد</strong> است که شامل <strong>3 فیلد</strong> می‌شود.
+
+<h4>محاسبه اندازه رکورد:</h4>
+
+<p>
+فرض کنیم:
+</p>
+<ul>
+<li>شماره شناسنامه: Integer = 4 بایت</li>
+<li>نام: VARCHAR(20) = حداکثر 20 بایت</li>
+<li>نام خانوادگی: VARCHAR(30) = حداکثر 30 بایت</li>
+</ul>
+
+<p>
+<strong>اندازه یک رکورد</strong> = 4 + 20 + 30 = <strong>54 بایت</strong>
+</p>
+
+<hr>
+<h3>5️⃣ سطح پنجم: فایل (File)</h3>
+
+<p>
+<strong>تعریف دقیق :</strong>  
+<strong>فایل</strong>: مجموعه‌ای از نمونه‌های ذخیره شده در مورد یک یا چند رکورد.
+</p>
+
+<h4>چرا فایل؟</h4>
+<p>
+وقتی چندین دانشجو داریم، نمی‌تونیم هر کدوم رو جدا جدا نگه داریم! همه‌شون رو توی یک <strong>فایل</strong> ذخیره می‌کنیم.
+</p>
+
+<h4>ساختار فایل:</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[فایل Students.dat] --> B[رکورد 1]
+    A --> C[رکورد 2]
+    A --> D[رکورد 3]
+    A --> E[...]
+    A --> F[رکورد N]
+    
+    B --> B1[10, علی, علیزاده]
+    C --> C1[20, حسن, حسن‌زاده]
+    D --> D1[30, حسین, حسین‌زاده]
+    
+    style A fill:#2ecc71,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#3498db,color:#fff
+    style F fill:#3498db,color:#fff
+</pre></div>
+
+<h4>مثال فایل Student کامل:</h4>
+
+<div class="table-container"><table>
+<thead><tr><th>شماره شناسنامه</th><th>نام</th><th>نام خانوادگی</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>علی</td><td>علیزاده</td></tr>
+<tr><td>20</td><td>حسن</td><td>حسن‌زاده</td></tr>
+<tr><td>30</td><td>حسین</td><td>حسین‌زاده</td></tr>
+</tbody></table></div>این یک <strong>فایل</strong> با <strong>3 رکورد</strong> است.
+
+<h4>محاسبه اندازه فایل:</h4>
+
+<p>
+اگر هر رکورد 54 بایت باشه و 1000 دانشجو داشته باشیم:
+</p>
+
+<p>
+<strong>اندازه فایل</strong> = 54 بایت × 1000 = <strong>54,000 بایت</strong> = <strong>54 کیلوبایت</strong>
+</p>
+
+<hr>
+<h3>6️⃣ سطح ششم: سیستم فایل (File System)</h3>
+
+<p>
+<strong>تعریف دقیق :</strong>  
+<strong>سیستم فایل</strong>: ساختار کلی نام‌گذاری، ذخیره‌سازی و سازماندهی فایل‌ها را گویند.
+</p>
+
+<h4>چرا سیستم فایل؟</h4>
+<p>
+وقتی چندین فایل داریم (دانشجو، استاد، درس، ...) نیاز به یک <strong>سیستم مدیریت</strong> داریم!
+</p>
+
+<h4>ساختار سیستم فایل دانشگاه:</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[سیستم فایل دانشگاه] --> B[فایل Students]
+    A --> C[فایل Teachers]
+    A --> D[فایل Courses]
+    A --> E[فایل Enrollments]
+    
+    B --> B1[1000 رکورد دانشجو]
+    C --> C1[50 رکورد استاد]
+    D --> D1[200 رکورد درس]
+    E --> E1[5000 رکورد ثبت‌نام]
+    
+    style A fill:#9b59b6,color:#fff
+    style B fill:#3498db,color:#fff
+    style C fill:#3498db,color:#fff
+    style D fill:#3498db,color:#fff
+    style E fill:#3498db,color:#fff
+</pre></div>
+
+<h4>مسئولیت‌های سیستم فایل:</h4>
+
+<ol>
+<li><strong>نام‌گذاری</strong>: تعیین نام فایل‌ها (Students.dat, Teachers.dat)</li>
+<li><strong>ذخیره‌سازی</strong>: مشخص کردن مکان ذخیره روی دیسک</li>
+<li><strong>سازماندهی</strong>: ایجاد ساختار منطقی (پوشه‌ها)</li>
+<li><strong>دسترسی</strong>: کنترل خواندن و نوشتن</li>
+<li><strong>حفاظت</strong>: امنیت و پشتیبان‌گیری</li>
+</ol>
+
+<hr>
+<h3>🔄 سلسله مراتب کامل: از بیت تا سیستم فایل</h3>
+
+<p>
+بیا حالا همه چیز رو در یک نمودار جامع ببینیم:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[بیت Bit] -->|8 بیت| B[بایت Byte]
+    B -->|چندین بایت| C[فیلد/صفت Field]
+    C -->|چندین فیلد| D[رکورد Record]
+    D -->|چندین رکورد| E[فایل File]
+    E -->|چندین فایل| F[سیستم فایل<br/>File System]
+    
+    A1[0 یا 1] -.->|مثال| A
+    B1["'A' = 01000001"] -.->|مثال| B
+    C1[نام = علی] -.->|مثال| C
+    D1[10, علی, علیزاده] -.->|مثال| D
+    E1[Students.dat] -.->|مثال| E
+    F1[پایگاه داده دانشگاه] -.->|مثال| F
+    
+    style A fill:#ff6b6b,color:#fff
+    style B fill:#feca57
+    style C fill:#48dbfb
+    style D fill:#1dd1a1
+    style E fill:#5f27cd,color:#fff
+    style F fill:#341f97,color:#fff
+</pre></div>
+
+<hr>
+<h3>💡 مثال جامع: ذخیره‌سازی اطلاعات یک دانشجو</h3>
+
+<p>
+بیا ببینیم اطلاعات "علی علیزاده" چطور در سطوح مختلف ذخیره میشه:
+</p>
+
+<h4>سطح 1: بیت</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>نام "علی" به صورت بیتی:
+ع: 11000101 11010110 11010001
+ل: 11000101 11010110 11010100
+ی: 11000101 11010110 11011001</code></pre></div>
+
+<h4>سطح 2: بایت</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>هر حرف = 3 بایت (UTF-8 فارسی)
+"علی" = 9 بایت</code></pre></div>
+
+<h4>سطح 3: فیلد</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>فیلد "نام": علی (رشته‌ای)
+فیلد "شماره شناسنامه": 10 (عددی)
+فیلد "نام خانوادگی": علیزاده (رشته‌ای)</code></pre></div>
+
+<h4>سطح 4: رکورد</h4>
+<div class="table-container"><table>
+<thead><tr><th>شماره شناسنامه</th><th>نام</th><th>نام خانوادگی</th></tr></thead>
+<tbody>
+<tr><td>10</td><td>علی</td><td>علیزاده</td></tr>
+</tbody></table></div>این یک رکورد کامل است ✅
+
+<h4>سطح 5: فایل</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>فایل: Students.dat
+محتوا:
+- رکورد 1: 10, علی, علیزاده
+- رکورد 2: 20, حسن, حسن‌زاده
+- رکورد 3: 30, حسین, حسین‌زاده</code></pre></div>
+
+<h4>سطح 6: سیستم فایل</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مسیر: /database/university/Students.dat
+سیستم فایل: NTFS (Windows) یا EXT4 (Linux)</code></pre></div>
+
+<hr>
+<h3>📊 جدول مقایسه سطوح</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>سطح</th><th>نام</th><th>اندازه</th><th>تعداد در سطح بالاتر</th><th>مثال</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>بیت</td><td>1 بیت</td><td>8 بیت = 1 بایت</td><td>0 یا 1</td></tr>
+<tr><td>2</td><td>بایت</td><td>8 بیت</td><td>متغیر</td><td>'A'</td></tr>
+<tr><td>3</td><td>فیلد</td><td>1+ بایت</td><td>1+ فیلد = 1 رکورد</td><td>نام = علی</td></tr>
+<tr><td>4</td><td>رکورد</td><td>مجموع فیلدها</td><td>1+ رکورد = 1 فایل</td><td>یک دانشجو</td></tr>
+<tr><td>5</td><td>فایل</td><td>مجموع رکوردها</td><td>1+ فایل = سیستم فایل</td><td>Students.dat</td></tr>
+<tr><td>6</td><td>سیستم فایل</td><td>مجموع فایل‌ها</td><td>-</td><td>پایگاه داده دانشگاه</td></tr>
+</tbody></table></div><hr>
+
+<h3>🎓 چرا این سلسله مراتب مهم است؟</h3>
+
+<h4>دلیل 1: کارایی (Efficiency)</h4>
+<p>
+هر سطح برای یک هدف خاص طراحی شده:
+</p>
+<ul>
+<li>بیت → سخت‌افزار</li>
+<li>فیلد → برنامه‌نویس</li>
+<li>فایل → سیستم عامل</li>
+</ul>
+
+<h4>دلیل 2: انتزاع (Abstraction)</h4>
+<p>
+برنامه‌نویس نیازی نداره با بیت‌ها کار کنه، کافیه با فیلدها کار کنه!
+</p>
+
+<h4>دلیل 3: مدیریت (Management)</h4>
+<p>
+سیستم فایل می‌تونه میلیون‌ها رکورد رو مدیریت کنه بدون اینکه پیچیدگی افزایش پیدا کنه.
+</p>
+
+<hr>
+<h3>⚠️ نکات مهم</h3>
+
+<h4>نکته 1: حداکثر اندازه فیلد</h4>
+<ul>
+<li>بستگی به سیستم عامل داره (32-bit یا 64-bit)</li>
+<li>بستگی به زبان برنامه‌نویسی داره (C, Java, Python)</li>
+<li>بستگی به DBMS داره (MySQL, Oracle, SQL Server)</li>
+</ul>
+
+<h4>نکته 2: انواع فایل</h4>
+<ul>
+<li><strong>فایل متنی</strong>: قابل خواندن توسط انسان</li>
+<li><strong>فایل باینری</strong>: فقط توسط برنامه قابل خواندن</li>
+<li><strong>فایل دیتابیس</strong>: ساختار خاص DBMS</li>
+</ul>
+
+<h4>نکته 3: کارایی ذخیره‌سازی</h4>
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1 کیلوبایت (KB) = 1,024 بایت
+1 مگابایت (MB) = 1,024 کیلوبایت
+1 گیگابایت (GB) = 1,024 مگابایت</code></pre></div>
+
+<p>
+اگر هر رکورد 100 بایت باشه:
+</p>
+<ul>
+<li>10,000 رکورد ≈ 1 MB</li>
+<li>10,000,000 رکورد ≈ 1 GB</li>
+</ul>
+
+<hr>
+<h3>✍️ تمرینات بخش ۱.۱.۲</h3>
+
+<h4>تمرین 1 (محاسباتی):</h4>
+<p>
+یک رکورد کتاب با فیلدهای زیر داریم:
+</p>
+<ul>
+<li>شابک (ISBN): Integer (4 بایت)</li>
+<li>عنوان: VARCHAR(100)</li>
+<li>نویسنده: VARCHAR(50)</li>
+<li>سال انتشار: Integer (4 بایت)</li>
+<li>قیمت: Float (4 بایت)</li>
+</ul>
+
+<p>
+<strong>سوال:</strong> اگر 5000 کتاب داشته باشیم، اندازه فایل چند مگابایت می‌شود؟
+</p>
+
+<h4>تمرین 2 (تستی):</h4>
+<p>
+کدام گزینه <strong>درست</strong> است؟
+</p>
+
+<p>
+الف) یک بایت = 16 بیت  
+ب) یک رکورد = یک فیلد  
+ج) یک فایل = مجموعه‌ای از رکوردها  
+د) سیستم فایل = یک فایل
+</p>
+
+<h4>تمرین 3 (تحلیل سناریو):</h4>
+<p>
+فرض کنید می‌خواهید اطلاعات کتابخانه دانشگاه (شامل کتاب‌ها، اعضا، امانت‌ها) را ذخیره کنید.
+</p>
+
+<p>
+<strong>سوالات:</strong>
+</p>
+<ul>
+<li>چه فیلدهایی برای هر موجودیت نیاز دارید؟</li>
+<li>چند فایل نیاز است؟</li>
+<li>ساختار سیستم فایل شما چگونه است؟</li>
+</ul>
+
+<h4>تمرین 4 (تشریحی):</h4>
+<p>
+تفاوت بین "فیلد" و "رکورد" را با یک مثال عملی از محیط بیمارستان توضیح دهید.
+</p>
+
+<h4>تمرین 5 (مفهومی):</h4>
+<p>
+چرا در سیستم‌های مدرن، برنامه‌نویس مستقیماً با بیت‌ها کار نمی‌کند؟ چه مزایایی دارد که با سطوح بالاتر (فیلد، رکورد) کار کنیم؟
+</p>
+
+<h4>تمرین 6 (پیشرفته):</h4>
+<p>
+اگر یک فایل با 1 میلیون رکورد داشته باشیم و هر رکورد 200 بایت باشد:
+</p>
+<ul>
+<li>اندازه کل فایل چقدر است؟</li>
+<li>اگر سرعت خواندن دیسک 100 MB/s باشد، چند ثانیه طول می‌کشد تا کل فایل خوانده شود؟</li>
+</ul>
+
+<hr>
+<h3>📌 خلاصه کلیدی این بخش</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+mindmap
+  root((سلسله مراتب<br/>ذخیره‌سازی))
+    بیت
+      کوچکترین واحد
+      0 یا 1
+    بایت
+      8 بیت
+      یک کاراکتر
+    فیلد
+      کوچکترین واحد اطلاعاتی
+      یک ویژگی
+    رکورد
+      مجموعه فیلدها
+      یک نمونه کامل
+    فایل
+      مجموعه رکوردها
+      ذخیره مانا
+    سیستم فایل
+      مدیریت فایل‌ها
+      سازماندهی
+</pre></div>
+
+<hr>
+                </div>
+
+                <div class="page-navigation"><a href="1-1-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">تعریف داده، اطلاع و دانش</span></a><a href="1-1-3.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">داده مانا و عملیاتی</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

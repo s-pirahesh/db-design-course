@@ -1,0 +1,438 @@
+/**
+ * Syntax Highlighting Styles
+ * Based on Atom One Dark theme with custom enhancements
+ */
+
+/* Base code styles */
+pre[class*="language-"] {
+  background: #282c34;
+  color: #abb2bf;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  tab-size: 4;
+  hyphens: none;
+}
+
+code[class*="language-"] {
+  background: #282c34;
+  color: #abb2bf;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.6;
+  tab-size: 4;
+  hyphens: none;
+}
+
+/* Token colors */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #abb2bf;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #d19a66;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #98c379;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #56b6c2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #c678dd;
+}
+
+.token.function,
+.token.class-name {
+  color: #61afef;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #e06c75;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* SQL specific highlighting */
+.language-sql .token.keyword {
+  color: #c678dd;
+  font-weight: 600;
+}
+
+.language-sql .token.function {
+  color: #61afef;
+}
+
+.language-sql .token.string {
+  color: #98c379;
+}
+
+.language-sql .token.number {
+  color: #d19a66;
+}
+
+.language-sql .token.operator {
+  color: #56b6c2;
+}
+
+.language-sql .token.punctuation {
+  color: #abb2bf;
+}
+
+/* Python specific highlighting */
+.language-python .token.keyword {
+  color: #c678dd;
+}
+
+.language-python .token.function {
+  color: #61afef;
+}
+
+.language-python .token.class-name {
+  color: #e5c07b;
+}
+
+.language-python .token.string {
+  color: #98c379;
+}
+
+.language-python .token.number {
+  color: #d19a66;
+}
+
+.language-python .token.decorator {
+  color: #61afef;
+}
+
+/* JavaScript specific highlighting */
+.language-javascript .token.keyword {
+  color: #c678dd;
+}
+
+.language-javascript .token.function {
+  color: #61afef;
+}
+
+.language-javascript .token.class-name {
+  color: #e5c07b;
+}
+
+.language-javascript .token.string {
+  color: #98c379;
+}
+
+.language-javascript .token.template-string .token.string {
+  color: #98c379;
+}
+
+.language-javascript .token.template-string .token.interpolation {
+  color: #e06c75;
+}
+
+/* Markdown highlighting */
+.language-markdown .token.title {
+  color: #e06c75;
+  font-weight: bold;
+}
+
+.language-markdown .token.bold {
+  color: #e5c07b;
+  font-weight: bold;
+}
+
+.language-markdown .token.italic {
+  color: #98c379;
+  font-style: italic;
+}
+
+.language-markdown .token.url {
+  color: #56b6c2;
+  text-decoration: underline;
+}
+
+.language-markdown .token.code {
+  color: #abb2bf;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+}
+
+/* Line highlighting */
+pre[data-line] {
+  position: relative;
+  padding-left: 3.8em;
+}
+
+.line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: rgba(97, 175, 239, 0.08);
+  box-shadow: inset 5px 0 0 rgba(97, 175, 239, 0.6);
+  z-index: 0;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+/* Line numbers */
+.line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  font-size: 100%;
+  left: -3.8em;
+  width: 3em;
+  letter-spacing: -1px;
+  border-left: 1px solid #21252b;
+  user-select: none;
+}
+
+.line-numbers-rows > span {
+  pointer-events: none;
+  display: block;
+  counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+  content: counter(linenumber);
+  color: #5c6370;
+  display: block;
+  padding-left: 0.8em;
+  text-align: left;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] pre[class*="language-"],
+[data-theme="dark"] code[class*="language-"] {
+  background: #1e2127;
+  color: #abb2bf;
+}
+
+[data-theme="dark"] .code-block {
+  background: #1e2127;
+}
+
+[data-theme="dark"] .code-header {
+  background: #16181d;
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Custom enhancements */
+.token.error {
+  color: #e06c75;
+  background: rgba(224, 108, 117, 0.1);
+  padding: 0 0.2em;
+  border-radius: 2px;
+}
+
+.token.warning {
+  color: #e5c07b;
+  background: rgba(229, 192, 123, 0.1);
+  padding: 0 0.2em;
+  border-radius: 2px;
+}
+
+/* Inline code (not in code blocks) */
+:not(pre) > code[class*="language-"] {
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  font-size: 0.875em;
+}
+
+[data-theme="dark"] :not(pre) > code[class*="language-"] {
+  background: var(--bg-tertiary);
+  color: var(--accent-light);
+}
+
+/* Selection in code blocks */
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection,
+code[class*="language-"]::selection,
+code[class*="language-"] ::selection {
+  background: rgba(97, 175, 239, 0.3);
+  color: inherit;
+  text-shadow: none;
+}
+
+/* Toolbar for code blocks (if needed) */
+div.code-toolbar {
+  position: relative;
+}
+
+div.code-toolbar > .toolbar {
+  position: absolute;
+  top: 0.3em;
+  left: 0.3em;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+div.code-toolbar:hover > .toolbar {
+  opacity: 1;
+}
+
+div.code-toolbar > .toolbar .toolbar-item {
+  display: inline-block;
+}
+
+div.code-toolbar > .toolbar button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  overflow: visible;
+  padding: 0;
+  user-select: none;
+}
+
+/* Copy button custom styling */
+.copy-button.copied {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.copy-button.copied::after {
+  content: ' ✓';
+}
+
+/* Diff highlighting */
+.token.deleted {
+  background: rgba(224, 108, 117, 0.1);
+}
+
+.token.inserted {
+  background: rgba(152, 195, 121, 0.1);
+}
+
+/* Code block animations */
+@keyframes slideInCode {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.code-block {
+  animation: slideInCode 0.4s ease-out;
+}
+
+/* Scrollbar for code blocks */
+pre[class*="language-"]::-webkit-scrollbar {
+  height: 8px;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-track {
+  background: #21252b;
+  border-radius: 4px;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-thumb {
+  background: #4b5263;
+  border-radius: 4px;
+}
+
+pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+  background: #5c6370;
+}
+
+/* Enhanced SQL syntax */
+.language-sql .token.keyword.sql-command {
+  color: #e06c75;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.language-sql .token.keyword.sql-clause {
+  color: #c678dd;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.language-sql .token.keyword.sql-function {
+  color: #61afef;
+}
+
+/* Database-specific highlighting */
+.token.table-name {
+  color: #e5c07b;
+  font-weight: 600;
+}
+
+.token.column-name {
+  color: #56b6c2;
+}
+
+.token.constraint {
+  color: #e06c75;
+  font-weight: 600;
+}

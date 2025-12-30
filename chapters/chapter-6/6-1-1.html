@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="زبان‌های کار با داده - جبر رابطه‌ای - عملگرهای پایه">
+    <meta name="keywords" content="پایگاه داده, Database Design, جبر رابطه‌ای - عملگرهای پایه">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>جبر رابطه‌ای - عملگرهای پایه | زبان‌های کار با داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">زبان‌های کار با داده</a>
+                <span class="separator">›</span>
+                <span class="current">جبر رابطه‌ای - عملگرهای پایه</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">جبر رابطه‌ای - عملگرهای پایه</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۶: زبان‌های کار با داده (Data Manipulation Languages)</h1>
+
+<h2>مقدمه تعاملی - چرا زبان‌های پرس‌وجو؟</h2>
+
+<p>
+خوب دانشجوی عزیز، تا الان چی کار کردیم؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>فصل 1-2-3: طراحی مفهومی (ER) ✅
+فصل 4: طراحی منطقی (جداول) ✅
+فصل 5: جامعیت (قیود) ✅
+
+حالا سوال:
+→ چطوری داده‌ها رو بازیابی کنیم؟ 🤔
+→ چطوری Query بنویسیم؟
+→ چطوری اطلاعات مورد نیاز رو استخراج کنیم؟
+
+جواب: **زبان‌های کار با داده!** 💡</code></pre></div>
+
+<hr>
+<h3>دو رویکرد اصلی</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[زبان‌های کار با داده<br/>Data Manipulation Languages]
+    
+    B[رویکرد 1:<br/>جبر رابطه‌ای<br/>Relational Algebra<br/>رویه‌ای Procedural]
+    C[رویکرد 2:<br/>حساب رابطه‌ای<br/>Relational Calculus<br/>غیررویه‌ای Non-Procedural]
+    
+    A --> B
+    A --> C
+    
+    B1[چطوری؟<br/>How]
+    B2[گام به گام<br/>Step by Step]
+    B3[دستورات<br/>Operations]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    
+    C1[چی؟<br/>What]
+    C2[تشریحی<br/>Declarative]
+    C3[گزاره منطقی<br/>Logical Formula]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h3>تفاوت جبر و حساب</h3>
+
+<p>
+<strong>جبر رابطه‌ای (Procedural):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال: توليد کنندگانی که شهرشان C2 است؟
+
+جواب با جبر:
+1. از جدول S شروع کن
+2. سطرهایی که City='C2' رو انتخاب کن (σ)
+3. ستون‌های S# و SName رو نگه دار (π)
+
+→ می‌گیم **چطوری** استخراج کنه! 📋</code></pre></div>
+
+<p>
+<strong>حساب رابطه‌ای (Non-Procedural):</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سوال: توليد کنندگانی که شهرشان C2 است؟
+
+جواب با حساب:
+{S | S ∈ Supplier ∧ S.City = 'C2'}
+
+"همه S هایی که عضو Supplier هستن و شهرشون C2 است"
+
+→ می‌گیم **چی** می‌خوایم! 📝</code></pre></div>
+
+<hr>
+<h3>مقایسه کامل</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>جنبه</th><th>جبر رابطه‌ای</th><th>حساب رابطه‌ای</th></tr></thead>
+<tbody>
+<tr><td><strong>نوع</strong></td><td>رویه‌ای (Procedural)</td><td>غیررویه‌ای (Declarative)</td></tr>
+<tr><td><strong>توضیح</strong></td><td>چگونه؟ (How)</td><td>چه چیزی؟ (What)</td></tr>
+<tr><td><strong>سبک</strong></td><td>گام به گام</td><td>تشریحی</td></tr>
+<tr><td><strong>ابزار</strong></td><td>عملگرها (Operators)</td><td>گزاره منطقی (Formula)</td></tr>
+<tr><td><strong>مثال</strong></td><td>σ, π, ⋈, ∪, −</td><td>∃, ∀, ∧, ∨</td></tr>
+<tr><td><strong>نزدیک به</strong></td><td>برنامه‌نویسی</td><td>منطق ریاضی</td></tr>
+<tr><td><strong>SQL</strong></td><td>Imperative</td><td>Declarative</td></tr>
+<tr><td><strong>یادگیری</strong></td><td>ساده‌تر</td><td>پیچیده‌تر</td></tr>
+<tr><td><strong>کاربرد</strong></td><td>پایه SQL</td><td>مبنای نظری</td></tr>
+</tbody></table></div><hr>
+
+<h2>🔷 بخش ۶.۱: جبر رابطه‌ای (Relational Algebra)</h2>
+
+<h3>تعریف</h3>
+
+<p>
+<strong>جبر رابطه‌ای:</strong>  
+مجموعه‌ای از عملگرها (Operators) که روی یک یا دو رابطه عمل می‌کنند و یک رابطه جدید تولید می‌کنند.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1 ─┐
+    ├─ Operator ─→ R3 (رابطه جدید)
+R2 ─┘
+
+**خاصیت بسته بودن (Closure):**
+→ ورودی: رابطه
+→ خروجی: رابطه ✅</code></pre></div>
+
+<hr>
+<h3>طبقه‌بندی عملگرها</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[عملگرهای جبر رابطه‌ای<br/>Relational Algebra Operators]
+    
+    B[عملگرهای متعارف<br/>Set Operators<br/>2-Operand]
+    C[عملگرهای ویژه<br/>Relational Operators<br/>1 or 2-Operand]
+    
+    A --> B
+    A --> C
+    
+    B1[∪<br/>Union<br/>اجتماع]
+    B2[∩<br/>Intersection<br/>اشتراک]
+    B3[−<br/>Difference<br/>تفاضل]
+    B4[×<br/>Cartesian Product<br/>ضرب دکارتی]
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    B --> B4
+    
+    C1[σ<br/>Select<br/>انتخاب]
+    C2[π<br/>Project<br/>برداشت]
+    C3[⋈<br/>Join<br/>پیوند]
+    C4[÷<br/>Division<br/>تقسیم]
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    C --> C4
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<hr>
+<h2>عملگرهای متعارف (Set Operators)</h2>
+
+<h3>پیش‌نیاز: سازگاری (Compatibility)</h3>
+
+<p>
+<strong>دو رابطه R1 و R2 سازگارند اگر:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>1. HR1 = HR2  (مجموعه هدینگ یکسان)
+2. تعداد ستون‌ها برابر
+3. ترتیب ستون‌ها یکسان
+4. دامنه‌های متناظر یکسان</code></pre></div>
+
+<p>
+<strong>مثال سازگار:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student1(StudentID, Name, Major)
+Student2(StudentID, Name, Major)  ✅ سازگار
+
+Student1(StudentID, Name, Major)
+Course(CourseID, CourseName, Credits)  ❌ ناسازگار</code></pre></div>
+
+<hr>
+<h3>1. اجتماع (Union - ∪)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R3 = R1 ∪ R2 = تمام تاپل‌های R1 و R2 (بدون تکرار)
+</p>
+
+<p>
+<strong>شرط:</strong> R1 و R2 باید سازگار باشند.
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 ∪ R2
+HR3 = HR1 = HR2
+|R3| ≤ |R1| + |R2|</code></pre></div>
+
+<hr>
+<h4>مثال 1: دانشجویان دو کلاس</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>کلاس A:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 100 | علی    | CS    |
+| 110 | سارا   | Math  |
+| 120 | رضا    | CS    |
++-----+--------+-------+
+
+کلاس B:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 110 | سارا   | Math  |  ← تکراری!
+| 130 | مینا   | Phys  |
+| 140 | حسین   | Math  |
++-----+--------+-------+
+
+ClassA ∪ ClassB:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 100 | علی    | CS    |
+| 110 | سارا   | Math  |  ← یک بار!
+| 120 | رضا    | CS    |
+| 130 | مینا   | Phys  |
+| 140 | حسین   | Math  |
++-----+--------+-------+
+
+تعداد: 5 (نه 6!) چون سارا تکراری بود</code></pre></div>
+
+<hr>
+<h4>مثال 2: فروشندگان دو شهر</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Tehran:
++----+-------+--------+
+| S# | SName | Status |
++----+-------+--------+
+| 10 | Smith | 100    |
+| 20 | Jones | 200    |
++----+-------+--------+
+
+Shiraz:
++----+-------+--------+
+| S# | SName | Status |
++----+-------+--------+
+| 20 | Jones | 200    |  ← تکراری!
+| 30 | Blake | 150    |
++----+-------+--------+
+
+Tehran ∪ Shiraz:
++----+-------+--------+
+| S# | SName | Status |
++----+-------+--------+
+| 10 | Smith | 100    |
+| 20 | Jones | 200    |  ← یک بار!
+| 30 | Blake | 150    |
++----+-------+--------+</code></pre></div>
+
+<hr>
+<h3>2. اشتراک (Intersection - ∩)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R3 = R1 ∩ R2 = تاپل‌هایی که <strong>هم</strong> در R1 <strong>و هم</strong> در R2 هستند
+</p>
+
+<p>
+<strong>شرط:</strong> R1 و R2 باید سازگار باشند.
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 ∩ R2
+HR3 = HR1 = HR2
+|R3| ≤ min(|R1|, |R2|)</code></pre></div>
+
+<hr>
+<h4>مثال: دانشجویان مشترک</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ClassA:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 100 | علی    | CS    |
+| 110 | سارا   | Math  |
+| 120 | رضا    | CS    |
++-----+--------+-------+
+
+ClassB:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 110 | سارا   | Math  |  ← مشترک!
+| 130 | مینا   | Phys  |
+| 140 | حسین   | Math  |
++-----+--------+-------+
+
+ClassA ∩ ClassB:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 110 | سارا   | Math  |  ← فقط سارا!
++-----+--------+-------+
+
+دانشجویی که هم در A و هم در B ثبت‌نام کرده</code></pre></div>
+
+<hr>
+<h3>3. تفاضل (Difference - −)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R3 = R1 − R2 = تاپل‌های R1 که در R2 <strong>نیستند</strong>
+</p>
+
+<p>
+<strong>شرط:</strong> R1 و R2 باید سازگار باشند.
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 − R2
+HR3 = HR1 = HR2
+|R3| ≤ |R1|</code></pre></div>
+
+<p>
+<strong>⚠️ نکته:</strong> R1 − R2 ≠ R2 − R1 (جابه‌جایی ندارد!)
+</p>
+
+<hr>
+<h4>مثال: دانشجویان منحصربه‌فرد</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ClassA:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 100 | علی    | CS    |
+| 110 | سارا   | Math  |
+| 120 | رضا    | CS    |
++-----+--------+-------+
+
+ClassB:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 110 | سارا   | Math  |
+| 130 | مینا   | Phys  |
+| 140 | حسین   | Math  |
++-----+--------+-------+
+
+ClassA − ClassB:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 100 | علی    | CS    |  ← فقط در A
+| 120 | رضا    | CS    |  ← فقط در A
++-----+--------+-------+
+
+دانشجویانی که فقط در A هستن (نه در B)
+
+ClassB − ClassA:
++-----+--------+-------+
+| ID  | Name   | Major |
++-----+--------+-------+
+| 130 | مینا   | Phys  |  ← فقط در B
+| 140 | حسین   | Math  |  ← فقط در B
++-----+--------+-------+
+
+دانشجویانی که فقط در B هستن (نه در A)</code></pre></div>
+
+<hr>
+<h3>4. ضرب دکارتی (Cartesian Product - ×)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R3 = R1 × R2 = ترکیب هر تاپل از R1 با هر تاپل از R2
+</p>
+
+<p>
+<strong>بدون شرط سازگاری!</strong>
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 × R2
+HR3 = HR1 ∪ HR2 − (HR1 ∩ HR2)
+|R3| = |R1| × |R2|</code></pre></div>
+
+<p>
+<strong>⚠️ نکته مهم:</strong> اگر صفت همنام داشته باشند، در ضرب دکارتی حذف می‌شوند!  
+برای نگه‌داشتن، باید <strong>Rename</strong> کنیم.
+</p>
+
+<hr>
+<h4>مثال 1: ساده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A:
++----+----+
+| a  | b  |
++----+----+
+| a1 | b1 |
+| a2 | b2 |
++----+----+
+
+B:
++----+----+
+| c  | d  |
++----+----+
+| c1 | d1 |
+| c2 | d2 |
++----+----+
+
+A × B:
++----+----+----+----+
+| a  | b  | c  | d  |
++----+----+----+----+
+| a1 | b1 | c1 | d1 |  ← (a1,b1) با (c1,d1)
+| a1 | b1 | c2 | d2 |  ← (a1,b1) با (c2,d2)
+| a2 | b2 | c1 | d1 |  ← (a2,b2) با (c1,d1)
+| a2 | b2 | c2 | d2 |  ← (a2,b2) با (c2,d2)
++----+----+----+----+
+
+تعداد: 2 × 2 = 4</code></pre></div>
+
+<hr>
+<h4>مثال 2: Student و Course</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student:
++-----+--------+
+| SID | SName  |
++-----+--------+
+| 100 | علی    |
+| 110 | سارا   |
++-----+--------+
+
+Course:
++-----+-----------+
+| CID | CName     |
++-----+-----------+
+| 201 | Database  |
+| 202 | Algorithm |
++-----+-----------+
+
+Student × Course:
++-----+--------+-----+-----------+
+| SID | SName  | CID | CName     |
++-----+--------+-----+-----------+
+| 100 | علی    | 201 | Database  |
+| 100 | علی    | 202 | Algorithm |
+| 110 | سارا   | 201 | Database  |
+| 110 | سارا   | 202 | Algorithm |
++-----+--------+-----+-----------+
+
+تعداد: 2 × 2 = 4
+
+معنا: همه ترکیب‌های ممکن دانشجو-درس</code></pre></div>
+
+<hr>
+<h4>مثال 3: صفت همنام (Rename)</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1:
++----+----+
+| a  | b  |
++----+----+
+| a1 | b1 |
+| a2 | b2 |
++----+----+
+
+R2:
++----+----+
+| b  | c  |  ← b همنام!
++----+----+
+| b3 | c1 |
+| b4 | c2 |
++----+----+
+
+❌ R1 × R2 (بدون Rename):
+b از یکی حذف می‌شه! ← مشکل!
+
+✅ R1 × ρ(b→b2)(R2):
++----+----+----+----+
+| a  | b  | b2 | c  |
++----+----+----+----+
+| a1 | b1 | b3 | c1 |
+| a1 | b1 | b4 | c2 |
+| a2 | b2 | b3 | c1 |
+| a2 | b2 | b4 | c2 |
++----+----+----+----+
+
+ρ = Rename operator</code></pre></div>
+
+<hr>
+<h2>عملگرهای ویژه (Relational Operators)</h2>
+
+<h3>5. انتخاب (Select/Restrict - σ)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+σc(R) = سطرهایی از R که شرط c در آنها <strong>صادق</strong> است
+</p>
+
+<p>
+<strong>یک عملگر تک‌عملوندی!</strong>
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R2 = σc(R1)
+HR2 = HR1  (هدینگ تغییر نمی‌کنه)
+|R2| ≤ |R1|  (تعداد سطر کمتر یا برابر)</code></pre></div>
+
+<hr>
+<h4>مثال 1: انتخاب ساده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S (Supplier):
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Tehran | 150    |
+| 40 | Clark  | Yazd   | 100    |
++----+--------+--------+--------+
+
+σCity='Tehran'(S):
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |  ← فقط Tehran
+| 30 | Blake  | Tehran | 150    |  ← فقط Tehran
++----+--------+--------+--------+
+
+معنا: فروشندگانی که ساکن تهران هستند</code></pre></div>
+
+<hr>
+<h4>مثال 2: شرط مرکب</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>σCity='Tehran' ∧ Status&gt;100(S):
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 30 | Blake  | Tehran | 150    |  ← Tehran و Status&gt;100
++----+--------+--------+--------+
+
+معنا: فروشندگان تهرانی با وضعیت بالای 100</code></pre></div>
+
+<hr>
+<h4>مثال 3: شرط OR</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>σCity='Tehran' ∨ City='Shiraz'(S):
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Tehran | 150    |
++----+--------+--------+--------+
+
+معنا: فروشندگان تهران یا شیراز</code></pre></div>
+
+<hr>
+<h4>انواع شرط</h4>
+
+<p>
+<strong>شرط ساده:</strong>
+</p>
+<ul>
+<li>σCity='C2'(S)</li>
+<li>σStatus>100(S)</li>
+<li>σS#=10(S)</li>
+</ul>
+
+<p>
+<strong>شرط مرکب:</strong>
+</p>
+<ul>
+<li>σCity='C2' ∧ Status>100(S)  → AND</li>
+<li>σCity='C2' ∨ City='C3'(S)  → OR</li>
+<li>σ¬(Status>100)(S)  → NOT</li>
+</ul>
+
+<p>
+<strong>مقایسه ستون‌ها:</strong>
+</p>
+<ul>
+<li>σA>B(R)</li>
+<li>σPrice>Cost*2(Product)</li>
+</ul>
+
+
+<hr>
+<h3>6. برداشت (Project - π)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+πcol-list(R) = ستون‌های مشخص شده از R
+</p>
+
+<p>
+<strong>یک عملگر تک‌عملوندی!</strong>
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R2 = πcol-list(R1)
+HR2 ⊆ HR1  (زیرمجموعه هدینگ)
+|R2| ≤ |R1|  (ممکنه تکراری حذف بشه)</code></pre></div>
+
+<p>
+<strong>⚠️ نکته:</strong> اگر در col-list کلید کاندید باشد → |R2| = |R1|
+</p>
+
+<hr>
+<h4>مثال 1: برداشت ساده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Tehran | 150    |
++----+--------+--------+--------+
+
+πS#,SName(S):
++----+--------+
+| S# | SName  |
++----+--------+
+| 10 | Smith  |
+| 20 | Jones  |
+| 30 | Blake  |
++----+--------+
+
+معنا: فقط کد و نام فروشندگان</code></pre></div>
+
+<hr>
+<h4>مثال 2: حذف تکراری</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Tehran | 150    |
+| 40 | Adams  | Tehran | 180    |
++----+--------+--------+--------+
+
+πCity(S):
++--------+
+| City   |
++--------+
+| Tehran |  ← یک بار!
+| Shiraz |
++--------+
+
+تعداد: 2 (نه 4!) چون Tehran تکراری بود</code></pre></div>
+
+<hr>
+<h4>مثال 3: ترکیب Select و Project</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>**سؤال:** نام فروشندگانی که ساکن تهران هستند؟
+
+πSName(σCity='Tehran'(S)):
+
+گام 1: σCity='Tehran'(S)
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 30 | Blake  | Tehran | 150    |
++----+--------+--------+--------+
+
+گام 2: πSName(...)
++--------+
+| SName  |
++--------+
+| Smith  |
+| Blake  |
++--------+
+
+یا معادل SQL:
+SELECT SName
+FROM S
+WHERE City = 'Tehran';</code></pre></div>
+
+<hr>
+<p>
+<em>ادامه دارد... (Join, Division و مثال‌های پیچیده در بخش بعدی)</em>
+</p>
+
+
+
+                </div>
+
+                <div class="page-navigation"><a href="../chapter-5/5-3.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">قیود خاص</span></a><a href="6-1-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">جبر رابطه‌ای - عملگرهای پیشرفته</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>

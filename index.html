@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="مرجع جامع درس طراحی پایگاه داده - از مفاهیم بنیادی تا نرمال‌سازی پیشرفته">
+    <meta name="keywords" content="پایگاه داده, Database Design, ER, EER, نرمال‌سازی, SQL, مدل رابطه‌ای">
+    <meta name="author" content="سید سجاد پیراهش">
+    
+    <title>طراحی پایگاه داده | سید سجاد پیراهش</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Hero Section */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            animation: fadeInUp 0.8s ease-out;
+            background: white;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out;
+            text-align: center;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1.2s ease-out;
+        }
+        
+        .btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.0625rem;
+            transition: all var(--transition-base);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: var(--spacing-2xl) var(--spacing-md);
+            background: var(--bg-secondary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: var(--spacing-xl);
+            background: var(--bg-color);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: transform var(--transition-base);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9375rem;
+        }
+        
+        /* Chapters Section */
+        .chapters {
+            padding: var(--spacing-2xl) var(--spacing-md);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            animation: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .chapter-card {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .chapter-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 102, 204, 0.05) 0%, transparent 70%);
+            transition: all var(--transition-slow);
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .chapter-card:hover::before {
+            transform: scale(1.2);
+        }
+        
+        .chapter-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chapter-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chapter-description {
+            font-size: 0.9375rem;
+            color: var(--text-light);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chapter-sections {
+            font-size: 0.875rem;
+            color: var(--text-lighter);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: var(--spacing-2xl) var(--spacing-md);
+            background: var(--bg-secondary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            padding: var(--spacing-xl);
+            background: var(--bg-color);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+        
+        .feature-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .feature-description {
+            font-size: 0.9375rem;
+            color: var(--text-light);
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: var(--spacing-2xl) var(--spacing-md);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-md);
+            animation: none;
+            border: none;
+            padding: 0;
+            background: white;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .cta p {
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.95;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .chapters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>📚 طراحی پایگاه داده</h1>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 2rem;">
+                    <img src="assets/images/university_logo.png" 
+                         alt="دانشگاه آزاد اسلامی تبریز"
+                         style="width: 100px; height: 100px; border-radius: 50%; background: white; padding: 0.8rem; border: 4px solid white;">
+                    <div style="text-align: right;">
+                        <p style="font-size: 1.3rem; font-weight: 600; margin: 0; color: white;">سید سجاد پیراهش</p>
+                        <p style="font-size: 1rem; margin: 0.3rem 0 0 0; color: rgba(255,255,255,0.9);">دانشگاه آزاد اسلامی تبریز</p>
+                    </div>
+                </div>
+
+            <h1>مرجع جامع طراحی پایگاه داده</h1>
+            <p>
+                از مفاهیم بنیادی تا نرمال‌سازی پیشرفته<br>
+                همراه با مثال‌های عملی و نمودارهای تعاملی
+            </p>
+            <div class="hero-buttons">
+                <a href="chapters/chapter-1/1-1-1.html" class="btn btn-primary">
+                    🚀 شروع یادگیری
+                </a>
+                <a href="#chapters" class="btn btn-secondary">
+                    📖 مشاهده فصل‌ها
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-number">7</div>
+                <div class="stat-label">فصل آموزشی</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-number">33</div>
+                <div class="stat-label">بخش جداگانه</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-number">200+</div>
+                <div class="stat-label">مثال عملی</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✍️</div>
+                <div class="stat-number">150+</div>
+                <div class="stat-label">تمرین متنوع</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapters Section -->
+    <section id="chapters" class="chapters">
+        <div class="section-header">
+            <h2>فصل‌های دوره</h2>
+            <p>مسیر یادگیری کامل از صفر تا صد طراحی پایگاه داده</p>
+        </div>
+        
+        <div class="chapters-grid">
+            <!-- Chapter 1 -->
+            <a href="chapters/chapter-1/1-1-1.html" class="chapter-card">
+                <div class="chapter-icon">📚</div>
+                <div class="chapter-title">فصل ۱: مفاهیم بنیادی</div>
+                <div class="chapter-description">
+                    داده، اطلاع، دانش، سلسله مراتب، معماری‌های مختلف و تاریخچه DBMS
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۷ بخش</span>
+                </div>
+            </a>
+
+            <!-- Chapter 2 -->
+            <a href="chapters/chapter-2/2-1-1.html" class="chapter-card">
+                <div class="chapter-icon">🎯</div>
+                <div class="chapter-title">فصل ۲: مدل‌سازی ER/EER</div>
+                <div class="chapter-description">
+                    موجودیت، صفات، ارتباطات، چندی، وراثت و مفاهیم پیشرفته
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۹ بخش</span>
+                </div>
+            </a>
+
+            <!-- Chapter 3 -->
+            <a href="chapters/chapter-3/3-1.html" class="chapter-card">
+                <div class="chapter-icon">🏗️</div>
+                <div class="chapter-title">فصل ۳: معماری و دیدها</div>
+                <div class="chapter-description">
+                    HDS، معماری ANSI-SPARC، دیدها و استقلال داده‌ای
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۴ بخش</span>
+                </div>
+            </a>
+
+            <!-- Chapter 4 -->
+            <a href="chapters/chapter-4/4-1.html" class="chapter-card">
+                <div class="chapter-icon">📊</div>
+                <div class="chapter-title">فصل ۴: مدل رابطه‌ای</div>
+                <div class="chapter-description">
+                    تعریف ریاضی، کلیدها و قواعد نگاشت از ER به Relational
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۵ بخش</span>
+                </div>
+            </a>
+
+            <!-- Chapter 5 -->
+            <a href="chapters/chapter-5/5-1-2.html" class="chapter-card">
+                <div class="chapter-icon">🔒</div>
+                <div class="chapter-title">فصل ۵: جامعیت</div>
+                <div class="chapter-description">
+                    قیود دامنه، جامعیت موجودیت و ارجاعی، قیود کسب‌وکار
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۲ بخش</span>
+                </div>
+            </a>
+
+            <!-- Chapter 6 -->
+            <a href="chapters/chapter-6/6-1-1.html" class="chapter-card">
+                <div class="chapter-icon">💻</div>
+                <div class="chapter-title">فصل ۶: زبان‌های Query</div>
+                <div class="chapter-description">
+                    جبر رابطه‌ای، حساب رابطه‌ای و عملگرهای پیشرفته
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۳ بخش</span>
+                </div>
+            </a>
+
+            <!-- Chapter 7 -->
+            <a href="chapters/chapter-7/7-1.html" class="chapter-card">
+                <div class="chapter-icon">⚡</div>
+                <div class="chapter-title">فصل ۷: نرمال‌سازی</div>
+                <div class="chapter-description">
+                    آنومالی، وابستگی تابعی، فرم‌های نرمال از 1NF تا 5NF
+                </div>
+                <div class="chapter-sections">
+                    <span>📄</span>
+                    <span>۳ بخش</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="section-header">
+            <h2>ویژگی‌های دوره</h2>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <div class="feature-title">محتوای جامع</div>
+                <div class="feature-description">
+                    پوشش کامل تمام مباحث از پایه تا پیشرفته
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <div class="feature-title">مثال‌های عملی</div>
+                <div class="feature-description">
+                    مثال‌های واقعی از دانشگاه و کسب‌وکار
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">نمودارهای تعاملی</div>
+                <div class="feature-description">
+                    نمودارهای ER/EER با کیفیت بالا
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">جستجوی قدرتمند</div>
+                <div class="feature-description">
+                    جستجو در تمام محتوای دوره
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Responsive</div>
+                <div class="feature-description">
+                    سازگار با موبایل، تبلت و دسکتاپ
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌙</div>
+                <div class="feature-title">تم تاریک</div>
+                <div class="feature-description">
+                    تم روشن و تاریک برای راحتی مطالعه
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>آماده شروع یادگیری هستید؟</h2>
+        <p>همین الان شروع کنید و به متخصص طراحی پایگاه داده تبدیل شوید</p>
+        <a href="chapters/chapter-1/1-1-1.html" class="btn btn-primary">
+            شروع از فصل اول
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© ۱۴۰۴ سید سجاد پیراهش | دانشگاه آزاد اسلامی واحد تبریز</p>
+            <p>
+                <a href="https://github.com/s-pirahesh/db-design-course" target="_blank">
+                    🔗 GitHub Repository
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/search.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        // Theme Toggle for Index Page
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            });
+        }
+    </script>
+
+    <footer class="page-footer" style="margin-top: 4rem; padding: 3rem 0; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; text-align: center;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+            <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">سید سجاد پیراهش</p>
+            <p style="font-size: 0.95rem; opacity: 0.9; margin-bottom: 0.3rem;">دانشگاه آزاد اسلامی تبریز</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 1rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+        </div>
+    </footer>
+</body>
+</html>

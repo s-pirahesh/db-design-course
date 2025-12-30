@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="زبان‌های کار با داده - جبر رابطه‌ای - عملگرهای پیشرفته">
+    <meta name="keywords" content="پایگاه داده, Database Design, جبر رابطه‌ای - عملگرهای پیشرفته">
+    <meta name="author" content="دکتر سجاد پیراهش">
+    
+    <title>جبر رابطه‌ای - عملگرهای پیشرفته | زبان‌های کار با داده | طراحی پایگاه داده</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/syntax-highlight.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+    
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid
+        document.addEventListener('DOMContentLoaded', function() {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    curve: 'basis'
+                },
+                themeVariables: {
+                    fontSize: '16px',
+                    fontFamily: 'Vazirmatn, Arial'
+                }
+            });
+        });
+    </script>
+    
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <h1>📚 طراحی پایگاه داده</h1>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">
+                    🌙
+                </button>
+                <button id="search-toggle" class="search-toggle" aria-label="جستجو">
+                    🔍
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>فهرست مطالب</h2>
+                <button id="sidebar-close" class="sidebar-close">✕</button>
+            </div>
+            <div class="sidebar-logo" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
+                <img src="../../assets/images/university_logo.png" alt="دانشگاه آزاد اسلامی تبریز" style="width: 60px; height: 60px; border-radius: 50%; background: white; padding: 0.3rem; border: 2px solid #14B8A6; flex-shrink: 0;">
+                <div style="flex: 1; min-width: 0;">
+                    <p style="font-size: 0.9rem; color: var(--text-color); font-weight: 600; margin: 0; font-family: 'Vazirmatn', Arial, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">سید سجاد پیراهش</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light); opacity: 0.8; margin: 0.25rem 0 0 0; font-family: 'Vazirmatn', Arial, sans-serif;">دانشگاه آزاد تبریز</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav" id="sidebar-nav">
+                <!-- Navigation will be loaded by JavaScript -->
+            </nav>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p class="progress-text" id="progress-text">پیشرفت: 0 از 33 بخش</p>
+            </div>
+        </aside>
+
+        <button id="sidebar-toggle" class="sidebar-toggle mobile-only">
+            ☰
+        </button>
+
+        <main class="main-content">
+            <nav class="breadcrumb" aria-label="مسیر">
+                <a href="../../index.html">خانه</a>
+                <span class="separator">›</span>
+                <a href="#">زبان‌های کار با داده</a>
+                <span class="separator">›</span>
+                <span class="current">جبر رابطه‌ای - عملگرهای پیشرفته</span>
+            </nav>
+
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">جبر رابطه‌ای - عملگرهای پیشرفته</h1>
+                </header>
+
+                <div class="article-content">
+                    <h1>📚 فصل ۶: جبر رابطه‌ای - ادامه</h1>
+
+<h2>عملگرهای ویژه - بخش دوم</h2>
+
+<h3>7. پیوند (Join - ⋈)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R1 ⋈θ R2 = ضرب دکارتی R1 × R2 و سپس انتخاب سطرهایی که شرط θ را برقرار می‌کنند
+</p>
+
+<p>
+<strong>یک عملگر دوعملوندی!</strong>
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 ⋈θ R2
+R3 = σθ(R1 × R2)  ← تعریف دقیق
+
+HR3 = HR1 ∪ HR2 − (HR1 ∩ HR2)
+|R3| ≤ |R1| × |R2|</code></pre></div>
+
+<p>
+<strong>خواص:</strong>
+</p>
+<ul>
+<li>شرکت‌پذیری: (R1 ⋈ R2) ⋈ R3 = R1 ⋈ (R2 ⋈ R3) ✅</li>
+<li>جابه‌جایی: R1 ⋈ R2 = R2 ⋈ R1 ✅</li>
+<li>بسته بودن: نتیجه باز هم رابطه است ✅</li>
+</ul>
+
+<hr>
+<h4>مثال پایه: S و SP</h4>
+
+<p>
+<strong>جداول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S (Supplier):
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Isfahan| 150    |
++----+--------+--------+--------+
+
+SP (Supply):
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 300 |
+| 10 | 2  | 200 |
+| 20 | 1  | 400 |
+| 30 | 3  | 200 |
++----+----+-----+</code></pre></div>
+
+<p>
+<strong>سؤال:</strong> اطلاعات فروشندگان به همراه قطعاتی که تولید می‌کنند؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S ⋈S.S#=SP.S# SP:
+
++----+--------+--------+--------+----+-----+
+| S# | SName  | City   | Status | P# | Qty |
++----+--------+--------+--------+----+-----+
+| 10 | Smith  | Tehran | 100    | 1  | 300 |  ← S#=10 پیوند خورده
+| 10 | Smith  | Tehran | 100    | 2  | 200 |  ← S#=10 پیوند خورده
+| 20 | Jones  | Shiraz | 200    | 1  | 400 |  ← S#=20 پیوند خورده
+| 30 | Blake  | Isfahan| 150    | 3  | 200 |  ← S#=30 پیوند خورده
++----+--------+--------+--------+----+-----+
+
+سطرهای پیوند شدنی (Joinable): همه!</code></pre></div>
+
+<hr>
+<h3>انواع Join</h3>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph TB
+    A[انواع Join]
+    
+    B[Theta Join<br/>⋈θ]
+    C[Equi Join<br/>⋈A=B]
+    D[Natural Join<br/>⋈]
+    E[Outer Join<br/>⟕ ⟖ ⟗]
+    F[Semi Join<br/>⋉ ⋊]
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    A --> F
+    
+    B1[شرط کلی<br/>>، <، ≥، ≤، =، ≠]
+    C1[شرط فقط =<br/>مساوی]
+    D1[شرط =<br/>همنام<br/>حذف تکراری]
+    E1[LEFT، RIGHT، FULL<br/>شامل نشدنی‌ها]
+    F1[فقط ستون‌های<br/>سمت چپ/راست]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    E --> E1
+    F --> F1
+    
+    style C fill:#3498db,color:#fff
+    style D fill:#2ecc71,color:#fff
+    style E fill:#f39c12,color:#fff
+</pre></div>
+
+<hr>
+<h3>7.1. Theta Join (پیوند تتا)</h3>
+
+<p>
+<strong>شرط:</strong> هر نوع مقایسه (=, >, <, ≥, ≤, ≠)
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1 ⋈θ R2
+θ می‌تونه هر شرطی باشه</code></pre></div>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Employee:
++-----+--------+--------+
+| EID | Name   | Salary |
++-----+--------+--------+
+| 100 | علی    | 500000 |
+| 110 | سارا   | 700000 |
+| 120 | رضا    | 600000 |
++-----+--------+--------+
+
+Department:
++-----+--------+--------+
+| DID | DName  | Budget |
++-----+--------+--------+
+| 10  | CS     | 550000 |
+| 20  | Math   | 650000 |
++-----+--------+--------+
+
+Employee ⋈Salary&gt;Budget Department:
+
++-----+--------+--------+-----+--------+--------+
+| EID | Name   | Salary | DID | DName  | Budget |
++-----+--------+--------+-----+--------+--------+
+| 110 | سارا   | 700000 | 10  | CS     | 550000 |  ← 700000 &gt; 550000 ✅
+| 110 | سارا   | 700000 | 20  | Math   | 650000 |  ← 700000 &gt; 650000 ✅
+| 120 | رضا    | 600000 | 10  | CS     | 550000 |  ← 600000 &gt; 550000 ✅
++-----+--------+--------+-----+--------+--------+
+
+کارمندانی که حقوقشون بیشتر از بودجه‌ی اداره است</code></pre></div>
+
+<hr>
+<h3>7.2. Equi Join (پیوند مساوی)</h3>
+
+<p>
+<strong>شرط:</strong> <strong>فقط =</strong> (مساوی)
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1 ⋈A=B R2</code></pre></div>
+
+<p>
+<strong>مثال - S و SP:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S ⋈S#=SP.S# SP:
+
+نتیجه شامل دو ستون S#:
++----+--------+--------+----+----+-----+
+| S# | SName  | City   | S# | P# | Qty |  ← دو ستون S#!
++----+--------+--------+----+----+-----+
+| 10 | Smith  | Tehran | 10 | 1  | 300 |
+| 10 | Smith  | Tehran | 10 | 2  | 200 |
+| 20 | Jones  | Shiraz | 20 | 1  | 400 |
+| 30 | Blake  | Isfahan| 30 | 3  | 200 |
++----+--------+--------+----+----+-----+
+
+⚠️ مشکل: S# تکراریه!</code></pre></div>
+
+<hr>
+<h3>7.3. Natural Join (پیوند طبیعی)</h3>
+
+<p>
+<strong>ویژگی‌ها:</strong>
+</p>
+<ol>
+<li>شرط <strong>حتماً =</strong> (مساوی)</li>
+<li><strong>حتماً صفات همنام</strong> داشته باشیم</li>
+<li><strong>ستون مشترک یک بار</strong> در نتیجه (حذف تکراری)</li>
+</ol>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1 ⋈ R2  (بدون شرط!)
+→ خودکار روی همه صفات همنام و هم‌دامنه</code></pre></div>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S ⋈ SP
+= S ⋈S#=SP.S# SP با حذف یکی از S#ها</code></pre></div>
+
+<hr>
+<h4>مثال 1: S ⋈ SP</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S:
++----+--------+--------+--------+
+| S# | SName  | City   | Status |
++----+--------+--------+--------+
+| 10 | Smith  | Tehran | 100    |
+| 20 | Jones  | Shiraz | 200    |
+| 30 | Blake  | Isfahan| 150    |
++----+--------+--------+--------+
+
+SP:
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 300 |
+| 10 | 2  | 200 |
+| 20 | 1  | 400 |
+| 30 | 3  | 200 |
++----+----+-----+
+
+S ⋈ SP:
++----+--------+--------+--------+----+-----+
+| S# | SName  | City   | Status | P# | Qty |
++----+--------+--------+--------+----+-----+
+| 10 | Smith  | Tehran | 100    | 1  | 300 |
+| 10 | Smith  | Tehran | 100    | 2  | 200 |
+| 20 | Jones  | Shiraz | 200    | 1  | 400 |
+| 30 | Blake  | Isfahan| 150    | 3  | 200 |
++----+--------+--------+--------+----+-----+
+
+S# فقط یک بار! ✅</code></pre></div>
+
+<hr>
+<h4>مثال 2: S ⋈ SP ⋈ P</h4>
+
+<p>
+<strong>سؤال:</strong> اطلاعات کامل فروشنده-قطعه-محصول؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>P (Product):
++----+--------+-------+--------+
+| P# | PName  | Color | Weight |
++----+--------+-------+--------+
+| 1  | Nut    | Red   | 12     |
+| 2  | Bolt   | Green | 17     |
+| 3  | Screw  | Blue  | 14     |
++----+--------+-------+--------+
+
+S ⋈ SP ⋈ P:
+
+گام 1: S ⋈ SP (از قبل داریم)
+
+گام 2: (S ⋈ SP) ⋈ P
++----+--------+--------+--------+----+-----+--------+-------+--------+
+| S# | SName  | City   | Status | P# | Qty | PName  | Color | Weight |
++----+--------+--------+--------+----+-----+--------+-------+--------+
+| 10 | Smith  | Tehran | 100    | 1  | 300 | Nut    | Red   | 12     |
+| 10 | Smith  | Tehran | 100    | 2  | 200 | Bolt   | Green | 17     |
+| 20 | Jones  | Shiraz | 200    | 1  | 400 | Nut    | Red   | 12     |
+| 30 | Blake  | Isfahan| 150    | 3  | 200 | Screw  | Blue  | 14     |
++----+--------+--------+--------+----+-----+--------+-------+--------+
+
+اطلاعات کامل: فروشنده چه قطعه‌ای با چه مشخصاتی تولید می‌کنه</code></pre></div>
+
+<hr>
+<h3>مثال پیچیده: Query با Join</h3>
+
+<p>
+<strong>سؤال:</strong> نام فروشندگانی که قطعات قرمز رنگ تولید می‌کنند؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>**تحلیل:**
+1. اطلاعات فروشنده → S
+2. اطلاعات قطعه → P
+3. رابطه بینشون → SP
+4. شرط: Color='Red'
+5. خروجی: SName
+
+**راه‌حل:**
+πSName(σColor='Red'(S ⋈ SP ⋈ P))
+
+گام به گام:
+
+گام 1: S ⋈ SP ⋈ P (از قبل داریم)
+
+گام 2: σColor='Red'(...)
++----+--------+--------+--------+----+-----+--------+-------+--------+
+| S# | SName  | City   | Status | P# | Qty | PName  | Color | Weight |
++----+--------+--------+--------+----+-----+--------+-------+--------+
+| 10 | Smith  | Tehran | 100    | 1  | 300 | Nut    | Red   | 12     |  ✅
+| 20 | Jones  | Shiraz | 200    | 1  | 400 | Nut    | Red   | 12     |  ✅
++----+--------+--------+--------+----+-----+--------+-------+--------+
+
+گام 3: πSName(...)
++--------+
+| SName  |
++--------+
+| Smith  |
+| Jones  |
++--------+
+
+جواب: Smith و Jones قطعات قرمز تولید می‌کنن!</code></pre></div>
+
+<hr>
+<p>
+<strong>مثال پیچیده‌تر:</strong>
+</p>
+
+<p>
+<strong>سؤال:</strong> نام فروشندگانی که قطعات قرمز رنگ را با تعداد بیش از 250 تولید می‌کنند؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>πSName(σColor='Red' ∧ Qty&gt;250(S ⋈ SP ⋈ P))
+
+گام 1: S ⋈ SP ⋈ P
+
+گام 2: σColor='Red' ∧ Qty&gt;250(...)
++----+--------+--------+--------+----+-----+--------+-------+--------+
+| S# | SName  | City   | Status | P# | Qty | PName  | Color | Weight |
++----+--------+--------+--------+----+-----+--------+-------+--------+
+| 10 | Smith  | Tehran | 100    | 1  | 300 | Nut    | Red   | 12     |  ✅ Red + 300&gt;250
+| 20 | Jones  | Shiraz | 200    | 1  | 400 | Nut    | Red   | 12     |  ✅ Red + 400&gt;250
++----+--------+--------+--------+----+-----+--------+-------+--------+
+
+گام 3: πSName(...)
++--------+
+| SName  |
++--------+
+| Smith  |
+| Jones  |
++--------+</code></pre></div>
+
+<hr>
+<h3>سطرهای پیوند شدنی و نشدنی</h3>
+
+<p>
+<strong>تعریف:</strong>
+</p>
+<ul>
+<li><strong>سطرهای پیوند شدنی (Joinable):</strong> سطرهایی که در Join شرکت می‌کنند</li>
+<li><strong>سطرهای پیوند نشدنی (Non-Joinable):</strong> سطرهایی که در Join شرکت نمی‌کنند</li>
+</ul>
+
+<p>
+<strong>مثال:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>S:
++----+--------+--------+
+| S# | SName  | City   |
++----+--------+--------+
+| 10 | Smith  | Tehran |  ← پیوند شدنی (SP داره)
+| 20 | Jones  | Shiraz |  ← پیوند شدنی (SP داره)
+| 40 | Adams  | Yazd   |  ← پیوند نشدنی (SP نداره!)
++----+--------+--------+
+
+SP:
++----+----+-----+
+| S# | P# | Qty |
++----+----+-----+
+| 10 | 1  | 300 |
+| 20 | 1  | 400 |
++----+----+-----+
+
+S ⋈ SP:
++----+--------+--------+----+-----+
+| S# | SName  | City   | P# | Qty |
++----+--------+--------+----+-----+
+| 10 | Smith  | Tehran | 1  | 300 |  ← شدنی
+| 20 | Jones  | Shiraz | 1  | 400 |  ← شدنی
++----+--------+--------+----+-----+
+
+Adams (S#=40) در نتیجه نیست! ← پیوند نشدنی</code></pre></div>
+
+<hr>
+<h3>7.4. Outer Join (فراپیوند)</h3>
+
+<p>
+<strong>هدف:</strong> شامل کردن سطرهای پیوند نشدنی هم!
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Outer Join]
+    
+    B[LEFT<br/>⟕]
+    C[RIGHT<br/>⟖]
+    D[FULL<br/>⟗]
+    
+    A --> B
+    A --> C
+    A --> D
+    
+    B1[نشدنی چپ<br/>شدنی راست]
+    C1[شدنی چپ<br/>نشدنی راست]
+    D1[نشدنی چپ<br/>نشدنی راست]
+    
+    B --> B1
+    C --> C1
+    D --> D1
+    
+    style B fill:#3498db,color:#fff
+    style C fill:#2ecc71,color:#fff
+    style D fill:#f39c12,color:#fff
+</pre></div>
+
+<hr>
+<h4>LEFT OUTER JOIN (⟕)</h4>
+
+<p>
+<strong>تعریف:</strong> همه سطرهای چپ + سطرهای پیوند شدنی راست
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A ⟕ B
+
+A:
++---+---+
+| a | b |
++---+---+
+| a1| b1|  ← پیوند شدنی
+| a2| b2|  ← پیوند شدنی
+| a3| b3|  ← پیوند نشدنی!
++---+---+
+
+B:
++---+---+
+| b | c |
++---+---+
+| b2| c2|
+| b3| c3|
+| b4| c4|  ← در A نیست
++---+---+
+
+A ⟕ B:
++---+---+------+
+| a | b | c    |
++---+---+------+
+| a2| b2| c2   |  ← شدنی
+| a3| b3| c3   |  ← شدنی
+| a1| b1| NULL |  ← نشدنی از چپ (a1 در B نیست)
++---+---+------+
+
+همه سطرهای A + شدنی‌های B</code></pre></div>
+
+<hr>
+<h4>RIGHT OUTER JOIN (⟖)</h4>
+
+<p>
+<strong>تعریف:</strong> سطرهای پیوند شدنی چپ + همه سطرهای راست
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A ⟖ B:
++---+---+---+
+| a | b | c |
++---+---+---+
+| a2| b2| c2|  ← شدنی
+| a3| b3| c3|  ← شدنی
+|NULL| b4| c4|  ← نشدنی از راست (b4 در A نیست)
++---+---+---+
+
+شدنی‌های A + همه سطرهای B</code></pre></div>
+
+<hr>
+<h4>FULL OUTER JOIN (⟗)</h4>
+
+<p>
+<strong>تعریف:</strong> همه سطرهای چپ + همه سطرهای راست
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A ⟗ B:
++-----+---+------+
+| a   | b | c    |
++-----+---+------+
+| a2  | b2| c2   |  ← شدنی
+| a3  | b3| c3   |  ← شدنی
+| a1  | b1| NULL |  ← نشدنی از چپ
+| NULL| b4| c4   |  ← نشدنی از راست
++-----+---+------+
+
+همه A + همه B</code></pre></div>
+
+<hr>
+<h3>7.5. Semi Join (نیم پیوند)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R1 ⋉c R2 = فقط ستون‌های R1 که با R2 پیوند می‌خورند
+</p>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1 ⋉c R2 = πHR1(R1 ⋈c R2)
+HR3 = HR1  (فقط هدینگ چپ!)</code></pre></div>
+
+<p>
+<strong>استفاده:</strong> پیدا کردن سطرهای پیوند شدنی از سمت چپ
+</p>
+
+<hr>
+<h4>مثال: Semi Join</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A:
++---+---+
+| a | b |
++---+---+
+| a1| b1|
+| a2| b2|
+| a3| b3|
++---+---+
+
+B:
++---+---+
+| b | c |
++---+---+
+| b2| c2|
+| b3| c3|
+| b4| c4|
++---+---+
+
+A ⋉A.b=B.b B:
++---+---+
+| a | b |  ← فقط ستون‌های A!
++---+---+
+| a2| b2|  ← a2 با B پیوند خورد
+| a3| b3|  ← a3 با B پیوند خورد
++---+---+
+
+a1 نیست چون b1 در B نبود!
+
+با نیم پیوند می‌توانیم سطرهای پیوند شدنی رابطه سمت چپ را بدست آوریم.</code></pre></div>
+
+<hr>
+<h3>7.6. Semi Minus (نیم تفریق)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R1 ⋉̸ R2 = سطرهای R1 که با R2 پیوند <strong>نمی‌خورند</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>A ⋉̸ B:
++---+---+
+| a | b |
++---+---+
+| a1| b1|  ← a1 با B پیوند نخورد
++---+---+
+
+سطرهای پیوند نشدنی از چپ</code></pre></div>
+
+<hr>
+<h3>8. تقسیم (Division - ÷)</h3>
+
+<p>
+<strong>تعریف:</strong>  
+R1 ÷ R2 = تاپل‌هایی از R1 که با <strong>همه</strong> تاپل‌های R2 ارتباط دارند
+</p>
+
+<p>
+<strong>شرط:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>HR2 ⊆ HR1  (هدینگ R2 زیرمجموعه R1)
+HR3 = HR1 − HR2</code></pre></div>
+
+<p>
+<strong>فرمول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 ÷ R2</code></pre></div>
+
+<hr>
+<h4>مثال کلاسیک: فروشنده‌هایی که <strong>همه</strong> قطعات رو تولید می‌کنن</h4>
+
+<p>
+<strong>جداول:</strong>
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>SP:
++----+----+
+| S# | P# |
++----+----+
+| 10 | 1  |  ← S10 تولید P1
+| 10 | 2  |  ← S10 تولید P2
+| 10 | 3  |  ← S10 تولید P3
+| 20 | 1  |  ← S20 تولید P1
+| 20 | 2  |  ← S20 تولید P2 (نه P3!)
+| 30 | 1  |  ← S30 تولید P1 (فقط!)
++----+----+
+
+P:
++----+
+| P# |
++----+
+| 1  |  ← قطعه 1
+| 2  |  ← قطعه 2
+| 3  |  ← قطعه 3
++----+
+
+سؤال: کدام فروشنده همه قطعات (1, 2, 3) رو تولید می‌کنه؟
+
+πS#,P#(SP) ÷ πP#(P):
+
++----+
+| S# |
++----+
+| 10 |  ← فقط S10! (چون هر سه قطعه رو داره)
++----+
+
+چرا S20 نیست؟ → چون P3 رو نداره
+چرا S30 نیست؟ → چون فقط P1 رو داره</code></pre></div>
+
+<hr>
+<h4>مثال 2: دانشجویی که <strong>همه</strong> دروس رشته CS رو گذرونده</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Enrollment:
++-----+-----+
+| SID | CID |
++-----+-----+
+| 100 | 201 |  ← Student 100, Course 201
+| 100 | 202 |  ← Student 100, Course 202
+| 100 | 203 |  ← Student 100, Course 203
+| 110 | 201 |  ← Student 110, Course 201
+| 110 | 202 |  ← Student 110, Course 202
++-----+-----+
+
+CS_Courses:
++-----+
+| CID |
++-----+
+| 201 |  ← درس CS شماره 1
+| 202 |  ← درس CS شماره 2
+| 203 |  ← درس CS شماره 3
++-----+
+
+سؤال: کدام دانشجو همه دروس CS رو گذرونده؟
+
+Enrollment ÷ CS_Courses:
+
++-----+
+| SID |
++-----+
+| 100 |  ← فقط Student 100!
++-----+
+
+چرا 110 نیست؟ → چون Course 203 رو نداره</code></pre></div>
+
+<hr>
+<h2>خلاصه عملگرهای جبر رابطه‌ای</h2>
+
+<div class="table-container"><table>
+<thead><tr><th>عملگر</th><th>نماد</th><th>نوع</th><th>شرط</th><th>خروجی</th></tr></thead>
+<tbody>
+<tr><td><strong>Union</strong></td><td>∪</td><td>Set</td><td>سازگار</td><td>R1 + R2</td></tr>
+<tr><td><strong>Intersection</strong></td><td>∩</td><td>Set</td><td>سازگار</td><td>R1 مشترک R2</td></tr>
+<tr><td><strong>Difference</strong></td><td>−</td><td>Set</td><td>سازگار</td><td>R1 − R2</td></tr>
+<tr><td><strong>Cartesian</strong></td><td>×</td><td>Set</td><td>-</td><td>R1 × R2</td></tr>
+<tr><td><strong>Select</strong></td><td>σc</td><td>Unary</td><td>-</td><td>سطرهای True</td></tr>
+<tr><td><strong>Project</strong></td><td>πcols</td><td>Unary</td><td>-</td><td>ستون‌های مشخص</td></tr>
+<tr><td><strong>Join</strong></td><td>⋈θ</td><td>Binary</td><td>شرط θ</td><td>ضرب + انتخاب</td></tr>
+<tr><td><strong>Natural Join</strong></td><td>⋈</td><td>Binary</td><td>= همنام</td><td>Join + حذف تکراری</td></tr>
+<tr><td><strong>Outer Join</strong></td><td>⟕⟖⟗</td><td>Binary</td><td>+ نشدنی</td><td>Join + NULL</td></tr>
+<tr><td><strong>Semi Join</strong></td><td>⋉</td><td>Binary</td><td>-</td><td>فقط ستون چپ</td></tr>
+<tr><td><strong>Division</strong></td><td>÷</td><td>Binary</td><td>HR2⊆HR1</td><td>"برای همه"</td></tr>
+</tbody></table></div><hr>
+
+<h2>✍️ تمرینات بخش ۶.۱ (جبر رابطه‌ای)</h2>
+
+<h3>تمرین 1 (تشریحی): Query‌های پایه</h3>
+
+<p>
+با استفاده از جداول S, P, SP پاسخ دهید:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) نام فروشندگانی که ساکن شیراز هستند؟
+ب) قطعاتی که وزنشان بیش از 15 است؟
+ج) فروشندگانی که وضعیتشان بیش از 150 است؟
+د) کد قطعاتی که فروشنده S10 تولید می‌کند؟
+ه) نام و شهر فروشندگانی که قطعه P1 تولید می‌کنند؟</code></pre></div>
+
+<hr>
+<h3>تمرین 2 (تستی):</h3>
+
+<p>
+کدام گزینه <strong>نادرست</strong> است؟
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>الف) در Natural Join، ستون مشترک دو بار در نتیجه ظاهر می‌شود.
+ب) عملگر Division برای پیدا کردن "برای همه" استفاده می‌شود.
+ج) LEFT OUTER JOIN شامل همه سطرهای چپ است.
+د) Semi Join فقط ستون‌های رابطه سمت چپ را برمی‌گرداند.</code></pre></div>
+
+<hr>
+<h3>تمرین 3 (تحلیلی): Query پیچیده</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی که هم قطعات قرمز و هم قطعات سبز تولید می‌کنند را بیابید.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>**راهنمایی:**
+1. فروشندگان قطعات قرمز
+2. فروشندگان قطعات سبز
+3. اشتراک آنها</code></pre></div>
+
+<hr>
+<h3>تمرین 4 (طراحی): دانشگاه</h3>
+
+<p>
+با جداول زیر:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>Student(StudentID, Name, Major)
+Course(CourseID, CourseName, Credits)
+Instructor(InstructorID, Name, Department)
+Enrollment(StudentID, CourseID, InstructorID, Semester, Grade)</code></pre></div>
+
+<p>
+<strong>بنویسید:</strong>
+</p>
+<ul>
+<li>الف) نام دانشجویانی که در ترم Fall2024 ثبت‌نام کرده‌اند</li>
+<li>ب) اساتیدی که دانشجو Major='CS' تدریس می‌کنند</li>
+<li>ج) دروسی که هیچ دانشجویی ثبت‌نام نکرده (با Outer Join)</li>
+<li>د) دانشجویانی که همه دروس اجباری CS را گذرانده‌اند (با Division)</li>
+</ul>
+
+<hr>
+<h3>تمرین 5 (مفهومی):</h3>
+
+<p>
+<strong>سؤال 1:</strong> تفاوت Equi Join و Natural Join با مثال توضیح دهید.
+</p>
+
+<p>
+<strong>سؤال 2:</strong> چرا عملگر Division برای "همه" استفاده می‌شود؟
+</p>
+
+<p>
+<strong>سؤال 3:</strong> کاربرد عملگر Semi Join چیست؟
+</p>
+
+<hr>
+<h3>تمرین 6 (پیشرفته): Query بسیار پیچیده</h3>
+
+<p>
+<strong>سؤال:</strong> فروشندگانی را بیابید که:
+</p>
+<ol>
+<li>ساکن تهران یا شیراز هستند</li>
+<li>حداقل 3 قطعه مختلف تولید می‌کنند</li>
+<li>هیچ قطعه آبی رنگی تولید نمی‌کنند</li>
+<li>مجموع تعداد تولیدشان بیش از 500 است</li>
+</ol>
+
+<p>
+<strong>راهنمایی:</strong> ترکیب σ, π, ⋈, GROUP BY (جبر توسعه‌یافته)
+</p>
+
+<hr>
+<p>
+<em>بخش بعدی: حساب رابطه‌ای با مثال Actor-Movie</em>
+</p>
+
+                </div>
+
+                <div class="page-navigation"><a href="6-1-1.html" class="nav-btn nav-prev"><span class="nav-arrow">→</span> بخش قبل<br><span class="nav-title">جبر رابطه‌ای - عملگرهای پایه</span></a><a href="6-2.html" class="nav-btn nav-next">بخش بعد <span class="nav-arrow">←</span><br><span class="nav-title">حساب رابطه‌ای</span></a></div>
+
+                
+            </article>
+
+            <button id="back-to-top" class="back-to-top" aria-label="بازگشت به بالا">
+                ↑
+            </button>
+
+            <footer class="page-footer" style="margin-top: 3rem; padding: 2rem 0; border-top: 2px solid var(--border-color); text-align: center; background: var(--bg-secondary);">
+                <p style="margin: 0.5rem 0; font-weight: 600; color: var(--primary-color); font-size: 1rem;"><strong>سید سجاد پیراهش</strong> - دانشگاه آزاد اسلامی تبریز</p>
+                <p style="margin: 0.5rem 0; color: var(--text-light); font-size: 0.9rem;">© 1403-1404 تمامی حقوق محفوظ است | طراحی پایگاه داده</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-header">
+                <input type="text" id="search-input" placeholder="جستجو در مطالب..." autofocus>
+                <button id="search-close" class="search-close">✕</button>
+            </div>
+            <div id="search-results" class="search-results">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../assets/js/navigation.js"></script>
+    <script src="../../assets/js/search.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    
+    <script>
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✓ کپی شد!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                btn.textContent = '✗ خطا';
+                setTimeout(() => {
+                    btn.textContent = '📋 کپی';
+                }, 2000);
+            });
+        }
+        
+        // Share article function
+        function shareArticle() {
+            const url = window.location.href;
+            const title = document.title;
+            
+            if (navigator.share) {
+                navigator.share({ title, url }).catch(err => console.log('Share canceled'));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('لینک کپی شد!');
+                });
+            }
+        }
+    </script>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+            
+            // بارگذاری تم ذخیره شده یا پیش‌فرض
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // تغییر تم با کلیک
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label', theme === 'dark' ? 'تغییر به تم روشن' : 'تغییر به تم تاریک');
+            }
+        })();
+    </script>
+</body>
+</html>
