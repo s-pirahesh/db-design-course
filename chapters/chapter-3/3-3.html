@@ -148,7 +148,7 @@
 <h3>📖 تعریف View</h3>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>دید خارجی:</strong> دید کاربر خاص است نسبت به داده‌های ذخیره‌شده. در دیدهای قبلی، تمام داده‌ها دیده می‌شدند و کلی بودند ولی دید خارجی یک دید <strong>جزئی</strong> است و فقط محدوده‌ای از داده‌ها را می‌بیند.
 </p>
 
@@ -212,7 +212,6 @@ graph TB
 <h3>🎨 ساختار CREATE VIEW</h3>
 
 <p>
-<strong>:</strong>  
 نحوه تعریف View با زبان SQL:
 </p>
 
@@ -222,7 +221,7 @@ AS
 [WITH CHECK OPTION];</code></pre></div>
 
 <p>
-<strong>نکته :</strong>  
+<strong>نکته:</strong>  
 علامت <code>[ ]</code> به معنی <strong>اختیاری بودن</strong> است. اگر اسامی ستون‌های View با ستون‌های جدول اصلی یکسان باشد می‌توانیم ننویسیم.
 </p>
 
@@ -282,7 +281,6 @@ SELECT * FROM SalaryView;</code></pre></div>
 <h4>مثال 2: View با WHERE - شهر خاص</h4>
 
 <p>
-<strong>:</strong>
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE VIEW V2 (SCode, Status, City) AS
@@ -301,7 +299,6 @@ WHERE (City &lt;&gt; 'C3') AND (Account &gt; 100);</code></pre></div>
 <h4>مثال 3: View با JOIN - چند جدول</h4>
 
 <p>
-<strong>:</strong>
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- S: Supplier, P: Part, SP: Supply
@@ -410,7 +407,6 @@ mindmap
 <h4>2️⃣ مکانیزم اتوماتیک امنیت (Data Hidden)</h4>
 
 <p>
-<strong>:</strong>  
 مکانیزم اتوماتیک امنیت پایگاه داده‌ها با پیاده‌سازی مفهوم <strong>داده نهان</strong>.
 </p>
 
@@ -425,7 +421,6 @@ FROM Employee;
 <h4>3️⃣ تأمین‌کننده استقلال داده‌ای</h4>
 
 <p>
-<strong>:</strong>  
 تأمین‌کننده استقلال داده‌ای (Data Independency) که از مزایای مهم تکنولوژی دیتابیس است.
 </p>
 
@@ -441,7 +436,6 @@ ALTER TABLE Employee ADD Email NVARCHAR(100);
 <h4>4️⃣ تسهیل‌کننده برنامه‌سازی</h4>
 
 <p>
-<strong>:</strong>  
 تسهیل‌کننده برنامه‌سازی است چون کاربر با یک ساختار محدود کار می‌نماید و نه با جداول بزرگ.
 </p>
 
@@ -455,7 +449,6 @@ View SalaryView: 3 ستون ✅
 <h3>❌ معایب View</h3>
 
 <p>
-<strong>:</strong>
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -474,7 +467,6 @@ mindmap
 <h4>1️⃣ مشکلات جدی در عملیات ذخیره‌سازی</h4>
 
 <p>
-<strong>:</strong>  
 مشکلات جدی در عملیات ذخیره‌سازی.
 </p>
 
@@ -489,7 +481,6 @@ View آماری:
 <h4>2️⃣ فزون‌کاری (Overhead)</h4>
 
 <p>
-<strong>:</strong>  
 فزون‌کاری یا Overhead ناشی از لزوم انجام تبادلات (نگاشت‌ها).
 </p>
 
@@ -499,7 +490,7 @@ View آماری:
 → کندی ❌</code></pre></div>
 
 <p>
-<strong>دلایل دیگر بروز Overhead در DBMS‌ها ():</strong>
+<strong>دلایل دیگر بروز Overhead در DBMS‌ها:</strong>
 </p>
 
 <ol>
@@ -543,7 +534,6 @@ graph TB
 <h4>شرط 1: روی یک جدول مبنا</h4>
 
 <p>
-<strong>:</strong>  
 این دید باید روی یک جدول مبنا و یک دید قابل به‌هنگام‌سازی تعریف شده باشد.
 </p>
 
@@ -572,7 +562,6 @@ FROM T1 JOIN T2 ON T1.A1 = T2.B1;
 <h4>شرط 2: هر سطر متناظر با یک سطر جدول</h4>
 
 <p>
-<strong>:</strong>  
 هر سطر دید باید متناظر با یک سطر جدول مبنا باشد (اگر کلید داشته باشد این شرط می‌تواند برقرار باشد).
 </p>
 
@@ -590,7 +579,6 @@ FROM Employee;
 <h4>شرط 3: هر ستون متناظر با یک ستون مشخص</h4>
 
 <p>
-<strong>:</strong>  
 هر ستون باید متناظر با یک ستون مشخص از جدول مبنا باشد. بنابر این اگر در یک دید ستون مجازی داشته باشیم (دید آماری باشد) این دید قابل به‌هنگام‌سازی نمی‌باشد.
 </p>
 
@@ -608,7 +596,6 @@ GROUP BY Department;
 <h4>شرط 4 و 5: بدون GROUP BY و HAVING</h4>
 
 <p>
-<strong>:</strong>  
 اگر در یک دید، GROUP BY داشته باشیم، آن دید قابل به‌هنگام‌سازی نمی‌باشد. اگر در یک دید، HAVING داشته باشیم، آن دید قابل به‌هنگام‌سازی نمی‌باشد.
 </p>
 
@@ -619,14 +606,24 @@ FROM Employee
 GROUP BY Department;</code></pre></div>
 
 <p>
-<strong>نکته :</strong>  
-HAVING فقط برای ۶ دستور به‌کار می‌رود: <code>COUNT</code>, <code>AVG</code>, <code>SUM</code>, <code>MAX</code>, <code>MIN</code>, <code>COUNT(DISTINCT)</code>.
+<strong>نکته:</strong>
+HAVING معمولاً همراه با توابع تجمیعی (Aggregate) به كار می‌رود: <code>COUNT</code>, <code>AVG</code>, <code>SUM</code>, <code>MAX</code>, <code>MIN</code> و وقتی این توابع در دید استفاده شوند، دید قابل به‌هنگام‌سازی نخواهد بود (چون هر سطر دید نتیجه ترکیب چند سطر جدول مبناست).
 </p>
+
+<h4>شرط 6: بدون DISTINCT</h4>
+
+<p>
+اگر در دید از <code>SELECT DISTINCT</code> استفاده شده باشد، چندین سطر مختلف از جدول مبنا ممكن است به یك سطر دید نگاشت شوند؛ در این حالت DBMS نمی‌داند به‌روزرسانی روی كدام سطر اعمال شود، پس دید قابل به‌هنگام‌سازی نیست.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ❌ NOT Updatable (DISTINCT)
+CREATE VIEW V_Cities AS
+SELECT DISTINCT City
+FROM Employee;</code></pre></div>
 
 <h4>شرط 7: ستون‌های NOT NULL</h4>
 
 <p>
-<strong>:</strong>  
 از ستون‌های <code>NOT NULL</code> در جدول چند تا را نداشته باشیم INSERT نمی‌شود انجام داد ولی UPDATE و DELETE می‌توان انجام داد.
 </p>
 
@@ -655,7 +652,6 @@ DELETE FROM V1 WHERE EmpID = 100;</code></pre></div>
 <h3>🔗 نگاشت بین لایه‌ها (Mapping)</h3>
 
 <p>
-<strong>:</strong>
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">

@@ -209,7 +209,15 @@ mindmap
 <h3>1️⃣ استقلال فیزیکی (PDI - Physical Data Independence)</h3>
 
 <p>
-<strong>تعریف:</strong> مصونیت برنامه‌های کاربردی کاربران در قبال تغییرات سطح داخلی یا ادراکی پایگاه که تغییرات در محیط فیزیکی را هم در بر دارد. در سطح داخلی (فیزیکی یا فایلینگ).
+<strong>تعریف دقیق:</strong> مصونیت <strong>سطح ادراكی</strong> (و در نتیجه برنامه‌های كاربردی) در قبال تغییراتی كه در <strong>سطح داخلی</strong> یا <strong>ذخیره‌سازی فیزیكی</strong> پایگاه رخ می‌دهد.
+</p>
+
+<p>
+به زبان دقیق ANSI/SPARC: PDI یعنی نگاشت <strong>Conceptual/Internal</strong> طوری طراحی شده باشد كه تغییرات سطح داخلی <strong>به شِمای ادراكی نفوذ نكند</strong>؛ در نتیجه شِماهای خارجی (Views) و برنامه‌های كاربر دست‌نخورده می‌مانند.
+</p>
+
+<p>
+<strong>توجه مرزی:</strong> در برخی منابع گفته می‌شود «تغییرات سطح داخلی <em>یا ادراكی</em>». این عبارت ممكن است گمراه‌كننده باشد: تغییرات سطح ادراكی در دامنه استقلال <strong>منطقی (LDI)</strong> است، نه PDI. PDI صرفاً به مرز Conceptual↔Internal مربوط می‌شود.
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -408,9 +416,26 @@ SELECT * FROM Employee WHERE Year = 2024;
 <h3>2️⃣ استقلال منطقی (LDI - Logical Data Independence)</h3>
 
 <p>
-<strong>تعریف:</strong>  
-مصونیت برنامه‌های کاربردی در قبال تغییرات در <strong>سطح ادراکی</strong> (جداول، ستون‌ها، ساختار منطقی).
+<strong>تعریف دقیق:</strong>
+مصونیت <strong>شِماهای خارجی (Views)</strong> و در نتیجه برنامه‌های کاربردی در قبال تغییرات در <strong>سطح ادراکی</strong> (جداول، ستون‌ها، ساختار منطقی).
 </p>
+
+<p>
+به زبان ANSI/SPARC: LDI یعنی نگاشت <strong>External/Conceptual</strong> طوری بازتعریف شود كه تغییرات شِمای ادراكی <strong>به دید خارجی نفوذ نكند</strong>.
+</p>
+
+<p>
+<strong>تفاوت كلیدی PDI و LDI:</strong>
+</p>
+<div class="table-container"><table>
+<thead><tr><th>ویژگی</th><th>PDI (فیزیكی)</th><th>LDI (منطقی)</th></tr></thead>
+<tbody>
+<tr><td><strong>چه چیزی تغییر می‌كند؟</strong></td><td>سطح داخلی (فایل، ایندكس، …)</td><td>سطح ادراكی (جداول، ستون‌ها)</td></tr>
+<tr><td><strong>چه چیزی محافظت می‌شود؟</strong></td><td>سطح ادراكی</td><td>سطح خارجی (Views)</td></tr>
+<tr><td><strong>نگاشت مسئول</strong></td><td>Conceptual/Internal</td><td>External/Conceptual</td></tr>
+<tr><td><strong>تأمین آن</strong></td><td>نسبتاً ساده — DBMS خودكار</td><td>دشوار — به طراحی Viewها وابسته</td></tr>
+<tr><td><strong>عملیات DML</strong></td><td>100% تأمین</td><td>برای SELECT بله؛ برای INSERT/UPDATE/DELETE روی View چندجدولی نیاز به INSTEAD OF Trigger</td></tr>
+</tbody></table></div>
 
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
@@ -857,7 +882,6 @@ SELECT * FROM All_Employee WHERE IsArchived = 1;
 <h4>تکنیک تعریف View روی View</h4>
 
 <p>
-<strong>:</strong>  
 مفهوم دید و مکانیزم دید بر روی دید به این ترتیب که قبل از حذف جدول مبنای S همین جدول را (با همان نام و همان ستون‌ها) به صورت یک View تعریف می‌نماییم.
 </p>
 
