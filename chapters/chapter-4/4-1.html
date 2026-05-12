@@ -429,6 +429,45 @@ Student = {
 → فقط ترکیبات معتبر (با معنا!)
 → مثلاً: فقط یک دانشجوی Ali با ID=100 داریم ✅</code></pre></div>
 
+<h4>نمایش بصری ضرب دکارتی و رابطه</h4>
+
+<p>
+رابطه واقعی <strong>زیرمجموعه‌ای کوچک</strong> از فضای بسیار بزرگ ضرب دکارتی است:
+</p>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    subgraph CP ["D₁ × D₂ × D₃ (ضرب دکارتی - همه ترکیبات ممکن)"]
+        T1["⟨100, Ali, CS⟩"]
+        T2["⟨100, Ali, Math⟩"]
+        T3["⟨100, Sara, CS⟩"]
+        T4["⟨110, Sara, Math⟩"]
+        T5["⟨120, Reza, Physics⟩"]
+        T6["⟨999, X, Z⟩ ..."]
+    end
+
+    subgraph R ["Student ⊆ D₁ × D₂ × D₃ (تاپل‌های معتبر)"]
+        V1["⟨100, Ali, CS⟩ ✓"]
+        V2["⟨110, Sara, Math⟩ ✓"]
+        V3["⟨120, Reza, Physics⟩ ✓"]
+    end
+
+    CP -->|انتخاب تاپل‌های معنادار| R
+
+    style CP fill:#fef3c7
+    style R fill:#dcfce7
+    style T1 fill:#fff
+    style T2 fill:#fff
+    style T3 fill:#fff
+    style T4 fill:#fff
+    style T5 fill:#fff
+    style T6 fill:#fff
+</pre></div>
+
+<p>
+<strong>مثال عددی:</strong> اگر |D₁|=3، |D₂|=3، |D₃|=3 باشد، ضرب دکارتی <strong>3×3×3 = 27</strong> تاپل ممکن دارد؛ ولی رابطه واقعی شاید فقط 3 تاپل داشته باشد. این تفاوت کلیدی بین "فضای حالت ممکن" و "حالت‌های معتبر" است.
+</p>
+
 <hr>
 <h3>📊 خواص رابطه</h3>
 

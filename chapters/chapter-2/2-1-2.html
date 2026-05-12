@@ -217,14 +217,12 @@ graph LR
 <div class="mermaid-container"><pre class="mermaid">
 graph LR
     A[Student]
-    B((StudentID))
-    
+    B((StudentID<br/>شناسه - PK))
+
     A --- B
-    
-    B -.->|شناسه| B
-    
+
     style A fill:#3498db,color:#fff
-    style B fill:#f39c12,color:#fff
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
 </pre></div>
 
 <p>
@@ -510,16 +508,14 @@ graph LR
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
     A[Student]
-    
-    A --> B((StudentID))
-    A --> C((Name))
-    A --> D((PhoneNumber))
-    A --> E((Email))
-    
-    B -.->|PK| B
-    
+
+    A --- B((StudentID<br/>PK))
+    A --- C((Name))
+    A === D((PhoneNumber))
+    A === E((Email))
+
     style A fill:#3498db,color:#fff
-    style B fill:#f39c12,color:#fff
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
     style C fill:#2ecc71,color:#fff
     style D fill:#f39c12,color:#fff,stroke:#000,stroke-width:4px
     style E fill:#f39c12,color:#fff,stroke:#000,stroke-width:4px
@@ -551,13 +547,11 @@ graph TB
 graph LR
     A[Student]
     B((BirthDate<br/>واقعی))
-    C((Age<br/>مجازی))
-    
+    C((Age<br/>مجازی<br/>محاسبه از BirthDate))
+
     A --- B
-    A --- C
-    
-    C -.->|محاسبه از BirthDate| C
-    
+    A -.- C
+
     style A fill:#3498db,color:#fff
     style B fill:#2ecc71,color:#fff
     style C fill:#9b59b6,color:#fff,stroke-dasharray: 5 5
@@ -824,21 +818,18 @@ SELECT Name * 2 FROM Students; -- ❌ ضرب STRING؟!</code></pre></div>
 graph TB
     A[Student]
     
-    A --> B((StudentID<br/>شناسه، تک مقداری<br/>واقعی، Not Null))
-    A --> C((FullName<br/>مرکب، تک مقداری<br/>واقعی، Not Null))
-    A --> D((PhoneNumber<br/>چندمقداری<br/>واقعی، Nullable))
-    A --> E((BirthDate<br/>تک مقداری<br/>واقعی، Not Null))
-    A --> F((Age<br/>مجازی<br/>تک مقداری))
-    A --> G((Email<br/>چندمقداری<br/>واقعی، Nullable))
-    
-    C --> C1((FirstName))
-    C --> C2((LastName))
-    
-    B -.->|PK| B
-    F -.->|از BirthDate| F
+    A --- B((StudentID<br/>PK، تک‌مقداری))
+    A --- C((FullName<br/>مرکب، تک‌مقداری))
+    A === D((PhoneNumber<br/>چندمقداری))
+    A --- E((BirthDate<br/>تک‌مقداری))
+    A -.- F((Age<br/>مجازی))
+    A === G((Email<br/>چندمقداری))
+
+    C --- C1((FirstName))
+    C --- C2((LastName))
     
     style A fill:#3498db,color:#fff
-    style B fill:#f39c12,color:#fff
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
     style C fill:#e74c3c,color:#fff
     style D fill:#9b59b6,color:#fff,stroke:#000,stroke-width:4px
     style E fill:#2ecc71,color:#fff
