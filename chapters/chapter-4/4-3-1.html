@@ -387,6 +387,133 @@ P(P#, PName, Color, Price, Weight)
 ✅ <strong>نکته 5:</strong> دامنه مناسب برای هر صفت
 </p>
 
+<hr>
+<h3>📋 قاعده‌هاي تكميلي نگاشت صفات</h3>
+
+<p>
+قبل از سراغ ارتباط‌ها، چند قاعده مهم درباره نگاشت <strong>انواع مختلف صفات</strong> از ER به رابطه‌اي وجود دارد:
+</p>
+
+<h4>الف) صفت ساده (Simple/Atomic)</h4>
+<p>
+صفت ساده مستقیماً به یك <strong>ستون</strong> در جدول نگاشت مي‌شود. مثال: <code>Name VARCHAR(50)</code>.
+</p>
+
+<h4>ب) صفت مركب (Composite)</h4>
+<p>
+صفت مركب به <strong>چند ستون</strong> در همان جدول تبدیل مي‌شود (Flatten). صفت مادر در جدول ذخیره نمي‌شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ER: FullName (FirstName + LastName) — مركب
+-- RDB:
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    FirstName NVARCHAR(50),  -- جزء مركب
+    LastName  NVARCHAR(50)   -- جزء مركب
+    -- FullName ذخیره نمي‌شود
+);</code></pre></div>
+
+<h4>ج) صفت چندمقداري (Multivalued)</h4>
+<p>
+صفت چندمقداري نمي‌تواند در همان جدول قرار گیرد (نقض 1NF). راه حل: ساخت یك <strong>جدول جداگانه</strong> با PK تركیبي (PK موجودیت + خود صفت).
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ER: Student با صفت چندمقداري PhoneNumber
+-- RDB:
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50)
+);
+
+CREATE TABLE Student_Phone (
+    StudentID INT,
+    PhoneNumber VARCHAR(15),
+    PRIMARY KEY (StudentID, PhoneNumber),
+    FOREIGN KEY (StudentID) REFERENCES Student(StudentID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);</code></pre></div>
+
+<h4>د) صفت مجازي/مشتق‌شده (Derived)</h4>
+<p>
+<strong>قاعده مهم:</strong> صفت مجازي را <strong>ذخیره نمي‌كنیم</strong>. این صفت از سایر صفات قابل محاسبه است و ذخیره آن باعث <strong>افزونگي</strong> و خطر <strong>ناسازگاري</strong> مي‌شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- ER: Student با BirthDate (واقعي) و Age (مجازي)
+-- ❌ نادرست:
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    BirthDate DATE,
+    Age INT  -- ❌ افزونگي! با گذشت زمان، خراب مي‌شود
+);
+
+-- ✅ درست: محاسبه در زمان اجرا
+CREATE TABLE Student (
+    StudentID INT PRIMARY KEY,
+    BirthDate DATE
+);
+
+-- در زمان query:
+SELECT
+    StudentID,
+    BirthDate,
+    DATEDIFF(YEAR, BirthDate, GETDATE()) AS Age
+FROM Student;
+
+-- یا با Computed Column (در SQL Server):
+ALTER TABLE Student ADD Age AS DATEDIFF(YEAR, BirthDate, GETDATE());</code></pre></div>
+
+<p>
+<strong>استثنا:</strong> در سیستم‌هاي بسیار پربازدید با محاسبات گران، گاهي صفت مجازي به‌صورت <strong>Materialized</strong> (با Trigger براي به‌روزرساني) ذخیره مي‌شود؛ اما این یك بهینه‌سازي است نه قاعده طراحي.
+</p>
+
+<hr>
+<h3>🔗 عملیات‌هاي FK (Foreign Key Actions)</h3>
+
+<p>
+هنگام تعریف Foreign Key، باید مشخص كنیم اگر سطر مادر (Parent) <strong>حذف</strong> یا <strong>به‌روزرسانی</strong> شد، با سطرهاي فرزند (Child) چه كنیم. SQL استاندارد چهار گزینه دارد:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>عملیات</th><th>معني</th><th>كاربرد معمول</th></tr></thead>
+<tbody>
+<tr><td><strong>CASCADE</strong></td><td>حذف/تغییر در فرزند هم اعمال شود</td><td>موجودیت ضعیف (FamilyMember حذف وقتی Employee حذف)</td></tr>
+<tr><td><strong>SET NULL</strong></td><td>مقدار FK در فرزند NULL شود</td><td>ارتباط اختیاري (Employee.ManagerID وقتی Manager حذف)</td></tr>
+<tr><td><strong>SET DEFAULT</strong></td><td>مقدار FK به مقدار پیش‌فرض برگردد</td><td>كم‌كاربرد</td></tr>
+<tr><td><strong>RESTRICT / NO ACTION</strong></td><td>اگر فرزند وجود دارد، اجازه حذف/تغییر مادر داده نشود</td><td>پیش‌فرض؛ ارتباط الزامي</td></tr>
+</tbody></table></div>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- مثال: حالت‌هاي مختلف FK Action
+
+-- 1) موجودیت ضعیف → CASCADE
+CREATE TABLE OrderItem (
+    OrderID INT,
+    ItemNo INT,
+    PRIMARY KEY (OrderID, ItemNo),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- 2) ارتباط اختیاري → SET NULL
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    ManagerID INT NULL,
+    FOREIGN KEY (ManagerID) REFERENCES Employee(EmpID)
+        ON DELETE SET NULL
+);
+
+-- 3) ارتباط الزامي → RESTRICT (پیش‌فرض)
+CREATE TABLE Course (
+    CourseID INT PRIMARY KEY,
+    DepartmentID INT NOT NULL,
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID)
+        ON DELETE RESTRICT
+);</code></pre></div>
+
+<p>
+<strong>نكته:</strong> <code>ON DELETE</code> و <code>ON UPDATE</code> مي‌توانند گزینه‌هاي مختلف داشته باشند. اگر مشخص نكنید، پیش‌فرض معمولاً <code>NO ACTION</code> است.
+</p>
+
 
 <hr>
 <h2>🔷 حالت 2: نگاشت ارتباط M:N (Many-to-Many)</h2>
