@@ -134,7 +134,6 @@
 <h3>📖 تعریف صفت (Attribute)</h3>
 
 <p>
-<strong>:</strong>  
 هر نوع موجودیت دارای صفاتی است که <strong>معرف آن نوع موجودیت</strong> هستند.
 </p>
 
@@ -160,7 +159,7 @@ graph TB
 <strong>صفات = ویژگی‌های موجودیت</strong>
 </p>
 
-<h4>خصوصیات صفت ()</h4>
+<h4>خصوصیات صفت</h4>
 
 <div class="mermaid-container"><pre class="mermaid">
 mindmap
@@ -210,7 +209,7 @@ graph LR
 <h4>1. صفت شناسه (Identifier / Key Attribute)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 صفت شناسه: صفتی است که در بین مجموعه نمونه‌های آن موجودیت <strong>مقدار منحصر به فرد</strong> داشته باشد (Unique).
 </p>
 
@@ -249,7 +248,6 @@ graph LR
 <h4>نکته: چند صفت شناسه</h4>
 
 <p>
-<strong>:</strong>  
 "یک موجودیت می‌تواند <strong>بیش از یک صفت شناسه</strong> داشته باشد."
 </p>
 
@@ -265,10 +263,9 @@ graph LR
 یک صفت شناسه باید به عنوان <strong>صفت شناسه اصلی (Primary Key)</strong> انتخاب شود.
 </p>
 
-<h4>ضابطه انتخاب شناسه اصلی ()</h4>
+<h4>ضابطه انتخاب شناسه اصلی</h4>
 
 <p>
-<strong>:</strong>  
 یک صفت شناسه از بین صفات شناسه باید بعنوان صفت شناسه اصلی انتخاب شود:
 </p>
 <ul>
@@ -291,7 +288,7 @@ graph LR
 <h4>2. صفت ناشناسه (Non-Key Attribute)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 صفت ناشناسه: صفتی که در نمونه موجودیت‌های یک موجودیت، <strong>یکتایی مقدار نداشته باشد</strong>.
 </p>
 
@@ -306,7 +303,7 @@ graph LR
 <h4>1. صفت ساده (Simple / Atomic Attribute)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 صفت ساده: صفتی است که <strong>تجزیه‌ناپذیر</strong> باشد (Atomic). اجزایش در محیط معنی نداشته باشد.
 </p>
 
@@ -422,7 +419,7 @@ graph TB
 <h4>1. صفت تک‌مقداری (Single-Valued Attribute)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 تک‌مقداری: صفتی که به ازای هر نمونه موجودیت <strong>فقط یک مقدار</strong> داشته باشد.
 </p>
 
@@ -459,7 +456,7 @@ graph LR
 <h4>2. صفت چندمقداری (Multi-Valued Attribute)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 چندمقداری: صفتی که به ازای هر نمونه موجودیت می‌تواند <strong>بیش از یک مقدار</strong> داشته باشد.
 </p>
 
@@ -539,7 +536,7 @@ graph TB
 <h4>2. صفت مجازی (Derived / Computed Attribute)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 مجازی: مقدار این صفت دارد <strong>محاسبه شود</strong>. خود صفت می‌تواند ذخیره شود یا نشود.
 </p>
 
@@ -614,12 +611,12 @@ Age = CurrentDate - BirthDate
 <h4>1. صفت هیچ‌مقدار پذیر (Nullable)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 هیچ‌مقدار پذیر: صفتی که <strong>مقدار ناشناخته</strong> باشد می‌گوییم هیچ‌مقدار پذیر است.
 </p>
 
 <p>
-<strong>دلایل ناشناخته شدن ():</strong>
+<strong>دلایل ناشناخته شدن:</strong>
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -690,7 +687,7 @@ graph TB
 <h3>🎯 دامنه مقادیر (Domain)</h3>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>دامنه مقادیر:</strong> نوع صفت و مجموعه مقادیر مجاز برای یک صفت را مشخص می‌نماید.
 </p>
 
@@ -747,7 +744,6 @@ GPA: FLOAT</code></pre></div>
 <h4>محدودیت‌های دامنه‌ای</h4>
 
 <p>
-<strong>:</strong>  
 محدودیت دامنه‌ای صفت، مهمترین محدودیت است یعنی <strong>نوع آن صفت و مجموعه مقادیرش</strong> که در آن دامنه تعریف شده‌اند، تغییر یابند.
 </p>
 
@@ -770,7 +766,7 @@ INSERT INTO Students VALUES (126, 'سارا', 25, 19.0, 'X'); -- ❌ Gender نا
 <h3>🔧 عملیات روی صفات</h3>
 
 <p>
-<strong>نکته :</strong>  
+<strong>نکته:</strong>  
 "هر عملیاتی را روی هر صفت نمی‌توان انجام داد."
 </p>
 

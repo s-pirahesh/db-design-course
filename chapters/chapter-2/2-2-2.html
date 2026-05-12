@@ -133,7 +133,7 @@
 <h3>📖 تعریف چندی (Cardinality)</h3>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>چندی نوع ارتباط R بین نوع موجودیت E و F</strong> عبارت است از <strong>چگونگی تناظر بین مجموعه نمونه موجودیت‌های آن هر نوع موجودیت</strong>. تناظر می‌تواند <strong>یک به یک</strong>، <strong>یک به N</strong> و <strong>N به M</strong> باشد.
 </p>
 
@@ -154,7 +154,7 @@ mindmap
 </pre></div>
 
 <p>
-<strong>نکته :</strong>  
+<strong>نکته:</strong>  
 "چندی ارتباط یک <strong>محدودیت معنایی ناظر به ارتباط</strong> به طرز ارتباط تأثیر دارد."
 </p>
 
@@ -197,7 +197,7 @@ graph LR
 <h4>مثال 1: کارمند - اداره (مدیریت)</h4>
 
 <p>
-<strong>سناریو :</strong>  
+<strong>سناریو:</strong>  
 یک کارمند می‌تواند مدیر یک اداره باشد. یک اداره یک مدیر دارد.
 </p>
 
@@ -385,7 +385,7 @@ graph LR
 <h4>مثال 2: مشتری - فاکتور</h4>
 
 <p>
-<strong>سناریو :</strong>  
+<strong>سناریو:</strong>  
 هر فاکتور برای یک مشتری صادر می‌شود. هر مشتری می‌تواند N فاکتور داشته باشد.
 </p>
 
@@ -565,7 +565,7 @@ graph LR
 <h4>مثال 2: فروشنده - قطعه</h4>
 
 <p>
-<strong>سناریو :</strong>  
+<strong>سناریو:</strong>  
 یک فروشنده چند قطعه تولید می‌کند. یک قطعه توسط چند فروشنده تولید می‌شود.
 </p>
 
@@ -662,7 +662,53 @@ graph LR
 <tr><td><strong>1:1</strong></td><td>یک به یک</td><td>1</td><td>1</td><td>کارمند-اداره (مدیریت)</td><td>نادر</td></tr>
 <tr><td><strong>1:N</strong></td><td>یک به چند</td><td>N</td><td>1</td><td>اداره-کارمند</td><td>رایج ✅</td></tr>
 <tr><td><strong>M:N</strong></td><td>چند به چند</td><td>N</td><td>M</td><td>دانشجو-درس</td><td>رایج ✅</td></tr>
-</tbody></table></div><hr>
+</tbody></table></div>
+
+<hr>
+<h3>🎯 نماد دقیق‌تر: (min, max) — چندی همراه با مشاركت</h3>
+
+<p>
+نماد ساده 1، N، M فقط <strong>حداكثر</strong> تعداد را نشان می‌دهد. در نماد دقیق‌تر، روی هر طرف ارتباط یك جفت <strong>(min, max)</strong> می‌نویسیم كه هم <strong>حداقل</strong> (مشاركت) و هم <strong>حداكثر</strong> (چندی) را تعیین می‌كند:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>(min, max)</th><th>معنی</th><th>مشاركت</th><th>چندی</th></tr></thead>
+<tbody>
+<tr><td><strong>(0, 1)</strong></td><td>اختیاری، حداكثر یكی</td><td>جزئی</td><td>سمت «۱»</td></tr>
+<tr><td><strong>(1, 1)</strong></td><td>الزامی، دقیقاً یكی</td><td>كلی</td><td>سمت «۱»</td></tr>
+<tr><td><strong>(0, N)</strong></td><td>اختیاری، چند تا</td><td>جزئی</td><td>سمت «N»</td></tr>
+<tr><td><strong>(1, N)</strong></td><td>الزامی، حداقل یكی</td><td>كلی</td><td>سمت «N»</td></tr>
+</tbody></table></div>
+
+<h4>مثال: اداره و كارمند با نماد (min, max)</h4>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[Department<br/>اداره]
+    B{Has<br/>دارد}
+    C[Employee<br/>کارمند]
+
+    A -->|"(0, N)"| B
+    B -->|"(1, 1)"| C
+
+    style A fill:#3498db,color:#fff
+    style B fill:#f39c12,color:#fff
+    style C fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>تفسیر:</strong>
+</p>
+<ul>
+<li>سمت اداره <strong>(0, N)</strong>: یک اداره ممكن است <strong>هیچ</strong> كارمندی نداشته باشد (اداره تازه‌تاسیس) یا <strong>چند</strong> كارمند داشته باشد. مشاركت جزئی، چندی N.</li>
+<li>سمت كارمند <strong>(1, 1)</strong>: هر كارمند حتماً در <strong>دقیقاً یك</strong> اداره كار می‌كند. مشاركت كلی، چندی 1.</li>
+</ul>
+
+<p>
+<strong>مزیت نماد (min, max):</strong> این نماد دو محدودیت معنایی — <strong>چندی</strong> و <strong>مشاركت</strong> — را با هم نمایش می‌دهد، در حالی كه نماد ساده 1/N فقط چندی را می‌گوید و برای مشاركت باید از خط دولایه استفاده كرد.
+</p>
+
+<hr>
 
 <h3>🎯 تشخیص چندی</h3>
 
@@ -765,7 +811,6 @@ graph TB
 <h4>نکته 1: تعداد ارتباطات ممکن</h4>
 
 <p>
-<strong>:</strong>  
 "اگر N تعداد نوع ارتباط‌های بین E و F باشد: <strong>0 ≤ N</strong>"
 </p>
 
@@ -807,7 +852,6 @@ graph LR
 <h4>نکته 2: چندی یک محدودیت معنایی است</h4>
 
 <p>
-<strong>:</strong>  
 "چندی ارتباط یک <strong>محدودیت معنایی ناظر به ارتباط</strong> است."
 </p>
 
