@@ -391,6 +391,46 @@ graph TB
 DKNF ⊂ 5NF ⊂ 4NF ⊂ BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF
 </p>
 
+<h3>پیشرفت آنومالی‌ها در فرم‌های نرمال</h3>
+
+<p>
+در هر سطح، علت آنومالی متفاوت است. این جدول نشان می‌دهد <strong>کدام آنومالی در کدام مرحله حذف می‌شود</strong>:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>سطح</th><th>شرط لازم</th><th>علت باقی‌مانده آنومالی</th><th>وضعیت آنومالی</th></tr></thead>
+<tbody>
+<tr><td><strong>غیرنرمال</strong></td><td>—</td><td>صفات چندمقداری/مرکب</td><td>🔴🔴🔴 شدید</td></tr>
+<tr><td><strong>1NF</strong></td><td>صفات اتمی</td><td>FD جزئی به کلید مرکب</td><td>🔴🔴 زیاد</td></tr>
+<tr><td><strong>2NF</strong></td><td>حذف FD جزئی</td><td>FD انتقالی (Transitive)</td><td>🔴 متوسط</td></tr>
+<tr><td><strong>3NF</strong></td><td>حذف FD انتقالی</td><td>FD از صفت غیرکاندید</td><td>🟡 کم (موارد خاص)</td></tr>
+<tr><td><strong>BCNF</strong></td><td>هر تعیین‌گر، کلید کاندید</td><td>MVD (وابستگی چندمقداری)</td><td>🟢 فقط در MVD</td></tr>
+<tr><td><strong>4NF</strong></td><td>حذف MVD غیرتجزیه‌پذیر</td><td>JD (وابستگی پیوندی)</td><td>🟢 فقط در JD</td></tr>
+<tr><td><strong>5NF</strong></td><td>حذف JD غیرتجزیه‌پذیر</td><td>—</td><td>✅ بدون آنومالی</td></tr>
+</tbody></table></div>
+
+<div class="mermaid-container"><pre class="mermaid">
+graph LR
+    A[رابطه<br/>غیرنرمال] -->|حذف چندمقداری| B[1NF<br/>🔴🔴]
+    B -->|حذف FD جزئی| C[2NF<br/>🔴]
+    C -->|حذف FD انتقالی| D[3NF<br/>🟡]
+    D -->|تعیین‌گر = کلید کاندید| E[BCNF<br/>🟢]
+    E -->|حذف MVD| F[4NF<br/>🟢]
+    F -->|حذف JD| G[5NF<br/>✅]
+
+    style A fill:#e74c3c,color:#fff
+    style B fill:#e67e22,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#f1c40f,color:#000
+    style E fill:#3498db,color:#fff
+    style F fill:#9b59b6,color:#fff
+    style G fill:#2ecc71,color:#fff
+</pre></div>
+
+<p>
+<strong>نکته پداگوژیک:</strong> هر مرحله نرمال‌سازی فقط یک نوع خاص از وابستگی مسئله‌ساز را حذف می‌کند. تا BCNF با FDها سر و کار داریم؛ از 4NF با MVDها و از 5NF با JDها.
+</p>
+
 
 <hr>
 <h2>🔷 First Normal Form (1NF)</h2>

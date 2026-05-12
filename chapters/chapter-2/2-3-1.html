@@ -227,36 +227,35 @@ mindmap
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
     A[Employee<br/>کارمند]
-    A1((EmpID))
+    A1((EmpID<br/>PK))
     A2((Name))
     A3((Salary))
-    
+
     A --- A1
     A --- A2
     A --- A3
-    
+
     B{d<br/>Gender<br/>جنسیت}
-    
+
     A --> B
-    
+
     C[Male<br/>مذکر]
     D[Female<br/>مونث]
-    
+
     B --> C
     B --> D
-    
+
     C1((MilitaryService<br/>خدمت سربازی))
     D1((MaternityLeave<br/>مرخصی زایمان))
-    
+
     C --- C1
     D --- D1
-    
-    A1 -.->|PK| A1
     
     style A fill:#3498db,color:#fff
     style B fill:#f39c12,color:#fff
     style C fill:#2ecc71,color:#fff
     style D fill:#e74c3c,color:#fff
+    style A1 fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
 </pre></div>
 
 <p>

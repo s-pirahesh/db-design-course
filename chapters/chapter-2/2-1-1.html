@@ -249,16 +249,14 @@ graph LR
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
     A[Student]
-    
-    A --> B((StudentID))
-    A --> C((Name))
-    A --> D((Field))
-    A --> E((Code))
-    
-    B -.->|شناسه| B
-    
+
+    A --- B((StudentID<br/>شناسه - PK))
+    A --- C((Name))
+    A --- D((Field))
+    A --- E((Code))
+
     style A fill:#3498db,color:#fff
-    style B fill:#f39c12,color:#fff
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
     style C fill:#2ecc71,color:#fff
     style D fill:#2ecc71,color:#fff
     style E fill:#2ecc71,color:#fff
@@ -432,20 +430,21 @@ graph LR
     A[Employee<br/>کارمند<br/>قوی]
     B{دارد}
     C[EducationHistory<br/>سابقه تحصیلی<br/>ضعیف]
-    
-    A -->|1| B
-    B -->|N| C
-    
-    D((EmpID))
-    E((Degree))
-    
-    D -.->|شناسه| A
-    E -.->|ممیزه| C
-    
+
+    A ===|1| B
+    B ===|N| C
+
+    D((EmpID<br/>شناسه))
+    E((Degree<br/>ممیزه))
+
+    A --- D
+    C -.- E
+
     style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
     style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
-    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
-    style E fill:#f39c12,color:#fff,stroke:#000,stroke-dasharray: 5 5
+    style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:6px
+    style D fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
+    style E fill:#f39c12,color:#fff,stroke-dasharray: 5 5
 </pre></div>
 
 <p>
@@ -476,34 +475,31 @@ graph TB
     A[Employee<br/>کارمند]
     B{Has<br/>دارد}
     C[EducationHistory<br/>سابقه تحصیلی]
-    
-    A -->|1| B
-    B -->|N| C
-    
-    A1((EmpID))
+
+    A ===|1| B
+    B ===|N| C
+
+    A1((EmpID<br/>PK))
     A2((EmpName))
-    
-    C1((Degree))
+
+    C1((Degree<br/>ممیزه))
     C2((University))
     C3((GraduationYear))
     C4((GPA))
-    
+
     A --- A1
     A --- A2
-    
-    C --- C1
+
+    C -.- C1
     C --- C2
     C --- C3
     C --- C4
-    
-    A1 -.->|PK| A1
-    C1 -.->|Discriminator| C1
-    
+
     style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
     style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
     style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:6px
-    style A1 fill:#f39c12,color:#fff
-    style C1 fill:#f39c12,color:#fff,stroke:#000,stroke-dasharray: 5 5
+    style A1 fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
+    style C1 fill:#f39c12,color:#fff,stroke-dasharray: 5 5
 </pre></div>
 
 <h4>داده‌ها</h4>
@@ -712,30 +708,30 @@ graph TB
     A[Employee<br/>کارمند]
     B{دارد}
     C[FamilyMember<br/>عضو خانواده]
-    
-    A -->|1| B
-    B -->|N| C
-    
-    A1((EmpID))
-    A2((Name))
-    
-    C1((Name))
-    C2((Relation))
+
+    A ===|1| B
+    B ===|N| C
+
+    A1((EmpID<br/>PK))
+    A2((EmpName))
+
+    C1((Name<br/>ممیزه؟))
+    C2((Relation<br/>ممیزه؟))
     C3((BirthDate))
-    
+
     A --- A1
     A --- A2
-    
-    C --- C1
-    C --- C2
+
+    C -.- C1
+    C -.- C2
     C --- C3
-    
-    A1 -.->|PK| A1
-    C1 -.->|Discriminator?| C1
-    
+
     style A fill:#2ecc71,color:#fff,stroke:#000,stroke-width:3px
     style C fill:#e74c3c,color:#fff,stroke:#000,stroke-width:6px
     style B fill:#f39c12,color:#fff,stroke:#000,stroke-width:6px
+    style A1 fill:#f39c12,color:#fff,stroke:#000,stroke-width:3px
+    style C1 fill:#f39c12,color:#fff,stroke-dasharray: 5 5
+    style C2 fill:#f39c12,color:#fff,stroke-dasharray: 5 5
 </pre></div>
 
 <p>
