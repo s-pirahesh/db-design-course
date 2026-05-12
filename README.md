@@ -77,7 +77,7 @@
 ### روش 1: باز کردن مستقیم
 ```bash
 # دانلود پروژه
-git clone https://github.com/YOUR_USERNAME/db-design-course.git
+git clone https://github.com/s-pirahesh/db-design-course.git
 cd db-design-course
 
 # باز کردن index.html در مرورگر
