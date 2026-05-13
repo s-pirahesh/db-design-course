@@ -387,6 +387,26 @@ R3 = R1 ∩ R2 = تاپل‌هایی که <strong>هم</strong> در R1 <strong>
 HR3 = HR1 = HR2
 |R3| ≤ min(|R1|, |R2|)</code></pre></div>
 
+<p>
+<strong>💡 نكته نظري — اشتراك يك عملگر مشتق است:</strong> اشتراك در مدل رابطه‌اي يك <strong>عملگر اوليه (Primitive)</strong> محسوب نمي‌شود؛ بلكه از تركيب دو عملگر تفاضل قابل بيان است:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R1 ∩ R2  ≡  R1 − (R1 − R2)</code></pre></div>
+
+<p>
+مجموعه <strong>عملگرهاي پايه (مينيمال) جبر رابطه‌اي</strong> طبق Codd پنج عملگر است: <strong>σ</strong> (انتخاب)، <strong>π</strong> (برداشت)، <strong>×</strong> (ضرب دكارتي)، <strong>∪</strong> (اجتماع) و <strong>−</strong> (تفاضل). بقيه عملگرها (اشتراك، Join، Division) از تركيب اين پنج تا قابل بيان‌اند:
+</p>
+<ul>
+<li><strong>اشتراك:</strong> R1 ∩ R2 = R1 − (R1 − R2)</li>
+<li><strong>Theta Join:</strong> R1 ⋈θ R2 = σθ(R1 × R2)</li>
+<li><strong>Natural Join:</strong> با Theta Join + برداشت روي ستون‌هاي همنام</li>
+<li><strong>تقسيم:</strong> از اجتماع برداشت‌ها و ضرب قابل بازنويسي است</li>
+</ul>
+
+<p>
+دليل تعريف عملگرهاي مشتق: راحتي خوانايي و كارايي پياده‌سازي. ولي از منظر <strong>قدرت بياني</strong>، پنج عملگر پايه براي همه پرس‌وجوها كافي است.
+</p>
+
 <hr>
 <h4>مثال: دانشجویان مشترک</h4>
 
@@ -499,13 +519,17 @@ R3 = R1 × R2 = ترکیب هر تاپل از R1 با هر تاپل از R2
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R3 = R1 × R2
-HR3 = HR1 ∪ HR2 − (HR1 ∩ HR2)
+HR3 = HR1 ∪ HR2  (اجتماع هدینگ‌ها — همه ستون‌ها حفظ مي‌شوند)
 |R3| = |R1| × |R2|</code></pre></div>
 
 <p>
-<strong>⚠️ نکته مهم:</strong> اگر صفت همنام داشته باشند، در ضرب دکارتی حذف می‌شوند!  
-برای نگه‌داشتن، باید <strong>Rename</strong> کنیم.
+<strong>⚠️ نکته مهم — صفت‌هاي همنام:</strong> اگر R1 و R2 صفتي با <strong>نام يكسان</strong> داشته باشند، نتيجه ضرب دكارتي داراي دو ستون با يك نام مي‌شود كه براي رابطه مجاز نيست (نقض اصل يكتايي نام صفات). راه حل: استفاده از عملگر <strong>تغيير نام (Rename / ρ)</strong> روي يكي از طرفين قبل از ضرب. ضرب دكارتي به‌خودي‌خود ستوني را حذف نمي‌كند.
 </p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>-- اگر هر دو رابطه ستون "ID" دارند:
+ρ(R1.ID → R1_ID)(R1) × ρ(R2.ID → R2_ID)(R2)
+-- يا با pre-fixing با نام رابطه:
+R1.ID, R2.ID  در SQL</code></pre></div>
 
 <hr>
 <h4>مثال 1: ساده</h4>
