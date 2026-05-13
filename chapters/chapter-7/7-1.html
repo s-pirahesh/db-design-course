@@ -431,6 +431,36 @@ SP ⋈ Second:
 **فرض نرمال‌سازی:**
 در نرمال‌سازی فرض می‌کنیم NULL نداریم.</code></pre></div>
 
+<h4>📜 قضيه آزمون اتلاف‌ناپذيري (Heath / Casanova)</h4>
+
+<p>
+چه زماني تجزيه دو تايي <code>R → (R1, R2)</code> بدون اتلاف است؟ يك آزمون ساده و قدرتمند وجود دارد:
+</p>
+
+<blockquote style="border-right: 4px solid var(--primary-color, #3498db); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--bg-secondary, #f8f9fa);">
+<strong>قضيه:</strong> تجزيه R به دو رابطه R1 و R2 بدون اتلاف است اگر و تنها اگر:
+<br><br>
+<center><strong>(R1 ∩ R2) → R1</strong> &nbsp;&nbsp;يا&nbsp;&nbsp; <strong>(R1 ∩ R2) → R2</strong></center>
+<br>
+يعني صفات مشترك بين دو رابطه، حداقل يكي از طرفين را كاملاً تعيين كنند (يعني <strong>سوپركليد آن طرف باشند</strong>).
+</blockquote>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: First → (SP, Second)
+
+R1 = SP(S#, P#, Qty)
+R2 = Second(S#, City, Status)
+
+R1 ∩ R2 = {S#}
+
+آيا S# → R2 (Second)؟
+S# تعيين‌كننده City و Status است → ✅ S# سوپركليد Second است
+
+→ تجزيه بدون اتلاف ✓</code></pre></div>
+
+<p>
+<strong>براي تجزيه به بيش از دو رابطه</strong> از الگوريتم <strong>Chase</strong> استفاده مي‌شود كه پيچيده‌تر است؛ ولي براي اكثر موارد عملي همين آزمون دوتايي كافي است (هر مرحله از تجزيه را جداگانه بررسي مي‌كنيم).
+</p>
+
 <hr>
 <h2>🔷 وابستگی تابعی (Functional Dependency - FD)</h2>
 
