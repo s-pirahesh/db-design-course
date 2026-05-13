@@ -788,7 +788,9 @@ CREATE TABLE FamilyMember (
     MemberName NVARCHAR(50),
     BirthDate DATE,
     PRIMARY KEY (EmpID, MemberName),
-    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID) CASCADE
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE MedicalRecord (
@@ -798,7 +800,9 @@ CREATE TABLE MedicalRecord (
     Disease NVARCHAR(100),
     Treatment NVARCHAR(200),
     PRIMARY KEY (EmpID, MemberName, RecordDate),
-    FOREIGN KEY (EmpID, MemberName) REFERENCES FamilyMember(EmpID, MemberName) CASCADE
+    FOREIGN KEY (EmpID, MemberName) REFERENCES FamilyMember(EmpID, MemberName)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );</code></pre></div>
 
 <p>

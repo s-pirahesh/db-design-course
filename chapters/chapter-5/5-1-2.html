@@ -377,6 +377,23 @@ graph LR
 <hr>
 <h2>🔷 بخش ۵.۲: قیود عام (General Integrity Constraints)</h2>
 
+<h3>📜 دو قاعده عام Codd</h3>
+
+<p>
+<strong>E.F. Codd</strong> (پدر مدل رابطه‌اي) در سال 1970 دو قاعده جامعيت بنيادي را مطرح كرد كه <strong>در هر پايگاه رابطه‌اي بايد رعايت شوند</strong>. اين دو قاعده، «جامعیت عام» (General Integrity) ناميده مي‌شوند چون مستقل از معناي خاص داده‌ها هستند:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>قاعده Codd</th><th>نام رسمي</th><th>محدوديت</th><th>روي چه چيزي؟</th></tr></thead>
+<tbody>
+<tr><td><strong>قاعده ۱</strong></td><td>Entity Integrity (C1)</td><td>PK و اجزاي آن نمي‌توانند NULL باشند</td><td>كليد اصلي</td></tr>
+<tr><td><strong>قاعده ۲</strong></td><td>Referential Integrity (C2)</td><td>هر FK يا با يك PK موجود تطابق دارد يا NULL است</td><td>كليد خارجي</td></tr>
+</tbody></table></div>
+
+<p>
+علاوه بر اين دو قاعده، <strong>قيود خاص (Specific Constraints)</strong> هم در هر پايگاه وجود دارد كه از معناي داده‌ها مي‌آيد و در بخش ۵-۳ توضيح داده مي‌شود.
+</p>
+
 <h3>انواع قیود جامعیتی</h3>
 
 <div class="mermaid-container"><pre class="mermaid">

@@ -138,7 +138,7 @@
 </p>
 
 <p>
-<strong>تعریف ساده:</strong>  
+<strong>تعریف ساده:</strong>
 سه سطح (لایه) مستقل از هم که هر کدوم یک دید خاص از داده رو نشون می‌دن!
 </p>
 
@@ -146,64 +146,77 @@
 <h3>📖 معماری ANSI/SPARC</h3>
 
 <p>
-<strong>تعریف :</strong>  
-معماری پایگاه داده ANSI <strong>سه لایه</strong> است: <strong>سطح خارجی</strong> - <strong>سطح منطقی</strong> - <strong>سطح فیزیکی</strong> (داده‌ها)
+<strong>تعریف:</strong>
+معماری استاندارد ANSI/SPARC پایگاه داده را به <strong>سه سطح (سه شِما)</strong> تقسیم می‌كند:
+</p>
+<ol>
+<li><strong>سطح خارجی (External Level / EDS):</strong> N دید مختلف برای كاربران</li>
+<li><strong>سطح ادراكی (Conceptual Level / CDS):</strong> یك شِمای منطقی كامل از پایگاه</li>
+<li><strong>سطح داخلی (Internal Level / IDS):</strong> یك شِمای داخلی كه DBMS می‌داند چگونه داده‌ها در فایل‌ها سازماندهی شده‌اند</li>
+</ol>
+
+<p>
+<strong>نكته مهم:</strong> ذخیره‌سازی فیزیكی روی دیسك (Physical Storage) <strong>زیر سطح داخلی</strong> قرار دارد و توسط <strong>سیستم‌عامل</strong> مدیریت می‌شود؛ این بخش <strong>جزو سه سطح ANSI/SPARC نیست</strong> ولی برای درك بهتر در نمودار زیر نشان داده شده است.
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
-    subgraph "سطح خارجی External Level"
+    subgraph EXT ["سطح خارجی External Level (N دید)"]
     U1[کاربر 1<br/>Accountant]
     U2[کاربر 2<br/>Manager]
     U3[کاربر n<br/>Developer]
-    
+
     V1[View 1<br/>ديد 1<br/>حقوق]
     V2[View 2<br/>ديد 2<br/>گزارش]
     V3[View n<br/>ديد n<br/>کامل]
-    
+
     U1 --> V1
     U2 --> V2
     U3 --> V3
     end
-    
-    subgraph "سطح ادراکی Conceptual Level"
+
+    subgraph CON ["سطح ادراکی Conceptual Level (یک شِما)"]
     C[Conceptual Schema<br/>شمای ادراکی<br/>جداول کامل]
-    
-    V1 --> C
-    V2 --> C
-    V3 --> C
+
+    V1 -->|نگاشت E/C| C
+    V2 -->|نگاشت E/C| C
+    V3 -->|نگاشت E/C| C
     end
-    
-    subgraph "سطح داخلی Internal Level"
+
+    subgraph INT ["سطح داخلی Internal Level (یک شِما)"]
     I[Internal Schema<br/>شمای داخلی<br/>فایل‌ها + ایندکس‌ها]
-    
-    C --> I
+
+    C -->|نگاشت C/I| I
     end
-    
-    subgraph "سطح فیزیکی Physical Level"
+
+    subgraph OS ["خارج از ANSI/SPARC — مدیریت توسط سیستم‌عامل"]
     P[Physical Storage<br/>ذخیره فیزیکی<br/>دیسک + بلاک‌ها]
-    
-    I --> P
+
+    I -.->|مدیریت OS| P
     end
-    
+
     style U1 fill:#3498db,color:#fff
     style C fill:#2ecc71,color:#fff
     style I fill:#f39c12,color:#fff
-    style P fill:#e74c3c,color:#fff
+    style P fill:#9ca3af,color:#fff,stroke-dasharray: 5 5
 </pre></div>
 
 <p>
-<strong>نکته کلیدی :</strong>  
-این معماری <strong>چندسطحی</strong> است که سطوح آن‌ها با هم <strong>مستقل</strong> هستند. فقط سطح پایین‌تر به سطح بالاتر سرویس می‌دهد.
+<strong>نکته کلیدی:</strong>
+این معماری <strong>سه‌سطحی</strong> است که سطوح آن‌ها با هم <strong>مستقل</strong> هستند. هدف این جدایی، تأمین <strong>استقلال داده‌ای (Data Independence)</strong> است كه در بخش ۳-۴ توضیح داده می‌شود.
 </p>
 
 <hr>
-<h3>🎯 چهار سطح معماری</h3>
+<h3>🎯 سه سطح معماری ANSI/SPARC (به‌علاوه ذخیره‌سازی فیزیكی)</h3>
+
+<p>
+در ادامه هر سه سطح ANSI/SPARC را به‌طور دقیق توضیح می‌دهیم، و در پایان نیز برای روشن شدن مرز بین <strong>سطح داخلی DBMS</strong> و <strong>ذخیره‌سازی فیزیكی OS</strong> بخشی جداگانه آورده شده است.
+</p>
 
 <h4>1️⃣ سطح خارجی (External Level / EDS)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>دید خارجی:</strong> دید کاربر خاص است نسبت به داده‌های ذخیره‌شده.
 </p>
 
@@ -275,7 +288,7 @@ GROUP BY DeptID;</code></pre></div>
 <h4>2️⃣ سطح ادراکی (Conceptual Level / CDS)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>دید ادراکی (Conceptual):</strong> دید طراح است نسبت به داده‌های ذخیره‌شده (یعنی آن‌گونه که طراح داده‌ها را می‌بیند).
 </p>
 
@@ -303,7 +316,6 @@ graph TB
 </pre></div>
 
 <p>
-<strong>:</strong>  
 این دید مبتنی است بر یک <strong>DS مشخص</strong> می‌تواند <strong>RDS</strong>, <strong>HDS</strong> یا <strong>NDS</strong> باشد.
 </p>
 
@@ -346,14 +358,14 @@ CREATE TABLE Department (
 -- همه موجودیت‌ها و ارتباطات ✅</code></pre></div>
 
 <p>
-<strong>نکته مهم :</strong>  
+<strong>نکته مهم:</strong>  
 این شما به سیستم داده می‌شود و سیستم آن را در <strong>کاتالوگ</strong> و بر اساس ساختار داده‌ای خود نگه‌داری می‌کند.
 </p>
 
 <h4>3️⃣ سطح داخلی (Internal Level / IDS)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>دید داخلی:</strong> دید DBMS و طراح آن است از داده‌های ذخیره‌شده. که در این دید مبتنی بر <strong>چند فایل</strong> است که داده‌ها به صورت داده‌های <strong>منطقی</strong> است.
 </p>
 
@@ -440,38 +452,42 @@ CREATE TABLESPACE emp_data
 DATAFILE '/path/to/emp_data.dbf' SIZE 100M;</code></pre></div>
 
 <p>
-<strong>نکته :</strong>  
+<strong>نکته:</strong>  
 به ازای <strong>N تا Table</strong> می‌توان <strong>M تا فایل</strong> داشت: یا 1:1 یا 1:N. در SQL پیش‌فرض 1:N است.
 </p>
 
-<h4>4️⃣ سطح فیزیکی (Physical Level / PDS)</h4>
+<h4>🗄️ ذخیره‌سازی فیزیكی (Physical Storage / PDS) — خارج از ANSI/SPARC</h4>
 
 <p>
-<strong>تعریف :</strong>  
-<strong>PDS (Physical Data Structure):</strong> ساختار داده‌ها در سطح فیزیکی.
+<strong>توجه:</strong> این سطح <strong>جزو سه سطح ANSI/SPARC نیست</strong>. هدف از آوردن آن، روشن‌كردن مرز بین چیزی است كه <strong>DBMS</strong> می‌داند (سطح داخلی) و چیزی كه <strong>سیستم‌عامل</strong> مدیریت می‌كند (ذخیره‌سازی فیزیكی).
+</p>
+
+<p>
+<strong>تعریف:</strong>
+<strong>PDS (Physical Data Structure):</strong> ساختار بایت‌ها روی رسانه فیزیكی (دیسك سخت، SSD، …).
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
-    A[Physical Level<br/>سطح فیزیکی<br/>PDS]
-    
+    A[Physical Storage<br/>ذخیره فیزیکی<br/>خارج از ANSI/SPARC]
+
     B[ذخیره واقعی]
     C[دیسک]
     D[بلاک‌ها و شیارها]
-    
+
     A --> B
     A --> C
     A --> D
-    
-    B1[Hard Drive]
+
+    B1[Hard Drive / SSD]
     C1[Sectors]
     D1[Blocks]
-    
+
     B --> B1
     C --> C1
     D --> D1
-    
-    style A fill:#e74c3c,color:#fff
+
+    style A fill:#9ca3af,color:#fff,stroke-dasharray: 5 5
 </pre></div>
 
 <p>
@@ -488,49 +504,62 @@ graph TB
 <li>سیلندرها (Cylinders)</li>
 </ul>
 <p>
-✅ <strong>مدیریت:</strong> توسط OS (سیستم‌عامل)
-✅ <strong>نامرئی:</strong> برای DBMS و کاربر
+✅ <strong>مدیریت:</strong> توسط OS (سیستم‌عامل)<br>
+✅ <strong>نامرئی:</strong> هم برای كاربر و هم برای <strong>سطح داخلی DBMS</strong> (DBMS فقط فایل‌های منطقی را می‌بیند، نه بلاك‌ها)
 </p>
 
 
 <hr>
 <h3>🔗 نگاشت بین سطوح (Mapping)</h3>
 
+<p>
+معماری ANSI/SPARC فقط <strong>دو نگاشت رسمی</strong> دارد كه توسط DBMS مدیریت می‌شوند:
+</p>
+
 <div class="mermaid-container"><pre class="mermaid">
 graph TB
     A[View 1: Salary]
     B[View 2: Report]
-    
+
     C[Conceptual: Employee, Department]
-    
+
     D[Internal: File1, File2, Index1]
-    
-    E[Physical: Disk Blocks]
-    
-    A -->|External/Conceptual<br/>Mapping| C
-    B -->|External/Conceptual<br/>Mapping| C
-    
-    C -->|Conceptual/Internal<br/>Mapping| D
-    
-    D -->|Internal/Physical<br/>Mapping| E
-    
+
+    E[Physical Storage: Disk Blocks]
+
+    A -->|نگاشت 1: External/Conceptual| C
+    B -->|نگاشت 1: External/Conceptual| C
+
+    C -->|نگاشت 2: Conceptual/Internal| D
+
+    D -.->|خارج از ANSI/SPARC<br/>مدیریت OS| E
+
     style A fill:#3498db,color:#fff
     style C fill:#2ecc71,color:#fff
     style D fill:#f39c12,color:#fff
-    style E fill:#e74c3c,color:#fff
+    style E fill:#9ca3af,color:#fff,stroke-dasharray: 5 5
 </pre></div>
 
 <p>
-<strong>سه نوع نگاشت:</strong>
+<strong>دو نوع نگاشت رسمی ANSI/SPARC:</strong>
 </p>
 
 <div class="table-container"><table>
-<thead><tr><th>نگاشت</th><th>از</th><th>به</th><th>مثال</th></tr></thead>
+<thead><tr><th>نگاشت</th><th>از</th><th>به</th><th>مثال</th><th>پشتیبان كدام استقلال؟</th></tr></thead>
 <tbody>
-<tr><td><strong>External/Conceptual</strong></td><td>View</td><td>Table</td><td>SalaryView → Employee</td></tr>
-<tr><td><strong>Conceptual/Internal</strong></td><td>Table</td><td>File</td><td>Employee → emp_data.dbf</td></tr>
-<tr><td><strong>Internal/Physical</strong></td><td>File</td><td>Block</td><td>emp_data.dbf → Sector 1000</td></tr>
-</tbody></table></div><hr>
+<tr><td><strong>External/Conceptual</strong></td><td>View</td><td>Table</td><td>SalaryView → Employee</td><td>استقلال داده‌ای <strong>منطقی (LDI)</strong></td></tr>
+<tr><td><strong>Conceptual/Internal</strong></td><td>Table</td><td>File</td><td>Employee → emp_data.dbf</td><td>استقلال داده‌ای <strong>فیزیكی (PDI)</strong></td></tr>
+</tbody></table></div>
+
+<p>
+<strong>چرا فقط دو نگاشت؟</strong> چون ANSI/SPARC فقط سه سطح دارد و بین هر دو سطح مجاور، یك نگاشت لازم است: 3 سطح → 2 نگاشت.
+</p>
+
+<p>
+<strong>نگاشت سوم (Internal → Physical)</strong> كه گاهی در منابع دیده می‌شود، نگاشتی <strong>خارج از قلمرو DBMS</strong> است و توسط سیستم‌عامل/سخت‌افزار (مدیریت فایل و درایور دیسك) انجام می‌شود.
+</p>
+
+<hr>
 
 <h3>🎯 مزایای معماری سه‌لایه</h3>
 
@@ -558,7 +587,7 @@ mindmap
 <h4>1️⃣ استقلال داده‌ای (Data Independence)</h4>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>مفهوم استقلال داده‌ای:</strong> مصونیت برنامه‌های کاربردی (کاربران سطح خارجی) در قبال تغییراتی که در سطوح زیرین معماری پایگاه پدید می‌آید.
 </p>
 

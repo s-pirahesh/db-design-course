@@ -147,7 +147,7 @@
 </p>
 
 <hr>
-<h3>📖 تعریف DDB ()</h3>
+<h3>📖 تعریف DDB</h3>
 
 <p>
 <strong>DDB (Distributed Data Base):</strong>  
@@ -252,7 +252,7 @@ graph TB
 <h4>1. مدل محلی (Local Model)</h4>
 
 <p>
-<strong>:</strong> "اگر داده‌های مورد نظر کاربر در سایتی باشد که برنامه کاربر در آن اجرا می‌شود. در اصطلاح می‌گویند کاربر با اسلوب محلی یا Local Model به داده‌ها دسترسی پیدا نموده است."
+<strong>نقل قول از منبع:</strong> "اگر داده‌های مورد نظر کاربر در سایتی باشد که برنامه کاربر در آن اجرا می‌شود. در اصطلاح می‌گویند کاربر با اسلوب محلی یا Local Model به داده‌ها دسترسی پیدا نموده است."
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -275,7 +275,7 @@ sequenceDiagram
 <h4>2. مدل راه دور (Remote Model)</h4>
 
 <p>
-<strong>:</strong> "اما اگر داده‌های مورد نظر کاربر در سایت‌های راه دور باشد از نظر کاربر، برنامه کماکان بصورت محلی اجرا می‌شود. یعنی کاربر اصلا نمی‌بیند که داده‌ها چگونه و در کجا ذخیره شده اند."
+<strong>نقل قول از منبع:</strong> "اما اگر داده‌های مورد نظر کاربر در سایت‌های راه دور باشد از نظر کاربر، برنامه کماکان بصورت محلی اجرا می‌شود. یعنی کاربر اصلا نمی‌بیند که داده‌ها چگونه و در کجا ذخیره شده اند."
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -326,14 +326,14 @@ graph LR
     style C fill:#e74c3c,color:#fff
 </pre></div>
 
-<h4>5 نوع شفافیت ()</h4>
+<h4>5 نوع شفافیت</h4>
 
 <p>
 <strong>1. شفافیت مکان (Location Transparency)</strong>
 </p>
 
 <p>
-<strong>:</strong> "کاربر محل داده‌ها را نمی‌داند."
+<strong>نقل قول از منبع:</strong> "کاربر محل داده‌ها را نمی‌داند."
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- کاربر می‌نویسه:
@@ -353,7 +353,7 @@ SELECT * FROM Customers WHERE Country = 'Iran';
 </p>
 
 <p>
-<strong>:</strong> "کاربر نحوه توزیع را نمی‌داند."
+<strong>نقل قول از منبع:</strong> "کاربر نحوه توزیع را نمی‌داند."
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مثال: جدول Customers توزیع شده:
@@ -369,7 +369,7 @@ SELECT * FROM Customers WHERE Country = 'Iran';
 </p>
 
 <p>
-<strong>:</strong> "کاربر سخت‌افزار را نمی‌بیند (سخت‌افزار مورد استفاده در سایت‌های دیگر قرار دارد)"
+<strong>نقل قول از منبع:</strong> "کاربر سخت‌افزار را نمی‌بیند (سخت‌افزار مورد استفاده در سایت‌های دیگر قرار دارد)"
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سایت تهران: سرور HP
@@ -383,7 +383,7 @@ SELECT * FROM Customers WHERE Country = 'Iran';
 </p>
 
 <p>
-<strong>:</strong> "کاربر فقط سیستم عامل خود را می‌بیند."
+<strong>نقل قول از منبع:</strong> "کاربر فقط سیستم عامل خود را می‌بیند."
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>سایت تهران: Windows Server
@@ -397,7 +397,7 @@ SELECT * FROM Customers WHERE Country = 'Iran';
 </p>
 
 <p>
-<strong>:</strong> "کاربر شبکه‌ها را نمی‌بیند."
+<strong>نقل قول از منبع:</strong> "کاربر شبکه‌ها را نمی‌بیند."
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>بین سایت‌ها:
@@ -454,7 +454,7 @@ sequenceDiagram
 <h3>🔧 نکته مهم: استقلال (Independence)</h3>
 
 <p>
-<strong>:</strong> "گاه به جای شفافیت از Independence یا استقلال استفاده می‌شود."
+<strong>نقل قول از منبع:</strong> "گاه به جای شفافیت از Independence یا استقلال استفاده می‌شود."
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>شفافیت = استقلال
@@ -468,7 +468,7 @@ Distribution Transparency = Distribution Independence
 </p>
 
 <hr>
-<h3>🏗️ مراحل طراحی DDB ()</h3>
+<h3>🏗️ مراحل طراحی DDB</h3>
 
 <p>
 <strong>فاز 1:</strong> طراحی سیستم مانند CDB (پایگاه داده متمرکز) انجام می‌گیرد.
@@ -541,7 +541,7 @@ CREATE TABLE Orders (
 <h3>🔄 برنامه سراسری (Global Program)</h3>
 
 <p>
-<strong>:</strong> "منظور از برنامه سراسری برنامه‌ای است که برای اجرا شدن به بیش از یک سایت نیاز داشته باشد."
+<strong>نقل قول از منبع:</strong> "منظور از برنامه سراسری برنامه‌ای است که برای اجرا شدن به بیش از یک سایت نیاز داشته باشد."
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -570,14 +570,14 @@ GROUP BY Country;
 → برنامه سراسری است! ✅</code></pre></div>
 
 <p>
-<strong>نکته :</strong> "در این معماری هر سایت حداقل در اجرای یک برنامه سراسری مشارکت دارد."
+<strong>نکته:</strong> "در این معماری هر سایت حداقل در اجرای یک برنامه سراسری مشارکت دارد."
 </p>
 
 <hr>
 <h3>🎯 نرم‌افزار DDB: DDBMS</h3>
 
 <p>
-<strong>:</strong> "نرم افزار اصلی در این سیستم DDBMS است که یک نوع DBMS است."
+<strong>نقل قول از منبع:</strong> "نرم افزار اصلی در این سیستم DDBMS است که یک نوع DBMS است."
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>DDBMS = DBMS + قابلیت DF (وظایف توزیع شده)</code></pre></div>
@@ -637,7 +637,7 @@ mindmap
 <h3>🏛️ خودمختاری سایت‌ها (Site Autonomy)</h3>
 
 <p>
-<strong>:</strong> "در این معماری در مدل ایده‌آلش سایت خودمختاری دارند اما تامین خودمختاری کامل در عمل غیرممکن است. در عمل نقش Master Site را یا هماهنگ کننده اصلی را به عهده دارد."
+<strong>نقل قول از منبع:</strong> "در این معماری در مدل ایده‌آلش سایت خودمختاری دارند اما تامین خودمختاری کامل در عمل غیرممکن است. در عمل نقش Master Site را یا هماهنگ کننده اصلی را به عهده دارد."
 </p>
 
 <div class="mermaid-container"><pre class="mermaid">

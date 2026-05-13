@@ -445,10 +445,33 @@ graph LR
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">CREATE TRIGGER trigger_name
 {BEFORE | AFTER | INSTEAD OF} {INSERT | UPDATE | DELETE}
 ON table_name
-FOR EACH ROW
+{FOR EACH ROW | FOR EACH STATEMENT}
 BEGIN
     -- Custom Logic
 END;</code></pre></div>
+
+<p>
+<strong>دو سطح تكرار (Granularity) براي Trigger:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>سطح</th><th>زمان فعال شدن</th><th>دسترسي به مقادير سطر</th><th>كاربرد معمول</th></tr></thead>
+<tbody>
+<tr><td><strong>FOR EACH ROW</strong></td><td>براي <strong>هر سطر</strong> تحت‌تأثير</td><td>مستقيم با <code>NEW</code> و <code>OLD</code></td><td>Validation هر سطر، Audit Log هر تغيير</td></tr>
+<tr><td><strong>FOR EACH STATEMENT</strong></td><td>يك بار براي <strong>كل دستور</strong></td><td>غيرمستقيم (بايد جدول را Query كرد)</td><td>محدوديت‌هاي تجميعي، شمارش كل تغييرات</td></tr>
+</tbody></table></div>
+
+<p>
+<strong>مثال تفاوت:</strong> اگر <code>UPDATE Employee SET Salary = Salary * 1.1</code> روي 100 كارمند اجرا شود:
+</p>
+<ul>
+<li>Row-level: 100 بار اجرا مي‌شود</li>
+<li>Statement-level: فقط 1 بار اجرا مي‌شود (پس از كل UPDATE)</li>
+</ul>
+
+<p>
+<strong>پشتيباني DBMS:</strong> Oracle و PostgreSQL هر دو سطح را پشتيباني مي‌كنند. SQL Server فقط Statement-level دارد (Row-level را با INSERTED/DELETED شبيه‌سازي مي‌كند). MySQL فقط Row-level دارد.
+</p>
 
 <hr>
 <h4>مثال 1: Audit Log</h4>
@@ -516,9 +539,22 @@ END;</code></pre></div>
 <h3>2. Assertion (اظهاریه)</h3>
 
 <p>
-<strong>تعریف:</strong>  
-می‌توانیم روی DBMS قواعد جامعیتی را با آن کنترل نماییم.
+<strong>تعریف:</strong>
+Assertion یك <strong>قید جامعيت در سطح كل پایگاه داده</strong> است كه شرط آن بر اساس وضعيت تمام پايگاه ارزيابي مي‌شود — برخلاف <code>CHECK</code> كه فقط در سطح يك ستون يا يك سطر اعمال مي‌شود.
 </p>
+
+<p>
+<strong>تفاوت كليدي CHECK و ASSERTION:</strong>
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>ويژگي</th><th>CHECK</th><th>ASSERTION</th></tr></thead>
+<tbody>
+<tr><td><strong>محدوده</strong></td><td>یك ستون یا یك سطر در یك جدول</td><td>كل پايگاه داده</td></tr>
+<tr><td><strong>محل تعريف</strong></td><td>درون <code>CREATE TABLE</code></td><td>دستور مستقل <code>CREATE ASSERTION</code></td></tr>
+<tr><td><strong>دسترسي به جدول‌هاي ديگر</strong></td><td>دشوار / غير قابل اعتماد</td><td>طبيعي (با Subquery)</td></tr>
+<tr><td><strong>زمان ارزيابي</strong></td><td>هنگام INSERT/UPDATE همان رديف</td><td>پس از هر تراكنش روي هر جدول مرتبط</td></tr>
+</tbody></table></div>
 
 <p>
 <strong>ساختار:</strong>
@@ -528,6 +564,19 @@ END;</code></pre></div>
 CHECK (
     NOT EXISTS (query)
 );</code></pre></div>
+
+<p>
+<strong>⚠️ توجه عملي:</strong> با اينكه <code>CREATE ASSERTION</code> در استاندارد SQL تعريف شده، در عمل <strong>اكثر DBMSهاي صنعتي پشتيباني نمي‌كنند</strong>:
+</p>
+<ul>
+<li>✅ <strong>پشتيباني محدود:</strong> Oracle (با Trigger شبيه‌سازي مي‌شود)</li>
+<li>❌ <strong>پشتيباني ندارد:</strong> SQL Server، MySQL، MariaDB، SQLite</li>
+<li>⚠️ <strong>PostgreSQL:</strong> در نسخه‌هاي قديم فاقد بود؛ امكان شبيه‌سازي با Trigger وجود دارد</li>
+</ul>
+
+<p>
+بنابراين در پروژه‌هاي عملي معمولاً به جاي Assertion از <strong>Trigger</strong> (بخش قبل) یا <strong>منطق برنامه</strong> استفاده مي‌شود. تعريف Assertion را به‌عنوان مفهوم استاندارد SQL مي‌آموزيم، ولي پياده‌سازي‌اش در عمل با Trigger است.
+</p>
 
 <hr>
 <h4>مثال 1: محدودیت تعداد</h4>
@@ -575,17 +624,59 @@ CHECK (
 );</code></pre></div>
 
 <hr>
+<h3>⏱️ زمان‌بندي اعمال قيود (Constraint Timing)</h3>
+
+<p>
+يكي از موضوعات مهم در پياده‌سازي جامعيت، <strong>زمان بررسي قيد</strong> است. در SQL استاندارد دو حالت وجود دارد:
+</p>
+
+<div class="table-container"><table>
+<thead><tr><th>حالت</th><th>زمان بررسي قيد</th><th>كاربرد</th></tr></thead>
+<tbody>
+<tr><td><strong>IMMEDIATE</strong> (پيش‌فرض)</td><td>بلافاصله پس از هر دستور</td><td>اغلب موارد — تشخيص سريع خطا</td></tr>
+<tr><td><strong>DEFERRED</strong></td><td>هنگام <code>COMMIT</code> تراكنش</td><td>درج‌هاي چرخه‌اي يا متقابل، نگهداري موقت ناسازگاري در حين تراكنش</td></tr>
+</tbody></table></div>
+
+<p>
+<strong>چرا گاهي DEFERRED لازم است؟</strong> فرض كنيد دو جدول A و B به‌طور متقابل به هم ارجاع مي‌دهند (FK چرخه‌اي). اگر بخواهيم در يك تراكنش، سطر جديدي به هر دو جدول اضافه كنيم، با حالت IMMEDIATE بسته به اينكه كدام را اول درج كنيم، يكي از FKها بلافاصله ناسازگاري ايجاد مي‌كند. با DEFERRED، DBMS بررسي را تا COMMIT به تعويق مي‌اندازد.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code class="language-sql">-- تعريف FK به‌صورت DEFERRABLE
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    DeptID INT,
+    CONSTRAINT fk_dept FOREIGN KEY (DeptID)
+        REFERENCES Department(DeptID)
+        DEFERRABLE INITIALLY DEFERRED
+);
+
+-- در زمان تراكنش، تغيير حالت موقت:
+BEGIN;
+SET CONSTRAINTS fk_dept DEFERRED;  -- تأخير بررسي تا COMMIT
+
+-- درج چرخه‌اي مجاز مي‌شود
+INSERT INTO Employee VALUES (1, 100);    -- DeptID=100 هنوز نيست
+INSERT INTO Department VALUES (100, ...); -- حالا ايجاد مي‌شود
+
+COMMIT;  -- بررسي قيد اينجا انجام مي‌شود ✓</code></pre></div>
+
+<p>
+<strong>پشتيباني DBMS:</strong> PostgreSQL و Oracle به‌خوبي از DEFERRABLE پشتيباني مي‌كنند. SQL Server و MySQL پشتيباني ندارند و معمولاً بايد با غيرفعال‌سازي موقتي FK يا تغيير ترتيب درج كار را انجام داد.
+</p>
+
+<hr>
 <h3>مقایسه Trigger و Assertion</h3>
 
 <div class="table-container"><table>
 <thead><tr><th>ویژگی</th><th>Trigger</th><th>Assertion</th></tr></thead>
 <tbody>
 <tr><td><strong>زمان اجرا</strong></td><td>قبل/بعد عملیات</td><td>همیشه (هر تراکنش)</td></tr>
-<tr><td><strong>پیچیدگی</strong></td><td>Logic پیچیده</td><td>Query ساده</td></tr>
+<tr><td><strong>پیچیدگی</strong></td><td>Logic پیچیده</td><td>Query ساده (NOT EXISTS)</td></tr>
 <tr><td><strong>چند جدول</strong></td><td>محدود</td><td>راحت ✅</td></tr>
-<tr><td><strong>Performance</strong></td><td>بهتر</td><td>کندتر</td></tr>
-<tr><td><strong>پشتیبانی DBMS</strong></td><td>همه</td><td>کم (SQL Server ندارد)</td></tr>
-<tr><td><strong>کاربرد</strong></td><td>Validation پیچیده</td><td>محدودیت ساده بین جداول</td></tr>
+<tr><td><strong>Performance</strong></td><td>بهتر</td><td>كندتر (اسكن كل پایگاه)</td></tr>
+<tr><td><strong>پشتيباني DBMS</strong></td><td>گسترده (Oracle، PostgreSQL، SQL Server، MySQL)</td><td>كم — Oracle محدود، SQL Server/MySQL ندارند</td></tr>
+<tr><td><strong>كاربرد</strong></td><td>Validation پيچيده، Audit، Cascade سفارشي</td><td>قيود معنايي پيچيده بين چند جدول</td></tr>
+<tr><td><strong>در عمل</strong></td><td>روش استاندارد صنعتي</td><td>معمولاً با Trigger شبيه‌سازي مي‌شود</td></tr>
 </tbody></table></div><hr>
 
 <h2>خلاصه قیود جامعیتی</h2>

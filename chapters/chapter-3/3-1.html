@@ -191,7 +191,7 @@ graph TB
 <h3>🌳 ساختار سلسله‌مراتبی (HDS)</h3>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>HDS (Hierarchical Data Structure):</strong> یک ساختاری است که هر نوع موجودیت یا نمونه موجودیت ارتباط داشته باشد نمودار می‌کشیم در قالب یک سلسله‌مراتب.
 </p>
 
@@ -222,7 +222,6 @@ graph TB
 <h4>عناصر ساختاری اساسی HDS</h4>
 
 <p>
-<strong>:</strong>
 </p>
 
 <ol>
@@ -236,8 +235,12 @@ graph TB
 - یک ریشه (Root) داریم بدون پدر ✅
 - همه به صورت درخت (Tree) ✅</code></pre></div>
 
+<p>
+<strong>محدودیت اصلی PCL:</strong> به دلیل اینکه هر گره <strong>دقیقاً یك پدر</strong> دارد، PCL در ذات خود یك ارتباط <strong>1:N</strong> است (یك پدر، N فرزند). به همین دلیل ارتباط‌های <strong>M:N</strong> در HDS مستقیماً قابل بیان نیستند و باید با راه‌حل‌هایی غیربهینه (افزونگی یا اشاره‌گر مجازی) شبیه‌سازی شوند — این موضوع را در ادامه می‌بینیم.
+</p>
+
 <hr>
-<h3>🎨 مثال 1: دانشجو-درس ()</h3>
+<h3>🎨 مثال 1: دانشجو-درس</h3>
 
 <p>
 <strong>سناریو:</strong>  
@@ -289,7 +292,6 @@ graph TB
 <h4>1️⃣ مناسب برای 1:N، نامناسب برای M:N</h4>
 
 <p>
-<strong>:</strong>  
 HDS برای نمایش چندی <strong>1:N</strong> مناسب است. برای نمایش ارتباط <strong>M:N</strong> دشواری وجود دارد.
 </p>
 
@@ -348,19 +350,23 @@ graph TB
 </ul>
 
 <ol>
-<li><strong>تبدیل به 1:N:</strong></li>
+<li><strong>تبدیل به 1:N (تجزیه با موجودیت میانی):</strong></li>
 </ol>
 <ul>
-<li>M:N را بشکن به دو تا 1:N</li>
-<li>ایجاد موجودیت میانی</li>
-<li>پیچیده‌تر! ❌</li>
+<li>M:N را بشكن به دو ارتباط 1:N با یك <strong>موجودیت میانی</strong> (Junction Entity)</li>
+<li>مثلاً «Enrollment» با كلید (StudentID, CourseID) و چند صفت اضافی مانند Grade</li>
+<li>در HDS این كار پیچیده است (نیاز به دو درخت یا اشاره‌گرهای متقاطع)</li>
+<li>اما این دقیقاً همان كاری است كه <strong>مدل رابطه‌ای (RDS)</strong> به‌طور طبیعی انجام می‌دهد — یك جدول واسط با كلید مركب</li>
 </ul>
+
+<p>
+<strong>نتیجه‌گیری مهم:</strong> راه‌حل ۳ در واقع <strong>پلی به مدل رابطه‌ای</strong> است. وقتی برای حل M:N در HDS مجبور به ایجاد موجودیت میانی می‌شویم، عملاً داریم به سمت RDS حركت می‌كنیم. این یكی از دلایلی است كه مدل رابطه‌ای جایگزین HDS شد.
+</p>
 
 
 <h4>2️⃣ آنومالی‌های ذخیره‌سازی</h4>
 
 <p>
-<strong>:</strong>  
 ما در ذخیره‌سازی <strong>Anomaly</strong> داریم که در سه بخش است:
 </p>
 
@@ -393,7 +399,6 @@ graph TB
 <h5>الف) Insertion Anomaly (عدم توانایی درج)</h5>
 
 <p>
-<strong>:</strong>  
 حتماً دانشجو باید درسی داشته باشد که ما می‌توانیم دانشجو را اضافه کنیم.
 </p>
 
@@ -410,7 +415,6 @@ graph TB
 <h5>ب) Update Anomaly (کارهای اضافی)</h5>
 
 <p>
-<strong>:</strong>  
 اگر مشخصات درس را تغییر دهیم باید کل DB را جستجو کنیم که کار اضافی است.
 </p>
 
@@ -430,13 +434,16 @@ graph TB
 <h5>ج) Deletion Anomaly (پیامد جانبی)</h5>
 
 <p>
-<strong>:</strong>  
 برای حذف یک درس کلیه دانشجویانی که این درس را انتخاب کرده‌اند آن‌ها نیز حذف می‌شود.
 </p>
 
 <p>
-<strong>قاعده ذاتی HDS:</strong>  
-اگر پدر حذف شود، فرزند نیز حذف می‌شود.
+<strong>قاعده پیش‌فرض HDS (Cascade):</strong>
+در پیاده‌سازی‌های HDS، وقتی یك گره پدر حذف شود، تمام زیردرخت آن (همه فرزندان و نوادگان) نیز حذف می‌شوند. این رفتار «حذف آبشاری» (Cascade Delete) نتیجه طبیعی <strong>وابستگی وجودی فرزند به پدر</strong> در ساختار درختی است.
+</p>
+
+<p>
+<strong>توجه:</strong> در RDS هم می‌توانیم Cascade Delete داشته باشیم (با <code>ON DELETE CASCADE</code>)، اما این یك <strong>انتخاب طراحی</strong> است نه قاعده تحمیلی. در HDS تنها انتخاب همین است، چون فرزند بدون پدر بی‌معناست.
 </p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>مشکل:
@@ -453,7 +460,6 @@ graph TB
 <h4>3️⃣ افزونگی داده (Redundancy)</h4>
 
 <p>
-<strong>:</strong>  
 اگر یک دانشجو یک درس انتخاب کند و یک درس دیگر هم انتخاب کند ما در اینجا افزونگی خواهیم داشت چون مشخصات دوباره ذخیره می‌شود.
 </p>
 
@@ -486,7 +492,6 @@ graph TB
 <h4>4️⃣ عدم تقارن در جستجو</h4>
 
 <p>
-<strong>:</strong>  
 HDS برای عمل جستجو <strong>تقارن ندارد</strong>.
 </p>
 

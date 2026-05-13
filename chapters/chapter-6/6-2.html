@@ -916,6 +916,48 @@ Formula: گزاره منطقی
     p# = 1)}</code></pre></div>
 
 <hr>
+<h2>🎓 قضيه هم‌ارزي Codd (Codd's Reduction Theorem)</h2>
+
+<p>
+يكي از قضاياي بنيادي مدل رابطه‌اي كه توسط <strong>E.F. Codd</strong> اثبات شد:
+</p>
+
+<blockquote style="border-right: 4px solid var(--primary-color, #3498db); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--bg-secondary, #f8f9fa);">
+<strong>قضيه:</strong> سه فرماليسم <strong>جبر رابطه‌اي</strong>، <strong>حساب تاپل‌محور ايمن (Safe TRC)</strong>، و <strong>حساب دامنه‌محور ايمن (Safe DRC)</strong> از نظر <strong>قدرت بياني</strong> با يكديگر معادل‌اند:
+<br><br>
+<center><strong>Algebra ≡ Safe TRC ≡ Safe DRC</strong></center>
+</blockquote>
+
+<p>
+يعني هر پرس‌وجو كه با جبر قابل بيان است، با TRC ايمن و DRC ايمن هم قابل بيان است و بالعكس. هر سه فرماليسم همان مجموعه از توابع پرس‌وجو را تعريف مي‌كنند.
+</p>
+
+<h3>⚠️ شرط ايمني (Safety) در حساب رابطه‌اي</h3>
+
+<p>
+يك عبارت در حساب رابطه‌اي ممكن است <strong>ناامن</strong> باشد، يعني مجموعه نتيجه‌اش <strong>نامتناهي</strong> شود. مثال:
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>-- ❌ ناامن: متغير t در هيچ رابطه‌اي محصور نشده
+{t | ¬(t ∈ Supplier)}
+
+-- يعني «همه چيزهايي كه در Supplier نيستند»
+-- → كل عالم (نامتناهي) ❌</code></pre></div>
+
+<p>
+<strong>قاعده ايمني:</strong> هر متغير آزاد در عبارت بايد <strong>به‌طور مثبت (غيرنفي‌شده)</strong> در عضويت يك رابطه شركت كند. به اين معنا كه دامنه متغير بايد توسط حداقل يك <code>t ∈ R</code> محدود شود.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>-- ✅ ايمن: t در Supplier محدود شده
+{t | t ∈ Supplier ∧ ¬(t ∈ BlackList)}
+
+-- ✅ ايمن: نتيجه زيرمجموعه‌اي از Supplier است</code></pre></div>
+
+<p>
+<strong>چرا مهم است؟</strong> تنها عبارات ايمن در پايگاه داده قابل پياده‌سازي‌اند. اگر مفسر پرس‌وجو با يك عبارت ناامن مواجه شود يا بايد آن را رد كند يا تضمين كند كه نتيجه ضمني محدود باقي بماند. قضيه هم‌ارزي Codd فقط براي <strong>عبارات ايمن</strong> برقرار است.
+</p>
+
+<hr>
 <h2>✍️ تمرینات بخش ۶.۲ (حساب رابطه‌ای)</h2>
 
 <h3>تمرین 1 (تشریحی): Query‌های Actor-Movie</h3>

@@ -143,7 +143,7 @@
 <h3>📖 تعریف ارتباط (Relationship)</h3>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>نوع ارتباط (Relationship Type):</strong> عمل یا کنش بین <strong>n تا موجودیت</strong> (1 < N). خود موجودیت می‌تواند با خودش ارتباط داشته باشد.
 </p>
 
@@ -185,7 +185,7 @@ mindmap
 </pre></div>
 
 <hr>
-<h3>📝 خصوصیات ارتباط ()</h3>
+<h3>📝 خصوصیات ارتباط</h3>
 
 <h4>1. ارتباط باید نام داشته باشد</h4>
 
@@ -260,7 +260,6 @@ graph TB
 <h4>3. ارتباط شرکت‌کننده‌هایی دارد</h4>
 
 <p>
-<strong>:</strong>  
 هر ارتباط شرکت‌کننده‌هایی دارد (1 < N). حتماً یک ارتباط شرکت‌کننده‌هایی دارد. اگر N=1 بشود، بازگشتی می‌شود.
 </p>
 
@@ -271,7 +270,7 @@ graph TB
 <h3>🔢 درجه ارتباط (Relationship Degree)</h3>
 
 <p>
-<strong>تعریف :</strong>  
+<strong>تعریف:</strong>  
 <strong>به تعداد شرکت‌کننده‌های ارتباط، درجه ارتباط می‌گویند.</strong>
 </p>
 
@@ -339,13 +338,30 @@ graph TB
 graph TB
     A[Employee<br/>کارمند]
     B{Supervise<br/>مسئول}
-    
-    A -->|N| B
-    B -->|1| A
-    
+
+    A -->|Subordinate<br/>زیردست - N| B
+    B -->|Supervisor<br/>مسئول - 1| A
+
     style A fill:#3498db,color:#fff
     style B fill:#f39c12,color:#fff
 </pre></div>
+
+<p>
+<strong>نکته مهم — نام‌نقش (Role Name):</strong>
+</p>
+
+<p>
+چون یک موجودیت <strong>دو بار</strong> در ارتباط شركت كرده، با اسم خود موجودیت (Employee) نمی‌توان تشخیص داد كه كدام طرف مسئول است و كدام زیردست. به همین دلیل برای هر طرف یك <strong>نام‌نقش</strong> روی خط ارتباط می‌نویسیم:
+</p>
+
+<ul>
+<li><strong>Supervisor</strong> (مسئول): طرفی كه دستور می‌دهد — چندی <strong>1</strong></li>
+<li><strong>Subordinate</strong> (زیردست): طرفی كه گزارش می‌دهد — چندی <strong>N</strong></li>
+</ul>
+
+<p>
+نام‌نقش در ارتباط‌های <strong>درجه ۱ (Unary)</strong> اجباری است و در ارتباط‌های درجه بالاتر، در صورت ابهام، استفاده می‌شود.
+</p>
 
 <p>
 <strong>مثال داده:</strong>
@@ -416,7 +432,7 @@ graph LR
 </pre></div>
 
 <p>
-<strong>:</strong> تولیدکننده، قطعه را تولید می‌کند.
+<strong>توضیح:</strong> تولیدکننده، قطعه را تولید می‌کند.
 </p>
 
 <p>
@@ -448,7 +464,7 @@ graph LR
 <h4>مثال: فروشنده - قطعه - پروژه</h4>
 
 <p>
-<strong>:</strong>  
+<strong>تعریف:</strong>
 تولیدکننده S قطعه P را برای پروژه J تولید می‌نماید.
 </p>
 
@@ -457,20 +473,21 @@ graph TB
     A[Supplier<br/>فروشنده]
     B[Part<br/>قطعه]
     C[Project<br/>پروژه]
-    
+
     D{Supply<br/>تأمین}
-    
-    A --> D
-    B --> D
-    C --> D
-    
+
+    A --- D
+    B --- D
+    C --- D
+
     D1((Quantity))
     D --- D1
-    
+
     style A fill:#3498db,color:#fff
     style B fill:#2ecc71,color:#fff
     style C fill:#e74c3c,color:#fff
     style D fill:#f39c12,color:#fff
+    style D1 fill:#fbbf24
 </pre></div>
 
 <p>
@@ -483,7 +500,7 @@ graph TB
 <tr><td>S1</td><td>P1</td><td>J1</td><td>100</td></tr>
 <tr><td>S1</td><td>P1</td><td>J2</td><td>50</td></tr>
 <tr><td>S2</td><td>P1</td><td>J1</td><td>200</td></tr>
-</tbody></table></div><strong>تحلیل ():</strong>
+</tbody></table></div><strong>تحلیل:</strong>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>I1: فروشنده S1 قطعه P1 را برای پروژه J1 تولید می‌کند
 I2: S1 قطعه P1 را تولید می‌کند (نادرست! پروژه مشخص نیست!)
@@ -500,7 +517,7 @@ I4: S1 برای پروژه J1 تولید می‌کند (نادرست! قطعه �
 <h4>مثال 2: دانشجو - درس - استاد</h4>
 
 <p>
-<strong>:</strong>  
+<strong>تعریف:</strong>
 دانشجو درس را با استاد انتخاب می‌نماید.
 </p>
 
@@ -509,22 +526,29 @@ graph TB
     A[Student<br/>دانشجو]
     B[Course<br/>درس]
     C[Teacher<br/>استاد]
-    
+
     D{Enroll<br/>انتخاب}
-    
-    A --> D
-    B --> D
-    C --> D
-    
+
+    A --- D
+    B --- D
+    C --- D
+
     D1((Grade))
-    D1((Term))
+    D2((Term))
     D --- D1
-    
+    D --- D2
+
     style A fill:#3498db,color:#fff
     style B fill:#2ecc71,color:#fff
     style C fill:#e74c3c,color:#fff
     style D fill:#f39c12,color:#fff
+    style D1 fill:#fbbf24
+    style D2 fill:#fbbf24
 </pre></div>
+
+<p>
+<strong>توجه:</strong> صفت‌های <code>Grade</code> و <code>Term</code> روی <strong>ارتباط</strong> قرار گرفته‌اند نه روی موجودیت‌ها — این صفت‌ها فقط زمانی معنی پیدا می‌كنند كه هر سه موجودیت (دانشجو، درس، استاد) با هم در نظر گرفته شوند.
+</p>
 
 <p>
 <strong>معنا:</strong>

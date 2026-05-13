@@ -563,9 +563,9 @@ graph TB
 <h3>گام‌های عمومی</h3>
 
 <p>
-<strong>گام 1:</strong> شناسایی FD ها
-<strong>گام 2:</strong> تعیین کلیدهای کاندید
-<strong>گام 3:</strong> بررسی فرم نرمال فعلی
+<strong>گام 1:</strong> شناسایی FD ها<br>
+<strong>گام 2:</strong> تعیین کلیدهای کاندید<br>
+<strong>گام 3:</strong> بررسی فرم نرمال فعلی<br>
 <strong>گام 4:</strong> تقسیم رابطه بر اساس:
 </p>
 <ul>
@@ -577,6 +577,125 @@ graph TB
 <strong>گام 5:</strong> تکرار تا رسیدن به فرم نرمال مورد نظر
 </p>
 
+<hr>
+<h3>🧩 الگوريتم سنتز 3NF (Synthesis Algorithm)</h3>
+
+<p>
+به‌جاي تجزيه تدريجي، روش <strong>سنتز</strong> (Bernstein 1976) رابطه‌هاي 3NF را مستقيماً از پوشش كمينه مي‌سازد. اين الگوريتم سه ويژگي مهم را تضمين مي‌كند: <strong>3NF بودن همه روابط</strong>، <strong>اتلاف‌ناپذيري پيوند</strong>، و <strong>حفظ وابستگي‌ها (Dependency Preservation)</strong>.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ورودي: R (مجموعه صفات)، F (مجموعه FD)
+خروجي: تجزيه D = {R1, R2, …} كه 3NF و حافظ وابستگي است
+
+گام 1: محاسبه پوشش كمينه Fmin از F.
+
+گام 2: گروه‌بندي FDها بر اساس سمت چپ —
+       براي هر سمت چپ مشترك X در Fmin،
+       يك رابطه با صفات (X ∪ همه سمت‌راست‌هاي X) بساز.
+
+گام 3: اگر هيچ رابطه ساخته‌شده شامل يك كليد كانديد R
+       نباشد، يك رابطه اضافي با صفات يكي از كليدهاي
+       كانديد بساز (براي اتلاف‌ناپذيري).
+
+گام 4: حذف روابط زائد — اگر يك رابطه Ri زيرمجموعه
+       رابطه ديگر Rj باشد، Ri را حذف كن.
+
+→ خروجي: تجزيه D = { R1, R2, … }</code></pre></div>
+
+<h4>مثال سنتز 3NF</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(A, B, C, D, E, F)
+F = { A → BC, B → D, D → E, AF → B }
+
+گام 1 — Fmin:
+  Fmin = { A → B, A → C, B → D, D → E, AF → B }
+  (A→C باقي مي‌ماند چون B→C از B→D و D→C نمي‌آيد)
+
+گام 2 — گروه‌بندي بر اساس سمت چپ:
+  R1(A, B, C)    از A → B و A → C
+  R2(B, D)       از B → D
+  R3(D, E)       از D → E
+  R4(A, F, B)    از AF → B
+
+گام 3 — كليد كانديد R = (A, F)
+  در R4 وجود دارد → نياز به رابطه اضافي نيست ✓
+
+گام 4 — حذف زائد: هيچ رابطه‌اي زيرمجموعه ديگري نيست.
+
+→ تجزيه نهايي: { R1, R2, R3, R4 }
+  هر چهار رابطه 3NF هستند ✓
+  پيوندشان R اصلي را بازسازي مي‌كند ✓
+  همه FDهاي F حفظ شده‌اند ✓</code></pre></div>
+
+<hr>
+<h3>✂️ الگوريتم تجزيه BCNF (Decomposition Algorithm)</h3>
+
+<p>
+برخلاف سنتز 3NF، الگوريتم BCNF <strong>تجزيه‌اي تكراري</strong> است. اين الگوريتم اتلاف‌ناپذيري را تضمين مي‌كند، ولي <strong>ممكن است وابستگي‌ها حفظ نشوند</strong>.
+</p>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ورودي: R، F
+خروجي: تجزيه D كه همه روابط در BCNF باشند
+
+D := { R }
+while وجود رابطه Ri ∈ D كه در BCNF نيست:
+    FD ناقض X → Y را در Ri پيدا كن
+    (يعني X سوپركليد Ri نيست و Y ⊄ X)
+
+    Ri را به دو رابطه تجزيه كن:
+        R_a := (X ∪ Y)          ← FD ناقض را به اينجا منتقل كن
+        R_b := Ri − Y            ← Y را از Ri حذف كن
+
+    D := (D − {Ri}) ∪ {R_a, R_b}
+
+return D</code></pre></div>
+
+<h4>مثال تجزيه BCNF</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>R(StudentID, Course, Instructor)
+F = { (StudentID, Course) → Instructor,
+      Instructor → Course }
+
+كليد كانديد: (StudentID, Course) و (StudentID, Instructor)
+
+بررسي BCNF:
+  FD: Instructor → Course
+  → Instructor سوپركليد R نيست ❌ → ناقض BCNF
+
+تجزيه:
+  R_a := (Instructor, Course)     -- FD ناقض اينجا منتقل شد
+  R_b := R − {Course}
+       = (StudentID, Instructor)
+
+نتيجه:
+  R_a(Instructor, Course)         در BCNF ✓
+  R_b(StudentID, Instructor)      در BCNF ✓
+
+⚠️ توجه: FD (StudentID, Course) → Instructor
+   ديگر در هيچ رابطه واحدي حفظ نشده!
+   → BCNF حافظ وابستگي‌ها نيست</code></pre></div>
+
+<hr>
+<h3>⚖️ مقايسه: 3NF در برابر BCNF — جدول تصميم</h3>
+
+<div class="table-container"><table>
+<thead><tr><th>ويژگي</th><th>3NF</th><th>BCNF</th></tr></thead>
+<tbody>
+<tr><td><strong>اتلاف‌ناپذيري پيوند</strong></td><td>✅ تضمين شده</td><td>✅ تضمين شده</td></tr>
+<tr><td><strong>حفظ وابستگي‌ها (Dependency Preservation)</strong></td><td>✅ تضمين شده</td><td>❌ ممكن است نشود</td></tr>
+<tr><td><strong>حذف افزونگي</strong></td><td>كامل نيست (FD از غيركليد به prime ممكن است باقي بماند)</td><td>كامل ✓</td></tr>
+<tr><td><strong>سختي تبديل</strong></td><td>سنتز مستقيم (Bernstein)</td><td>تجزيه تكراري</td></tr>
+<tr><td><strong>كاربرد عملي</strong></td><td>اكثر سيستم‌هاي توليدي</td><td>وقتي حذف كامل افزونگي مهم‌تر از حفظ FD است</td></tr>
+</tbody></table></div>
+
+<p>
+<strong>راهنماي تصميم:</strong>
+</p>
+<ul>
+<li>اگر در فرايند نرمال‌سازي به <strong>گزينش بين 3NF و BCNF</strong> رسيديد و BCNF موجب از دست‌رفتن يك FD مهم مي‌شود، <strong>3NF را ترجيح دهيد</strong>.</li>
+<li>اگر همه FDها بدون مشكل در BCNF حفظ مي‌شوند، BCNF <strong>كيفيت بالاتر</strong> دارد (افزونگي كمتر).</li>
+<li>در عمل، اكثر طراحي‌هاي خوب به <strong>3NF</strong> مي‌رسند كه معمولاً همان <strong>BCNF</strong> هم هست. تفاوت در موارد خاص (مانند مثال بالا) ظاهر مي‌شود.</li>
+</ul>
 
 <hr>
 <h2>مثال جامع: نرمال‌سازی کامل</h2>

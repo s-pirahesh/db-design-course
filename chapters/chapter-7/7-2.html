@@ -348,6 +348,63 @@ F'⁺ = F⁺  ✅
 A → C افزونه است</code></pre></div>
 
 <hr>
+<h3>🧮 پوشش كمينه / كنوني (Minimal / Canonical Cover - Fmin)</h3>
+
+<p>
+دو مجموعه FD به نام‌هاي F و G را <strong>هم‌ارز</strong> مي‌گوييم اگر <code>F⁺ = G⁺</code>. هميشه بين همه مجموعه‌هاي هم‌ارز، يكي وجود دارد كه <strong>كوچك‌ترين</strong> است و آن را <strong>پوشش كمينه</strong> (Fmin) مي‌ناميم.
+</p>
+
+<p>
+پوشش كمينه سه ويژگي دارد:
+</p>
+<ol>
+<li>سمت راست هر FD <strong>تك‌صفتي</strong> است (Y فقط يك صفت دارد)</li>
+<li>هيچ FD در F افزونه نيست (حذف هيچ FD باعث تغيير F⁺ نمي‌شود)</li>
+<li>سمت چپ هيچ FD، صفت <strong>بيش‌از‌نياز (Extraneous)</strong> ندارد (حذف هيچ صفت از X باعث تغيير F⁺ نمي‌شود)</li>
+</ol>
+
+<h4>الگوريتم محاسبه Fmin</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>ورودي: F (مجموعه FD)
+خروجي: Fmin
+
+گام 1: تجزيه سمت راست — هر X → {A,B,C} را به
+       X→A, X→B, X→C تبديل كن.
+
+گام 2: حذف صفت بيش‌از‌نياز در سمت چپ —
+       براي هر FD مثل {X1,X2,…} → A:
+         اگر بدون يكي از Xi هم بستار همان است،
+         آن Xi را حذف كن.
+
+گام 3: حذف FD افزونه —
+       براي هر FD مثل X → A:
+         اگر A ∈ (X)⁺ نسبت به F − {X→A} باشد،
+         اين FD افزونه است و حذف مي‌شود.
+
+→ خروجي پوشش كمينه است.</code></pre></div>
+
+<h4>مثال محاسبه Fmin</h4>
+
+<div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>F = { A → BC, B → C, AB → D }
+
+گام 1 (تجزيه): A→B, A→C, B→C, AB→D
+
+گام 2 (سمت چپ AB→D):
+  بدون A: {B}⁺ = {B,C} → شامل D نيست. A لازم است.
+  بدون B: {A}⁺ = {A,B,C} → شامل D نيست. B لازم است.
+  هر دو لازم → AB→D دست‌نخورده باقي مي‌ماند.
+
+گام 3 (حذف افزونه):
+  حذف A→C: {A}⁺ نسبت به {A→B, B→C, AB→D} = {A,B,C,D}
+    → C در آن هست → A→C افزونه است ❌
+
+Fmin = { A → B, B → C, AB → D }</code></pre></div>
+
+<p>
+<strong>كاربرد Fmin:</strong> ورودي الگوريتم سنتز 3NF (در فصل ۷-۳) Fmin است نه F خام. اين تضمين مي‌كند تعداد روابط حاصل از سنتز كمينه باشد.
+</p>
+
+<hr>
 <h2>سلسله‌مراتب فرم‌های نرمال</h2>
 
 <div class="mermaid-container"><pre class="mermaid">
@@ -581,13 +638,17 @@ First = Second ⋈ SP  ✅</code></pre></div>
 <h3>تعریف</h3>
 
 <p>
-<strong>2NF:</strong>  
+<strong>2NF:</strong>
 رابطه R در فرم 2NF است اگر و تنها اگر:
 </p>
 <ol>
 <li>در 1NF باشد</li>
-<li><strong>هر صفت ناکلید با کلید اصلی، FD کامل</strong> داشته باشد</li>
+<li><strong>هر صفت ناكليد با <em>هر كليد كانديد</em> (نه فقط كليد اصلي)، FD كامل</strong> داشته باشد — يعني هيچ صفت ناكليدي به <strong>زيرمجموعه‌اي مناسب</strong> از هيچ كليد كانديد وابسته نباشد.</li>
 </ol>
+
+<p>
+<strong>⚠️ نكته مهم:</strong> تعريف رسمي 2NF (طبق Date و كتاب رنكوهي) ناظر به <strong>همه كليدهاي كانديد</strong> است، نه فقط كليد اصلي. اگر يك رابطه چند كليد كانديد داشته باشد، 2NF بايد نسبت به <strong>هر يك</strong> رعايت شود. در عمل وقتي فقط يك كليد كانديد (= كليد اصلي) وجود دارد، اين دو تعريف معادل‌اند.
+</p>
 
 <div class="code-block" style="position: relative;"><button class="copy-button" onclick="copyCode(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #abb2bf; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-family: 'Vazirmatn', Arial, sans-serif; z-index: 10;">📋 کپی</button><pre><code>FD کامل (Full FD):
 A → B کامل است اگر هیچ زیرمجموعه A' ⊂ A نباشد که A' → B
